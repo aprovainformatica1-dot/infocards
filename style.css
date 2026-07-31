@@ -1,0 +1,858 @@
+/* =====================================================
+   INFOCARDS DE INFORMÁTICA — FOLHA DE ESTILO
+   Organizado em blocos para facilitar edição:
+   1. Variáveis (cores, fontes)
+   2. Reset básico
+   3. Elementos utilitários (container, grid, botões)
+   4. Cabeçalho
+   5. Seções da página, na ordem em que aparecem no HTML
+   6. Rodapé
+   7. Responsivo (mobile-first: já vem mobile, aqui ampliamos p/ telas maiores)
+   ===================================================== */
+
+/* ---------- 1. VARIÁVEIS ---------- */
+:root {
+  /* Cores principais — troque aqui para mudar a identidade visual inteira */
+  --roxo-escuro: #6D28D9;   /* usado em títulos, seções escuras e hover dos botões */
+  --roxo: #7C3AED;          /* cor principal: botões, links, ícones, destaques */
+  --roxo-claro: #A78BFA;    /* cor secundária: bordas suaves e acentos leves */
+  --fundo-alt: #F8F5FF;     /* fundo das seções alternadas */
+  --amarelo: #FFC93C;       /* reservado para o botão de destaque da Hero */
+  --amarelo-escuro: #E8A800;
+  --branco: #FFFFFF;
+  --texto: #1F2937;
+  --texto-suave: #4B5563;
+  --texto-claro: rgba(255, 255, 255, 0.85); /* texto sobre fundos escuros (roxo) */
+  --borda: #E4D9FB;         /* bordas bem suaves em lilás claro */
+
+  /* Tipografia */
+  --fonte-titulo: 'Sora', sans-serif;
+  --fonte-texto: 'Inter', sans-serif;
+
+  /* Espaçamentos e formas */
+  --raio: 16px;
+  --sombra: 0 12px 30px rgba(124, 58, 237, 0.12);
+}
+
+/* ---------- 2. RESET BÁSICO ---------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--fonte-texto);
+  color: var(--texto);
+  background: var(--branco);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+ul {
+  list-style: none;
+}
+
+h1, h2, h3 {
+  font-family: var(--fonte-titulo);
+  color: var(--roxo-escuro);
+  line-height: 1.2;
+}
+
+/* Respeita usuários que preferem menos animação */
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+  html { scroll-behavior: auto; }
+}
+
+/* ---------- 3. UTILITÁRIOS ---------- */
+.container {
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.container--narrow {
+  max-width: 760px;
+}
+
+.section {
+  padding: 64px 0;
+}
+
+.section__title {
+  font-size: clamp(1.6rem, 4vw, 2.3rem);
+  font-weight: 800;
+  margin-bottom: 16px;
+  max-width: 640px;
+}
+
+.section__title--light {
+  color: var(--branco);
+}
+
+.section__text {
+  color: var(--texto-suave);
+  max-width: 620px;
+  margin-bottom: 32px;
+  font-size: 1.05rem;
+}
+
+.section__text--light {
+  color: var(--texto-claro);
+}
+
+.section__text--center {
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+/* "Etiqueta" no estilo aba de fichário — usada como rótulo de cada seção,
+   reforçando o conceito de "cartões/fichas" do produto */
+.tab-label {
+  display: inline-block;
+  background: var(--roxo-claro);
+  color: var(--branco);
+  font-family: var(--fonte-titulo);
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 6px 16px;
+  border-radius: 6px 6px 0 0;
+  margin-bottom: 18px;
+}
+
+.tab-label--dark {
+  background: var(--roxo-escuro);
+  color: var(--branco);
+}
+
+.grid {
+  display: grid;
+  gap: 20px;
+}
+
+.grid--3 {
+  grid-template-columns: 1fr;
+}
+
+.grid--4 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* Botões */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--fonte-titulo);
+  font-weight: 700;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  padding: 14px 26px;
+  font-size: 1rem;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.btn:focus-visible {
+  outline: 3px solid var(--roxo-escuro);
+  outline-offset: 2px;
+}
+
+.btn--primary {
+  background: var(--roxo);
+  color: var(--branco);
+  box-shadow: 0 8px 20px rgba(124, 58, 237, 0.35);
+}
+
+.btn--primary:hover {
+  background: var(--roxo-escuro);
+  transform: translateY(-2px);
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--roxo);
+  font-weight: 600;
+  padding: 14px 10px;
+}
+
+.btn--large {
+  padding: 16px 32px;
+  font-size: 1.05rem;
+}
+
+.btn--small {
+  padding: 10px 18px;
+  font-size: 0.9rem;
+}
+
+.btn--full {
+  width: 100%;
+}
+
+/* ---------- 4. CABEÇALHO ---------- */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--borda);
+}
+
+.header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 14px;
+  padding-bottom: 14px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--fonte-titulo);
+  font-weight: 800;
+  font-size: 1.15rem;
+  color: var(--roxo-escuro);
+}
+
+.logo__icon {
+  color: var(--roxo);
+}
+
+/* ---------- 5.1 HERO ---------- */
+.hero {
+  background: linear-gradient(180deg, var(--fundo-alt) 0%, var(--branco) 100%);
+  padding: 56px 0 40px;
+}
+
+.hero__inner {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 40px;
+  align-items: center;
+}
+
+.hero__content {
+  text-align: center;
+}
+
+.hero__title {
+  font-size: clamp(1.9rem, 6vw, 3rem);
+  font-weight: 800;
+  margin-bottom: 18px;
+}
+
+.hero__title--highlight {
+  color: var(--roxo);
+  position: relative;
+}
+
+.hero__subtitle {
+  color: var(--texto-suave);
+  font-size: 1.05rem;
+  max-width: 560px;
+  margin: 0 auto 28px;
+}
+
+.hero__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+/* Linha de ícones representando os módulos do material */
+.hero__modules {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 28px;
+}
+
+.hero__module {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 76px;
+}
+
+.hero__module-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--fundo-alt);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  box-shadow: var(--sombra);
+  color: var(--roxo);
+}
+
+.hero__module-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--texto-suave);
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* Botão de destaque da Hero — amarelo, conforme identidade visual da página */
+.btn--hero-cta {
+  background: var(--amarelo);
+  color: var(--roxo-escuro);
+  box-shadow: 0 8px 20px rgba(255, 201, 60, 0.35);
+}
+
+.btn--hero-cta:hover {
+  background: var(--amarelo-escuro);
+  transform: translateY(-2px);
+}
+
+/* Mockup do material — feito só com CSS (pilha de fichas) */
+.hero__mockup {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* Imagem real do material, responsiva e centralizada */
+.hero__image {
+  display: block;
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+  margin: 0 auto;
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+}
+
+/* ---------- 5.2 PROBLEMA ---------- */
+.problema {
+  background: var(--branco);
+}
+
+.problem-card {
+  background: var(--branco);
+  border: 1px solid var(--borda);
+  box-shadow: var(--sombra);
+  border-radius: var(--raio);
+  padding: 28px 22px;
+  text-align: left;
+}
+
+.problem-card__icon {
+  font-size: 1.8rem;
+  margin-bottom: 12px;
+}
+
+.problem-card h3 {
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+}
+
+.problem-card p {
+  color: var(--texto-suave);
+  font-size: 0.96rem;
+}
+
+/* ---------- 5.3 SOLUÇÃO ---------- */
+.solucao {
+  background: var(--roxo-escuro);
+  color: var(--branco);
+}
+
+.solucao .section__title,
+.solucao h3 {
+  color: var(--branco);
+}
+
+.solucao__inner {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  align-items: center;
+}
+
+.solucao .section__text {
+  color: var(--texto-claro);
+}
+
+.check-list li {
+  position: relative;
+  padding-left: 28px;
+  margin-bottom: 12px;
+  color: var(--texto-claro);
+}
+
+.check-list li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--roxo-claro);
+  font-weight: 800;
+}
+
+.solucao__bonus-lead {
+  font-weight: 700;
+  color: var(--branco);
+  margin-bottom: 16px;
+}
+
+.solucao__bonus {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.solucao__bonus-item {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.solucao__bonus-icon {
+  font-size: 1.4rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.solucao__bonus-item h3 {
+  font-size: 1rem;
+  margin-bottom: 4px;
+}
+
+.solucao__bonus-item p {
+  color: var(--texto-claro);
+  font-size: 0.92rem;
+}
+
+.solucao__visual {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* Bloco de chamada para ação que substitui a ilustração */
+.solucao__cta {
+  width: 100%;
+  max-width: 460px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.solucao__cta-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-bottom: 14px;
+}
+
+.solucao__cta-btn {
+  margin-top: 6px;
+}
+
+.solucao__cta-support {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.solucao__cta-support span {
+  font-size: 0.82rem;
+  color: var(--texto-claro);
+  opacity: 0.85;
+}
+
+/* ---------- 5.4 CATEGORIAS (INTERATIVO) ---------- */
+.categorias {
+  background: var(--branco);
+}
+
+.cat-box {
+  margin-top: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Tabs no estilo abas de fichário */
+.cat-box__tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.cat-tab {
+  font-family: var(--fonte-texto);
+  font-weight: 600;
+  font-size: 0.9rem;
+  background: var(--branco);
+  color: var(--roxo);
+  border: 2px solid var(--borda);
+  border-radius: 10px;
+  padding: 10px 16px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.15s ease;
+}
+
+.cat-tab:hover {
+  border-color: var(--roxo);
+}
+
+.cat-tab.is-active {
+  background: var(--roxo);
+  color: var(--branco);
+  border-color: var(--roxo);
+}
+
+.cat-tab:focus-visible {
+  outline: 3px solid var(--roxo-escuro);
+  outline-offset: 2px;
+}
+
+.cat-box__panel {
+  background: var(--branco);
+  border: 1px solid var(--borda);
+  box-shadow: var(--sombra);
+  border-radius: var(--raio);
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+  text-align: center;
+}
+
+.cat-panel__visual {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: var(--fundo-alt);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.4rem;
+  box-shadow: var(--sombra);
+  flex-shrink: 0;
+}
+
+.cat-panel__text h3 {
+  font-size: 1.3rem;
+  margin-bottom: 8px;
+}
+
+.cat-panel__text p {
+  color: var(--texto-suave);
+}
+
+/* ---------- 5.5 AMOSTRAS ---------- */
+.amostras {
+  background: var(--fundo-alt);
+}
+
+.amostras code {
+  background: var(--branco);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+.sample-card {
+  aspect-ratio: 3 / 4;
+  background: var(--branco);
+  border: 2px dashed var(--borda);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--texto-suave);
+  font-weight: 600;
+  font-family: var(--fonte-titulo);
+}
+
+/* ---------- 5.6 BENEFÍCIOS ---------- */
+.beneficios {
+  background: var(--branco);
+}
+
+.benefit-card {
+  text-align: center;
+  padding: 24px 16px;
+}
+
+.benefit-card__icon {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.benefit-card h3 {
+  font-size: 1.05rem;
+  margin-bottom: 6px;
+}
+
+.benefit-card p {
+  color: var(--texto-suave);
+  font-size: 0.92rem;
+}
+
+/* ---------- 5.7 DEPOIMENTOS ---------- */
+.depoimentos {
+  background: var(--fundo-alt);
+}
+
+.depoimentos code {
+  background: var(--branco);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+.testimonial-placeholder {
+  background: var(--branco);
+  border: 2px dashed var(--borda);
+  border-radius: 12px;
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--texto-suave);
+}
+
+.testimonial-placeholder span {
+  font-size: 1.8rem;
+  display: block;
+  margin-bottom: 8px;
+}
+
+/* ---------- 5.8 OFERTA ---------- */
+.oferta {
+  background: var(--roxo-escuro);
+  text-align: center;
+}
+
+.oferta__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.oferta .tab-label {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.price-card {
+  margin-top: 24px;
+  background: var(--branco);
+  border-radius: var(--raio);
+  padding: 32px 24px;
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+}
+
+.price-card__old {
+  color: var(--texto-suave);
+  text-decoration: line-through;
+  font-size: 0.95rem;
+}
+
+.price-card__new {
+  font-family: var(--fonte-titulo);
+  font-weight: 800;
+  font-size: 2.6rem;
+  color: var(--roxo-escuro);
+  margin: 4px 0;
+}
+
+.price-card__installments {
+  color: var(--texto-suave);
+  font-size: 0.9rem;
+  margin-bottom: 20px;
+}
+
+.price-card__note {
+  margin-top: 14px;
+  font-size: 0.85rem;
+  color: var(--texto-suave);
+}
+
+/* ---------- 5.9 FAQ ---------- */
+.faq {
+  background: var(--branco);
+}
+
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.faq-item {
+  border: 1px solid var(--borda);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.faq-item__question {
+  width: 100%;
+  background: var(--fundo-alt);
+  border: none;
+  text-align: left;
+  font-family: var(--fonte-texto);
+  font-weight: 600;
+  font-size: 0.98rem;
+  color: var(--roxo-escuro);
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.faq-item__question:focus-visible {
+  outline: 3px solid var(--roxo);
+  outline-offset: -3px;
+}
+
+.faq-item__arrow {
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+  color: var(--roxo);
+}
+
+.faq-item.is-open .faq-item__arrow {
+  transform: rotate(180deg);
+}
+
+.faq-item__answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.25s ease;
+}
+
+.faq-item__answer p {
+  padding: 16px 18px;
+  color: var(--texto-suave);
+}
+
+/* ---------- 6. RODAPÉ ---------- */
+.footer {
+  background: var(--roxo-escuro);
+  color: rgba(255, 255, 255, 0.78);
+  text-align: center;
+  padding: 28px 0;
+}
+
+.footer p {
+  font-size: 0.9rem;
+}
+
+.footer__legal {
+  margin-top: 6px;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.8rem;
+}
+
+/* Classe usada pelo JavaScript para revelar elementos ao rolar a página */
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* =====================================================
+   7. RESPONSIVO — MOBILE FIRST
+   Regras acima já são pensadas para celular.
+   Abaixo, ampliamos o layout para telas maiores.
+   ===================================================== */
+
+/* Tablets */
+@media (min-width: 700px) {
+  .grid--3 { grid-template-columns: repeat(3, 1fr); }
+  .grid--4 { grid-template-columns: repeat(4, 1fr); }
+
+  .hero__actions { flex-direction: row; }
+  .hero__image { max-width: 380px; }
+
+  .cat-box__panel { flex-direction: row; text-align: left; }
+  .cat-panel__visual { margin: 0; }
+}
+
+/* Responsividade específica dos cards da seção "O Problema"
+   (sobrescreve apenas o número de colunas/espaçamento; cores, bordas,
+   sombras e ícones dos .problem-card permanecem exatamente os mesmos) */
+@media (max-width: 768px) {
+  .problema .grid--4 {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 959px) {
+  .problema .grid--4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Desktops */
+@media (min-width: 960px) {
+  .section { padding: 96px 0; }
+
+  .hero { padding: 90px 0 70px; }
+  .hero__inner { flex-direction: row; text-align: left; }
+  .hero__content { text-align: left; flex: 1; }
+  .hero__subtitle { margin: 0 0 28px; }
+  .hero__modules { justify-content: flex-start; }
+  .hero__actions { justify-content: flex-start; }
+  .hero__mockup { flex: 1; }
+  .hero__image { max-width: 480px; }
+
+  .solucao__inner { flex-direction: row; text-align: left; }
+  .solucao__inner > div:first-child { flex: 1; }
+  .solucao__visual { flex: 1; }
+
+  .oferta__inner { text-align: center; }
+}
