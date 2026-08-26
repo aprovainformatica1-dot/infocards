@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/links",
+      "destination": "/links/index.html"
+    }
+  ]
+}
