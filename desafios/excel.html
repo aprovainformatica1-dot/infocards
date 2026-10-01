@@ -14,6 +14,9 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://devmapas.vercel.app/img/desafio-informatica.png">
+<!-- Vercel Web Analytics (conta os acessos; só funciona no site publicado na Vercel) -->
+<script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
+<script defer src="/_vercel/insights/script.js"></script>
 <style>
 :root{--g:#7a4fd6;--gd:#3b1d6e;--gl:#efe8fb;--bg:#f7f4fd;--tx:#1f1a33;--mu:#6b6485;--bd:#e4def0;--ok:#16a34a;--bad:#d97706;--wa:#25D366}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -106,7 +109,7 @@ h1{font-size:17px;line-height:1.2;margin:0;letter-spacing:.03em}
     <div class="by">por Mikaelly Dias</div>
     <div class="line"></div>
     <h1>🧠 DESAFIO DE INFORMÁTICA</h1>
-    <p class="sub" id="subtitulo">5 questões para testar seus conhecimentos</p>
+    <p class="sub" id="subtitulo">5 QUESTÕES PARA TESTAR SEU CONHECIMENTO</p>
     <span class="chip"><span id="titulo">Desafio de Excel</span> · 5 QUESTÕES</span>
   </header>
 
@@ -133,13 +136,14 @@ h1{font-size:17px;line-height:1.2;margin:0;letter-spacing:.03em}
     </div>
     <div class="next">PRÓXIMOS PASSOS</div>
 
+    <!-- TEXTOS DOS CARDS: edite aqui. Os links ficam em CTA_LINKS, no final do arquivo. -->
     <div class="go a">
       <div class="capa" data-capa="simulado">📄</div>
       <div class="kick">📄 SIMULADO DE INFORMÁTICA</div>
       <h2>GOSTOU DE RESOLVER AS QUESTÕES?</h2>
       <p>O que você acabou de fazer foi uma demonstração interativa gratuita com 5 questões.</p>
       <p>Para ser aprovado, não basta só estudar a teoria. Você precisa praticar muitas questões e aprender enquanto resolve.</p>
-      <p>Este simulado foi feito especificamente para a PMMA, com mais de 100 questões de Informática comentadas.</p>
+      <p>Este simulado foi feito especificamente para a INSS, com mais de 100 questões de Informática comentadas.</p>
       <p>🧠 Estudo reverso: você resolve, identifica seus erros e aprende com comentários em formato de mini aula.</p>
       <div class="importante azul"><span>📌 IMPORTANTE</span>O MATERIAL COMPLETO É DISPONIBILIZADO EM PDF.</div>
       <a class="btn laranja" data-cta="simulado" target="_blank" rel="noopener">📄 QUERO MAIS QUESTÕES</a>
@@ -162,14 +166,20 @@ h1{font-size:17px;line-height:1.2;margin:0;letter-spacing:.03em}
 <script>
 /* ===== EDITE OS LINKS DOS CTAs AQUI ===== */
 const CTA_LINKS = {
-    "simulado": "https://pay.kiwify.com.br/7CTyNVx",
-    "grupo": "https://chat.whatsapp.com/EB9OpUq1uOl1KA5TdiLheD?mode=gi_t"
+    "simulado": "https://example.com",
+    "grupo": "https://example.com"
 };
+
+/* ===== RASTREAMENTO DE CLIQUES (gerado automaticamente) =====
+   Os botões listados em RASTREAR abrem /ir/<desafio>-<botão>.html (página que conta o clique
+   e redireciona). Para trocar esses links, gere o desafio de novo no gerador. */
+const DESAFIO_ID = "excel";
+const RASTREAR = ["simulado","grupo"];
 
 /* ===== IMAGENS DAS CAPAS (cards do simulado e dos mapas) =====
    Se a imagem não existir, o card mostra um espaço com emoji no lugar. */
 const IMAGENS = {
-    "simulado": "https://devmapas.vercel.app/img/pmma.png"
+    "simulado": "https://devmapas.vercel.app/img/inss.png"
 };
 
 /* ===== QUESTÕES (geradas automaticamente) ===== */
@@ -181,7 +191,7 @@ let i = 0, sel = null, feito = false, acertos = 0;
 
 document.querySelectorAll('[data-cta]').forEach(a => {
   const l = CTA_LINKS[a.dataset.cta];
-  if (l && l.indexOf('COLE_') !== 0) a.href = l;
+  if (l && l.indexOf('COLE_') !== 0) a.href = RASTREAR.indexOf(a.dataset.cta) >= 0 ? '/ir/' + DESAFIO_ID + '-' + a.dataset.cta + '.html' : l;
   else a.addEventListener('click', e => e.preventDefault());
 });
 if (!$('subtitulo').textContent.trim()) $('subtitulo').textContent = 'Teste seus conhecimentos';
