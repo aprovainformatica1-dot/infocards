@@ -10,10 +10,10 @@ const PADRAO = {
     mapas: BASE_IMG + "capa-mapas.png"
   },
   links: {
-    simulado: "COLE_AQUI_O_LINK_DO_SIMULADO",
-    mapas: "COLE_AQUI_O_LINK_DOS_MAPAS",
-    whatsapp: "COLE_AQUI_O_LINK_DO_WHATSAPP",
-    grupo: "COLE_AQUI_O_LINK_DO_GRUPO"
+    simulado: "https://pay.kiwify.com.br/gpyqBa2",
+    mapas: "https://pay.kiwify.com.br/6nLacpi",
+    whatsapp: "https://wa.me/5561996169903",
+    grupo: "https://chat.whatsapp.com/EB9OpUq1uOl1KA5TdiLheD?mode=gi_t"
   },
   imagemCompartilhamento: BASE_IMG + "desafio-informatica.png"   // prévia ao compartilhar (igual para todos)
 };
