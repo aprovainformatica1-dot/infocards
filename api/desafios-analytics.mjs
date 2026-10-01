@@ -18,7 +18,7 @@
 import { createHash, timingSafeEqual } from 'node:crypto';
 
 const VERCEL_API = 'https://api.vercel.com/v1/query/web-analytics/visits/aggregate';
-const LIMITES = [1000, 500, 200, 100]; // tenta o maior aceito; se a Vercel recusar (400), tenta o próximo
+const LIMITES = [100]; // tenta o maior aceito; se a Vercel recusar (400), tenta o próximo
 
 function responder(res, status, corpo) {
   res.statusCode = status;
