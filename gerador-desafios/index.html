@@ -15,6 +15,14 @@
   </header>
 
   <section class="card">
+    <label>Tipo de desafio</label>
+    <div class="radios">
+      <label class="radio"><input type="radio" name="tipo" value="geral" checked> Desafio geral</label>
+      <label class="radio"><input type="radio" name="tipo" value="especifico"> Simulado específico</label>
+    </div>
+  </section>
+
+  <section class="card">
     <label for="titulo">Título do desafio</label>
     <input id="titulo" type="text" placeholder="Desafio de Excel">
     <label for="subtitulo">Subtítulo <small>(opcional)</small></label>
@@ -22,6 +30,23 @@
     <label for="arquivo">Nome do arquivo</label>
     <input id="arquivo" type="text" placeholder="excel">
     <small id="prev">Arquivo gerado: desafio.html</small>
+  </section>
+
+  <section class="card" id="especifico" hidden>
+    <h2>Dados do simulado específico</h2>
+    <small>O nome do arquivo é o campo "Nome do arquivo" acima.</small>
+    <label for="concurso">Nome do concurso</label>
+    <input id="concurso" type="text" placeholder="PMMA">
+    <label for="nomeSimulado">Nome do simulado</label>
+    <input id="nomeSimulado" type="text" placeholder="Simulado PMMA — Informática">
+    <label for="descricao">Descrição do simulado</label>
+    <input id="descricao" type="text" placeholder="Mais de 100 questões de Informática comentadas.">
+    <label for="imgCapa">Nome da imagem da capa <small>(já enviada para a pasta /img/)</small></label>
+    <input id="imgCapa" type="text" placeholder="capa-pmma.png">
+    <label for="linkSimulado">Link do simulado</label>
+    <input id="linkSimulado" type="url" placeholder="https://...">
+    <label for="linkGrupo">Link do grupo gratuito</label>
+    <input id="linkGrupo" type="url" placeholder="https://...">
   </section>
 
   <section class="card guide">
