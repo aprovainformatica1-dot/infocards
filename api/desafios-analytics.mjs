@@ -38,10 +38,25 @@ async function buscarVisitas({ token, projectId, teamId, desde, ate }) {
     const params = new URLSearchParams({ projectId, since: desde, until: ate, by: 'requestPath', limit: String(limite) });
     if (teamId) params.set('teamId', teamId);
     const r = await fetch(VERCEL_API + '?' + params, { headers: { Authorization: 'Bearer ' + token } });
-    if (r.ok) {
-      const json = await r.json();
-      return Array.isArray(json && json.data) ? json.data : [];
+    // >>> DIAGNÓSTICO TEMPORÁRIO (remover depois): registra a resposta bruta da Vercel
+    const texto = await r.text();
+    console.log('STATUS VERCEL:', r.status);
+    console.log('RESPOSTA VERCEL:', texto);
+    if (!r.ok) {
+      throw Object.assign(new Error('vercel'), {
+        status: r.status,
+        resposta: texto
+      });
     }
+    try {
+      const json = JSON.parse(texto);
+      return json;
+    } catch {
+      throw Object.assign(new Error('json_invalido'), {
+        status: r.status
+      });
+    }
+    // <<< FIM DO DIAGNÓSTICO TEMPORÁRIO
     status = r.status;
     if (status !== 400) break;
   }
@@ -49,6 +64,7 @@ async function buscarVisitas({ token, projectId, teamId, desde, ate }) {
 }
 
 function agrupar(linhas) {
+  console.log('DADOS RECEBIDOS PELA API:', JSON.stringify(linhas, null, 2)); // DIAGNÓSTICO TEMPORÁRIO (remover depois)
   const mapa = new Map();
   let parcial = false;
   const item = (id) => {
@@ -104,4 +120,3 @@ export default async function handler(req, res) {
     return responder(res, 502, { erro: 'Não foi possível consultar o Vercel Web Analytics.', status_vercel: (e && e.status) || null });
   }
 }
-
