@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Desafio PMMA — Informática — DevMapas</title>
+<title>PMMA — DevMapas</title>
 <meta name="description" content="Teste seus conhecimentos com 5 questões comentadas de Informática para concursos.">
 <!-- PRÉVIA AO COMPARTILHAR: mesma imagem para todos os desafios (URL absoluta) -->
 <meta property="og:type" content="website">
@@ -14,6 +14,9 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://devmapas.vercel.app/img/desafio-informatica.png">
+<!-- Vercel Web Analytics (conta os acessos; só funciona no site publicado na Vercel) -->
+<script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
+<script defer src="/_vercel/insights/script.js"></script>
 <style>
 :root{--g:#7a4fd6;--gd:#3b1d6e;--gl:#efe8fb;--bg:#f7f4fd;--tx:#1f1a33;--mu:#6b6485;--bd:#e4def0;--ok:#16a34a;--bad:#d97706;--wa:#25D366}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -106,8 +109,8 @@ h1{font-size:17px;line-height:1.2;margin:0;letter-spacing:.03em}
     <div class="by">por Mikaelly Dias</div>
     <div class="line"></div>
     <h1>🧠 DESAFIO DE INFORMÁTICA</h1>
-    <p class="sub" id="subtitulo">Teste seus conhecimentos para a prova da PMMA</p>
-    <span class="chip"><span id="titulo">Desafio PMMA — Informática</span> · 5 QUESTÕES</span>
+    <p class="sub" id="subtitulo">5 Questões para testar seu conhecimento</p>
+    <span class="chip"><span id="titulo">PMMA</span> · 5 QUESTÕES</span>
   </header>
 
   <section id="quiz">
@@ -164,8 +167,14 @@ h1{font-size:17px;line-height:1.2;margin:0;letter-spacing:.03em}
 /* ===== EDITE OS LINKS DOS CTAs AQUI ===== */
 const CTA_LINKS = {
     "simulado": "https://pay.kiwify.com.br/7CTyNVx",
-    "grupo": "https://chat.whatsapp.com/EB9OpUq1uOl1KA5TdiLheD?mode=gi_t"
+    "grupo": "https://chat.whatsapp.com/EB9OpUq1uOl1KA5TdiLheD?mode=gi_t&utm_source=chatgpt.com"
 };
+
+/* ===== RASTREAMENTO DE CLIQUES (gerado automaticamente) =====
+   Os botões listados em RASTREAR abrem /ir/<desafio>-<botão>.html (página que conta o clique
+   e redireciona). Para trocar esses links, gere o desafio de novo no gerador. */
+const DESAFIO_ID = "pmma";
+const RASTREAR = ["simulado","grupo"];
 
 /* ===== IMAGENS DAS CAPAS (cards do simulado e dos mapas) =====
    Se a imagem não existir, o card mostra um espaço com emoji no lugar. */
@@ -174,7 +183,7 @@ const IMAGENS = {
 };
 
 /* ===== QUESTÕES (geradas automaticamente) ===== */
-const QUESTOES = [{"t":"ce","e":"A integridade é a característica da informação que define que ela deve estar disponível aos usuários autorizados sempre que necessário.","a":{"C":"CERTO","E":"ERRADO"},"g":"E","c":"A integridade garante que a informação permaneça correta, completa e sem alterações indevidas. Já a disponibilidade está relacionada ao acesso à informação quando necessário.","m":"Integridade = informação correta; Disponibilidade = informação acessível."},{"t":"ce","e":"Ataques de ransomware têm como objetivo o sequestro físico de mídias com dados, com objetivo exclusivo de obter vantagem financeira da empresa afetada.","a":{"C":"CERTO","E":"ERRADO"},"g":"E","c":"O ransomware é um malware que normalmente bloqueia o acesso aos dados, geralmente por meio da criptografia, e exige um pagamento para restabelecer o acesso. O ataque ocorre por meios digitais, não por sequestro físico de mídias. Além disso, a extorsão financeira não é necessariamente seu único objetivo.","m":"Ransomware = bloqueia/sequestra o acesso aos dados, geralmente por criptografia."},{"t":"ce","e":"Um dos princípios de uma VPN é garantir a privacidade do usuário, ocultando o endereço IP de seu computador e protegendo com criptografia as informações enviadas.","a":{"C":"CERTO","E":"ERRADO"},"g":"C","c":"A VPN cria uma conexão protegida entre o dispositivo e um servidor VPN. Ela pode ocultar o IP original do usuário e utiliza criptografia para proteger os dados transmitidos, aumentando a privacidade e a segurança da comunicação.","m":"VPN = conexão protegida + ocultação do IP + criptografia dos dados."},{"t":"ce","e":"Uma nuvem pública caracteriza-se pela propriedade terceirizada e pela acessibilidade pública.","a":{"C":"CERTO","E":"ERRADO"},"g":"C","c":"Na nuvem pública, os recursos de computação são fornecidos por um provedor externo e disponibilizados para diferentes clientes. Isso não significa que os dados de um cliente sejam públicos ou acessíveis por qualquer pessoa.","m":"Nuvem pública = provedor externo + recursos compartilhados entre clientes."},{"t":"ce","e":"Enquanto o vírus precisa ser acionado por um usuário, o worm é um malware que se autorreplica e se propaga pela rede sem nenhuma interação.","a":{"C":"CERTO","E":"ERRADO"},"g":"C","c":"O vírus geralmente depende da execução de um arquivo ou programa pelo usuário para iniciar sua ação. Já o worm consegue se autorreplicar e se espalhar automaticamente, principalmente pelas redes, sem depender dessa interação.","m":"Vírus = geralmente depende de execução; Worm = autorreplica e se espalha sozinho."}];
+const QUESTOES = [{"t":"ce","e":"Em redes de computadores, o endereço IP é definido como o protocolo responsável pela conversão de nomes de domínio em endereços físicos de dispositivos.","a":{"C":"CERTO","E":"ERRADO"},"g":"E","c":"O **endereço IP** é um **endereço lógico**, não um protocolo. A conversão de nomes de domínio em endereços IP é feita pelo **DNS**. Já o **MAC** identifica fisicamente a interface de rede.","m":"**DNS** → nome → IP | **IP** → endereço lógico | **MAC** → endereço físico."},{"t":"ce","e":"Ao se usar aspas duplas para delimitar uma frase para pesquisa em motores de busca como o Google, o mecanismo restringe os resultados a páginas que contenham a sequência de palavras idêntica à da frase delimitada, incluindo-se a mesma pontuação e capitalização presentes nos termos de consulta originais.","a":{"C":"CERTO","E":"ERRADO"},"g":"E","c":"As **aspas duplas** são usadas para pesquisar uma **frase ou sequência específica de palavras**. Porém, isso não significa que o mecanismo exija a mesma **pontuação e capitalização** da consulta.","m":"**\"frase\"** → pesquisa por uma **sequência específica de palavras**."},{"t":"ce","e":"Um dos princípios de uma VPN é garantir a privacidade do usuário, ocultando o endereço IP de seu computador e protegendo com criptografia as informações enviadas.","a":{"C":"CERTO","E":"ERRADO"},"g":"C","c":"A **VPN** cria uma conexão protegida entre o dispositivo e um servidor VPN. Ela pode **ocultar o IP original** perante os serviços acessados e utiliza **criptografia** para proteger os dados transmitidos.","m":"**VPN** → oculta o IP original + **criptografa os dados**."},{"t":"ce","e":"Uma infecção por trojan pode ser recebida automaticamente pela rede, sem que nenhum usuário tenha efetuado o envio.","a":{"C":"CERTO","E":"ERRADO"},"g":"E","c":"O **trojan** normalmente depende de uma **ação do usuário**, como executar um arquivo ou programa malicioso. Já o **worm** pode se **propagar automaticamente pela rede**, sem essa ação.","m":"**Trojan** → depende de ação do usuário | **Worm** → propagação automática."},{"t":"ce","e":"Mesmo não sendo um vírus, o **ransomware** pode ser evitado com a instalação e atualização frequente de antivírus.","a":{"C":"CERTO","E":"ERRADO"},"g":"C","c":"O **ransomware** é um tipo de **malware** que pode criptografar arquivos e exigir pagamento para liberá-los. Antivírus atualizado pode **detectar e bloquear ameaças**, ajudando na prevenção.","m":"**Ransomware** → criptografa/sequestra dados | **Antivírus atualizado** → ajuda a proteger contra ameaças."}];
 
 /* ===== LÓGICA DO DESAFIO ===== */
 const $ = id => document.getElementById(id);
@@ -182,7 +191,7 @@ let i = 0, sel = null, feito = false, acertos = 0;
 
 document.querySelectorAll('[data-cta]').forEach(a => {
   const l = CTA_LINKS[a.dataset.cta];
-  if (l && l.indexOf('COLE_') !== 0) a.href = l;
+  if (l && l.indexOf('COLE_') !== 0) a.href = RASTREAR.indexOf(a.dataset.cta) >= 0 ? '/ir/' + DESAFIO_ID + '-' + a.dataset.cta + '.html' : l;
   else a.addEventListener('click', e => e.preventDefault());
 });
 if (!$('subtitulo').textContent.trim()) $('subtitulo').textContent = 'Teste seus conhecimentos';
