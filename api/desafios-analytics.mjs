@@ -112,7 +112,7 @@ export default async function handler(req, res) {
   const desde = dataISO(new Date(hoje.getTime() - (dias - 1) * 86400000));
 
   try {
-    const linhas = await buscarVisitas({ token, projectId, teamId, desde, ate });
+    const linhas = await buscarVisitas({ token, projectId, teamId, desde, ate: ate + 'T23:59:59.999Z' });
     const { total, desafios, parcial } = agrupar(linhas);
     return responder(res, 200, { periodo: { desde, ate, dias }, atualizado_em: hoje.toISOString(), parcial, total, desafios });
   } catch (e) {
