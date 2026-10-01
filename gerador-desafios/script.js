@@ -56,18 +56,29 @@ const MODELO = `<!DOCTYPE html>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>__TITULO__ — DevMapas</title>
+<meta name="description" content="Teste seus conhecimentos com 5 questões comentadas de Informática para concursos.">
+<!-- PRÉVIA AO COMPARTILHAR: mesma imagem para todos os desafios (URL absoluta) -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="__TITULO__ — Desafio de Informática | DevMapas">
+<meta property="og:description" content="Teste seus conhecimentos com 5 questões comentadas de Informática para concursos.">
+<meta property="og:image" content="https://devmapas.vercel.app/imagens/desafio-informatica.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://devmapas.vercel.app/imagens/desafio-informatica.png">
 <style>
 :root{--g:#16a34a;--gd:#0f3d24;--gl:#e8f7ee;--bg:#f3f7f5;--tx:#14201a;--mu:#5c6b63;--bd:#dfe6e2;--ok:#16a34a;--bad:#d97706;--wa:#25D366}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 .app{max-width:520px;margin:0 auto;padding:12px 12px 40px}
 [hidden]{display:none!important}
-.hero{background:linear-gradient(160deg,#15803d,#0f3d24);color:#fff;border-radius:22px;padding:12px 16px 14px;text-align:center}
-.hrow{display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:800;letter-spacing:.08em}
-.hrow span:last-child{background:rgba(255,255,255,.18);padding:3px 9px;border-radius:99px}
-h1{font-size:21px;line-height:1.2;margin:10px 0 2px}
-.sub{margin:0;font-size:13px;opacity:.85}
-.chip{display:inline-block;margin-top:8px;background:#fff;color:var(--gd);font-weight:800;font-size:12px;letter-spacing:.06em;padding:4px 12px;border-radius:99px}
+.hero{background:linear-gradient(160deg,#15803d,#0f3d24);color:#fff;border-radius:24px;padding:12px 16px 14px;text-align:center;box-shadow:0 6px 18px rgba(15,61,36,.18)}
+.brand{font-size:17px;font-weight:900;letter-spacing:.2em;line-height:1.1}
+.by{font-size:10.5px;opacity:.7;margin:1px 0 0}
+.line{height:1px;background:rgba(255,255,255,.22);margin:9px 28px}
+h1{font-size:17px;line-height:1.2;margin:0;letter-spacing:.03em}
+.sub{margin:3px 0 0;font-size:12.5px;opacity:.88}
+.chip{display:inline-block;margin-top:8px;background:#fff;color:var(--gd);font-weight:800;font-size:11.5px;letter-spacing:.04em;padding:4px 12px;border-radius:99px}
 .step{font-weight:800;color:var(--g);margin:12px 0 6px;font-size:12px;letter-spacing:.06em}
 .dots{display:flex;gap:5px}
 .dot{height:6px;flex:1;border-radius:99px;background:var(--bd);transition:background .3s}
@@ -92,7 +103,7 @@ h1{font-size:21px;line-height:1.2;margin:10px 0 2px}
 .fb.ok{background:#dcfce7}.fb.bad{background:#fff4e0}
 .fb h3{margin:0 0 4px;font-size:16px}
 .fb p{margin:5px 0;font-size:14px;white-space:pre-wrap}
-.mem{background:#fff;border-left:5px solid var(--g);border-radius:12px;padding:10px 12px;margin-top:8px;font-size:14px}
+.mem{background:#fff9e6;border-left:5px solid #f4b400;border-radius:12px;padding:10px 12px;margin-top:8px;font-size:14px}
 .big{font-size:44px;font-weight:800;color:var(--gd);line-height:1.1;margin:4px 0}
 .bar{height:12px;background:var(--bd);border-radius:99px;overflow:hidden;margin:10px 0}
 .bar i{display:block;height:100%;width:0;background:var(--g);border-radius:99px;transition:width .9s ease}
@@ -100,16 +111,22 @@ h1{font-size:21px;line-height:1.2;margin:10px 0 2px}
 .center{text-align:center}
 .center h2{font-size:18px;margin:0 0 4px;color:var(--gd)}
 .center p{margin:4px 0}
-.next{font-size:12px;font-weight:800;letter-spacing:.06em;color:var(--mu);margin:18px 4px 0}
-.go{border-radius:20px;padding:14px;margin-top:12px;border:2px solid #bfe8cf;background:var(--gl)}
-.row{display:flex;gap:12px;align-items:center}
-.ico{flex:none;width:44px;height:44px;border-radius:14px;display:grid;place-items:center;font-size:22px;background:#fff}
+.center{background:linear-gradient(#fff,#f1f8f4)}
+.next{font-size:12px;font-weight:800;letter-spacing:.06em;color:var(--mu);margin:18px 4px 0;text-align:center}
+.go{border-radius:22px;padding:16px;margin-top:12px;border:2px solid #cfe6d8;background:#fff;text-align:center}
 .go h2{font-size:16px;line-height:1.25;margin:0;color:var(--gd)}
 .go p{font-size:13.5px;line-height:1.45;margin:8px 0 0;color:#3f5247}
-.go .btn{margin-top:12px;padding:13px;font-size:14px}
+.go .btn{margin-top:14px;padding:13px;font-size:14px}
+.ico{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-size:23px;margin:0 auto 8px;background:var(--gl)}
+.capa{position:relative;width:104px;height:136px;margin:0 auto 12px;border-radius:12px;background:var(--gl);border:2px dashed #bfe8cf;display:grid;place-items:center;font-size:36px;overflow:hidden;box-shadow:0 4px 10px rgba(15,61,36,.12)}
+.capa img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.capa.has{border:0;font-size:0;background:#fff}
+.aviso{font-size:11.5px;line-height:1.4;color:var(--mu);background:var(--bg);border-radius:10px;padding:8px 10px;margin-top:12px}
+.go.a{border-top:6px solid var(--g)}
+.go.b{background:#f1f8f4;border-color:#cfe6d8}
 .go.wa{background:#e9fbef;border-color:var(--wa)}
 .go.wa .ico{background:var(--wa)}
-.go.wa .btn{background:var(--wa);color:#053b1d}
+.go.wa .btn{background:var(--wa);color:#053b1d;font-size:13px;letter-spacing:0}
 .go.gr{background:var(--gd);border-color:var(--gd)}
 .go.gr h2{color:#fff}.go.gr p{color:#cfe9d9}
 .go.gr .ico{background:#1f6b45}
@@ -120,10 +137,12 @@ h1{font-size:21px;line-height:1.2;margin:10px 0 2px}
 <body>
 <div class="app">
   <header class="hero">
-    <div class="hrow"><span>🧠 DESAFIO DE INFORMÁTICA</span><span>DEVMAPAS</span></div>
-    <h1 id="titulo">__TITULO__</h1>
+    <div class="brand">DEVMAPAS</div>
+    <div class="by">por Mikaelly Dias</div>
+    <div class="line"></div>
+    <h1>🧠 DESAFIO DE INFORMÁTICA</h1>
     <p class="sub" id="subtitulo">__SUBTITULO__</p>
-    <span class="chip">5 QUESTÕES</span>
+    <span class="chip"><span id="titulo">__TITULO__</span> · 5 QUESTÕES</span>
   </header>
 
   <section id="quiz">
@@ -140,7 +159,7 @@ h1{font-size:21px;line-height:1.2;margin:10px 0 2px}
 
   <section id="resultado" hidden>
     <div class="card center">
-      <h2>🎉 RESULTADO DO DESAFIO</h2>
+      <h2>🎉 DESAFIO CONCLUÍDO!</h2>
       <p>Você acertou:</p>
       <div class="big" id="placar"></div>
       <p id="pct"></p>
@@ -150,25 +169,30 @@ h1{font-size:21px;line-height:1.2;margin:10px 0 2px}
     <div class="next">PRÓXIMOS PASSOS</div>
 
     <!-- TEXTOS DOS CARDS: edite aqui. Os links ficam em CTA_LINKS, no final do arquivo. -->
-    <div class="go">
-      <div class="row"><div class="ico">📚</div><h2>Continue praticando</h2></div>
+    <div class="go a">
+      <div class="capa" data-capa="simulado">📚</div>
+      <h2>📚 Continue praticando</h2>
       <p>Gostou de resolver as questões e do formato dos comentários?</p>
       <p>Continue praticando com meu simulado em PDF, com mais de 100 questões comentadas para você testar seus conhecimentos e chegar mais preparado para a prova.</p>
+      <div class="aviso">Este desafio é uma demonstração interativa gratuita. O material completo é disponibilizado em PDF.</div>
       <a class="btn" data-cta="simulado" target="_blank" rel="noopener">QUERO MAIS QUESTÕES →</a>
     </div>
-    <div class="go">
-      <div class="row"><div class="ico">🗺️</div><h2>Revise Informática de forma mais organizada</h2></div>
+    <div class="go b">
+      <div class="capa" data-capa="mapas">🗺️</div>
+      <h2>🗺️ Revise Informática de forma mais organizada</h2>
       <p>Precisa revisar Informática de forma mais rápida e organizada?</p>
       <p>Conheça os Mapas de Informática e tenha os principais conteúdos organizados para facilitar seus estudos e revisões.</p>
       <a class="btn" data-cta="mapas" target="_blank" rel="noopener">CONHECER OS MAPAS →</a>
     </div>
     <div class="go wa">
-      <div class="row"><div class="ico">💚</div><h2>Estuda para um concurso específico?</h2></div>
+      <div class="ico">💚</div>
+      <h2>Estuda para um concurso específico?</h2>
       <p>Posso preparar um simulado personalizado de acordo com seu concurso e sua banca.</p>
       <a class="btn" data-cta="whatsapp" target="_blank" rel="noopener">💚 FALAR COMIGO NO WHATSAPP →</a>
     </div>
     <div class="go gr">
-      <div class="row"><div class="ico">💚</div><h2>Continue estudando com o DevMapas</h2></div>
+      <div class="ico">💚</div>
+      <h2>Continue estudando com o DevMapas</h2>
       <p>Quer continuar recebendo questões, dicas e conteúdos de Informática para concursos?</p>
       <p>Entre gratuitamente no grupo de estudos do DevMapas.</p>
       <a class="btn" data-cta="grupo" target="_blank" rel="noopener">ENTRAR NO GRUPO →</a>
@@ -185,6 +209,13 @@ const CTA_LINKS = {
     grupo: "COLE_SEU_LINK_AQUI"
 };
 
+/* ===== IMAGENS DAS CAPAS (cards do simulado e dos mapas) =====
+   Se a imagem não existir, o card mostra um espaço com emoji no lugar. */
+const IMAGENS = {
+    simulado: "https://devmapas.vercel.app/imagens/capa-simulado.png",
+    mapas: "https://devmapas.vercel.app/imagens/capa-mapas.png"
+};
+
 /* ===== QUESTÕES (geradas automaticamente) ===== */
 const QUESTOES = __DADOS__;
 
@@ -197,7 +228,15 @@ document.querySelectorAll('[data-cta]').forEach(a => {
   if (l && l.indexOf('COLE_') !== 0) a.href = l;
   else a.addEventListener('click', e => e.preventDefault());
 });
-if (!$('subtitulo').textContent.trim()) $('subtitulo').hidden = true;
+if (!$('subtitulo').textContent.trim()) $('subtitulo').textContent = 'Teste seus conhecimentos';
+document.querySelectorAll('[data-capa]').forEach(box => {
+  const u = IMAGENS[box.dataset.capa];
+  if (!u || u.indexOf('COLE_') === 0) return;
+  const im = new Image();
+  im.alt = 'Capa do material';
+  im.onload = () => { box.appendChild(im); box.classList.add('has'); };
+  im.src = u;
+});
 
 function el(tag, cls, txt) {
   const x = document.createElement(tag);
