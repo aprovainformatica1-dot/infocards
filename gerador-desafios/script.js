@@ -119,15 +119,20 @@ function cardsEspecifico(d) {
       <h2>GOSTOU DE RESOLVER AS QUESTÕES?</h2>
       <p>O que você acabou de fazer foi uma demonstração interativa gratuita com 5 questões.</p>
       <p>Continue praticando com o simulado completo de Informática para a ${esc(d.concurso)}.</p>
-      <p>${esc(d.descricao)}</p>
-      <div class="importante"><span>📌 IMPORTANTE</span>O MATERIAL COMPLETO É DISPONIBILIZADO EM PDF.</div>
-      <a class="btn" data-cta="simulado" target="_blank" rel="noopener">📄 QUERO MAIS QUESTÕES</a>
+      <p class="qtd">📚 ${esc(d.descricao)}</p>
+      <div class="importante azul"><span>📌 IMPORTANTE</span>O MATERIAL COMPLETO É DISPONIBILIZADO EM PDF.</div>
+      <a class="btn laranja" data-cta="simulado" target="_blank" rel="noopener">📄 QUERO MAIS QUESTÕES</a>
     </div>
-    <div class="go gr">
+    <div class="go wa">
       <div class="kick">💚 GRUPO GRATUITO DE ESTUDOS</div>
-      <h2>NÃO QUER CONTINUAR SOZINHO?</h2>
-      <p>Mesmo que você não adquira o simulado, pode continuar acompanhando o DevMapas gratuitamente.</p>
-      <p>Receba questões, dicas e conteúdos de Informática para concursos diretamente no WhatsApp.</p>
+      <h2>ENTRE PARA O GRUPO DE ESTUDOS!</h2>
+      <p>Receba diretamente no WhatsApp:</p>
+      <ul class="lista">
+        <li>📚 Questões de Informática para concursos</li>
+        <li>💡 Dicas e conteúdos para sua preparação</li>
+        <li>🧠 Materiais e desafios para praticar</li>
+        <li>📢 Novidades e conteúdos do DevMapas</li>
+      </ul>
       <a class="btn wbtn" data-cta="grupo" target="_blank" rel="noopener">${WA_SVG}<span>ENTRAR NO GRUPO GRATUITO</span></a>
     </div>`;
 }
@@ -224,6 +229,13 @@ h1{font-size:17px;line-height:1.2;margin:0;letter-spacing:.03em}
 .go.gr .ico{background:#128C7E}
 .go.gr .btn{background:#fff;color:#075E54}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.qtd{font-weight:700;color:var(--gd);font-size:14px}
+.importante.azul{background:#e8f0fe;border:2px solid #c3d0f5;color:#1e3a8a;font-weight:700}
+.importante.azul span{color:#1e40af}
+.btn.laranja{background:#d9480f;color:#fff;box-shadow:0 3px 0 #a33708,0 6px 12px rgba(217,72,15,.22);transition:background .2s,transform .1s}
+@media (hover:hover){.btn.laranja:hover{background:#c2410c;transform:translateY(-1px)}}
+.btn.laranja:active{background:#b83a0a;transform:translateY(2px);box-shadow:0 1px 0 #a33708}
+.go.wa .lista{list-style:none;margin:10px auto 0;padding:0;display:inline-block;text-align:left;font-size:14px;line-height:1.75;color:#2f5d4a}
 </style>
 </head>
 <body>
