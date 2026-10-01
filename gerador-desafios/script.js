@@ -57,24 +57,27 @@ const MODELO = `<!DOCTYPE html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>__TITULO__ — DevMapas</title>
 <style>
-:root{--g:#16a34a;--gd:#0f3d24;--gl:#e8f7ee;--bg:#f3f7f5;--tx:#14201a;--mu:#5c6b63;--bd:#dfe6e2;--ok:#16a34a;--bad:#d97706}
+:root{--g:#16a34a;--gd:#0f3d24;--gl:#e8f7ee;--bg:#f3f7f5;--tx:#14201a;--mu:#5c6b63;--bd:#dfe6e2;--ok:#16a34a;--bad:#d97706;--wa:#25D366}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{margin:0;background:var(--bg);color:var(--tx);font:17px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-.app{max-width:560px;margin:0 auto;padding:20px 16px 56px}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.app{max-width:520px;margin:0 auto;padding:12px 12px 40px}
 [hidden]{display:none!important}
-.top{text-align:center;margin-bottom:18px}
-.brand{display:inline-block;background:var(--gd);color:#fff;font-weight:800;letter-spacing:.14em;font-size:12px;padding:6px 14px;border-radius:99px}
-h1{font-size:22px;margin:12px 0 2px;color:var(--gd)}
-.sub{margin:0;color:var(--mu);font-size:15px}
-.step{font-weight:800;color:var(--g);margin:16px 0 8px;font-size:14px;letter-spacing:.06em}
-.dots{display:flex;gap:6px;justify-content:center}
-.dot{height:8px;flex:1;max-width:60px;border-radius:99px;background:var(--bd);transition:background .3s}
+.hero{background:linear-gradient(160deg,#15803d,#0f3d24);color:#fff;border-radius:22px;padding:12px 16px 14px;text-align:center}
+.hrow{display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:800;letter-spacing:.08em}
+.hrow span:last-child{background:rgba(255,255,255,.18);padding:3px 9px;border-radius:99px}
+h1{font-size:21px;line-height:1.2;margin:10px 0 2px}
+.sub{margin:0;font-size:13px;opacity:.85}
+.chip{display:inline-block;margin-top:8px;background:#fff;color:var(--gd);font-weight:800;font-size:12px;letter-spacing:.06em;padding:4px 12px;border-radius:99px}
+.step{font-weight:800;color:var(--g);margin:12px 0 6px;font-size:12px;letter-spacing:.06em}
+.dots{display:flex;gap:5px}
+.dot{height:6px;flex:1;border-radius:99px;background:var(--bd);transition:background .3s}
 .dot.on{background:var(--g)}
-.card{background:#fff;border:1px solid var(--bd);border-radius:22px;padding:20px;margin-top:16px;animation:in .3s ease}
+.card{background:#fff;border:1px solid var(--bd);border-radius:20px;padding:14px;margin-top:10px;animation:in .3s ease}
 @keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-.enun{font-weight:600;white-space:pre-wrap;margin:0 0 16px}
-.opt{display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;font:inherit;background:#fff;border:2px solid var(--bd);border-radius:16px;padding:16px;margin-bottom:10px;min-height:58px;cursor:pointer;color:var(--tx);transition:border-color .2s,background .2s}
-.opt b{flex:none;width:30px;height:30px;border-radius:50%;background:var(--bg);display:grid;place-items:center;font-size:14px}
+.enun{font-weight:600;font-size:15px;line-height:1.45;white-space:pre-wrap;margin:0 0 10px}
+.opt{display:flex;gap:10px;align-items:center;width:100%;text-align:left;font:inherit;font-size:14.5px;line-height:1.35;background:#fff;border:2px solid var(--bd);border-radius:14px;padding:9px 12px;margin-bottom:7px;min-height:46px;cursor:pointer;color:var(--tx);transition:border-color .2s,background .2s}
+.opt b{flex:none;width:26px;height:26px;border-radius:50%;background:var(--bg);display:grid;place-items:center;font-size:13px}
+.opt span{white-space:pre-wrap;min-width:0;overflow-wrap:anywhere}
 .opt.sel{border-color:var(--g);background:var(--gl)}
 .opt.sel b{background:var(--g);color:#fff}
 .opt.ok{border-color:var(--ok);background:#dcfce7}
@@ -82,31 +85,45 @@ h1{font-size:22px;margin:12px 0 2px;color:var(--gd)}
 .opt.bad{border-color:var(--bad);background:#fff4e0}
 .opt.bad b{background:var(--bad);color:#fff}
 .opt:disabled{cursor:default}
-.btn{display:block;width:100%;border:0;border-radius:16px;padding:18px;font:inherit;font-weight:800;letter-spacing:.03em;background:var(--g);color:#fff;cursor:pointer;text-align:center;text-decoration:none;margin-top:12px}
-.btn:active{transform:scale(.98)}
-.btn.alt{background:#fff;color:var(--g);border:2px solid var(--g)}
-.fb{border-radius:18px;padding:16px;margin-top:6px;animation:in .3s ease}
+.btn{display:block;width:100%;border:0;border-radius:14px;padding:14px;font:inherit;font-size:15px;font-weight:800;letter-spacing:.03em;background:var(--g);color:#fff;cursor:pointer;text-align:center;text-decoration:none;margin-top:8px;box-shadow:0 3px 0 rgba(0,0,0,.18)}
+.btn:active{transform:translateY(2px);box-shadow:none}
+#confirmar,#proxima{position:sticky;bottom:10px;z-index:2}
+.fb{border-radius:16px;padding:12px 14px;margin-top:4px;animation:in .3s ease}
 .fb.ok{background:#dcfce7}.fb.bad{background:#fff4e0}
-.fb h3{margin:0 0 6px;font-size:18px}
-.fb p{margin:6px 0;white-space:pre-wrap}
-.opt span{white-space:pre-wrap;min-width:0;overflow-wrap:anywhere}
-.mem{background:#fff;border-left:5px solid var(--g);border-radius:12px;padding:12px 14px;margin-top:10px}
-.big{font-size:56px;font-weight:800;color:var(--gd);line-height:1.1;margin:8px 0}
-.bar{height:14px;background:var(--bd);border-radius:99px;overflow:hidden;margin:12px 0}
+.fb h3{margin:0 0 4px;font-size:16px}
+.fb p{margin:5px 0;font-size:14px;white-space:pre-wrap}
+.mem{background:#fff;border-left:5px solid var(--g);border-radius:12px;padding:10px 12px;margin-top:8px;font-size:14px}
+.big{font-size:44px;font-weight:800;color:var(--gd);line-height:1.1;margin:4px 0}
+.bar{height:12px;background:var(--bd);border-radius:99px;overflow:hidden;margin:10px 0}
 .bar i{display:block;height:100%;width:0;background:var(--g);border-radius:99px;transition:width .9s ease}
-.msg{color:var(--mu);font-style:italic}
+.msg{color:var(--mu);font-style:italic;font-size:14px}
 .center{text-align:center}
-.cta h2{font-size:19px;margin:0 0 6px;color:var(--gd)}
-.cta p{margin:0 0 4px}
+.center h2{font-size:18px;margin:0 0 4px;color:var(--gd)}
+.center p{margin:4px 0}
+.next{font-size:12px;font-weight:800;letter-spacing:.06em;color:var(--mu);margin:18px 4px 0}
+.go{border-radius:20px;padding:14px;margin-top:12px;border:2px solid #bfe8cf;background:var(--gl)}
+.row{display:flex;gap:12px;align-items:center}
+.ico{flex:none;width:44px;height:44px;border-radius:14px;display:grid;place-items:center;font-size:22px;background:#fff}
+.go h2{font-size:16px;line-height:1.25;margin:0;color:var(--gd)}
+.go p{font-size:13.5px;line-height:1.45;margin:8px 0 0;color:#3f5247}
+.go .btn{margin-top:12px;padding:13px;font-size:14px}
+.go.wa{background:#e9fbef;border-color:var(--wa)}
+.go.wa .ico{background:var(--wa)}
+.go.wa .btn{background:var(--wa);color:#053b1d}
+.go.gr{background:var(--gd);border-color:var(--gd)}
+.go.gr h2{color:#fff}.go.gr p{color:#cfe9d9}
+.go.gr .ico{background:#1f6b45}
+.go.gr .btn{background:#fff;color:var(--gd)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
 <div class="app">
-  <header class="top">
-    <span class="brand">DEVMAPAS</span>
+  <header class="hero">
+    <div class="hrow"><span>🧠 DESAFIO DE INFORMÁTICA</span><span>DEVMAPAS</span></div>
     <h1 id="titulo">__TITULO__</h1>
     <p class="sub" id="subtitulo">__SUBTITULO__</p>
+    <span class="chip">5 QUESTÕES</span>
   </header>
 
   <section id="quiz">
@@ -123,37 +140,38 @@ h1{font-size:22px;margin:12px 0 2px;color:var(--gd)}
 
   <section id="resultado" hidden>
     <div class="card center">
-      <h2>🎉 DESAFIO CONCLUÍDO!</h2>
+      <h2>🎉 RESULTADO DO DESAFIO</h2>
       <p>Você acertou:</p>
       <div class="big" id="placar"></div>
       <p id="pct"></p>
       <div class="bar"><i id="barra"></i></div>
       <p class="msg">Errar durante o treino faz parte. O importante é descobrir o erro antes que ele apareça na prova.</p>
     </div>
+    <div class="next">PRÓXIMOS PASSOS</div>
 
-    <!-- TEXTOS DOS CTAs: edite aqui. Os links ficam em CTA_LINKS, no final do arquivo. -->
-    <div class="card cta">
-      <h2>Continue praticando</h2>
+    <!-- TEXTOS DOS CARDS: edite aqui. Os links ficam em CTA_LINKS, no final do arquivo. -->
+    <div class="go">
+      <div class="row"><div class="ico">📚</div><h2>Continue praticando</h2></div>
       <p>Gostou de resolver as questões e do formato dos comentários?</p>
       <p>Continue praticando com meu simulado em PDF, com mais de 100 questões comentadas para você testar seus conhecimentos e chegar mais preparado para a prova.</p>
-      <a class="btn" data-cta="simulado" target="_blank" rel="noopener">QUERO MAIS QUESTÕES</a>
+      <a class="btn" data-cta="simulado" target="_blank" rel="noopener">QUERO MAIS QUESTÕES →</a>
     </div>
-    <div class="card cta">
-      <h2>Revise Informática de forma mais organizada</h2>
+    <div class="go">
+      <div class="row"><div class="ico">🗺️</div><h2>Revise Informática de forma mais organizada</h2></div>
       <p>Precisa revisar Informática de forma mais rápida e organizada?</p>
       <p>Conheça os Mapas de Informática e tenha os principais conteúdos organizados para facilitar seus estudos e revisões.</p>
-      <a class="btn" data-cta="mapas" target="_blank" rel="noopener">CONHECER OS MAPAS</a>
+      <a class="btn" data-cta="mapas" target="_blank" rel="noopener">CONHECER OS MAPAS →</a>
     </div>
-    <div class="card cta">
-      <h2>Estudando para um concurso específico?</h2>
+    <div class="go wa">
+      <div class="row"><div class="ico">💚</div><h2>Estuda para um concurso específico?</h2></div>
       <p>Posso preparar um simulado personalizado de acordo com seu concurso e sua banca.</p>
-      <a class="btn" data-cta="whatsapp" target="_blank" rel="noopener">FALAR COMIGO NO WHATSAPP</a>
+      <a class="btn" data-cta="whatsapp" target="_blank" rel="noopener">💚 FALAR COMIGO NO WHATSAPP →</a>
     </div>
-    <div class="card cta">
-      <h2>Continue estudando com o DevMapas</h2>
+    <div class="go gr">
+      <div class="row"><div class="ico">💚</div><h2>Continue estudando com o DevMapas</h2></div>
       <p>Quer continuar recebendo questões, dicas e conteúdos de Informática para concursos?</p>
       <p>Entre gratuitamente no grupo de estudos do DevMapas.</p>
-      <a class="btn alt" data-cta="grupo" target="_blank" rel="noopener">ENTRAR NO GRUPO</a>
+      <a class="btn" data-cta="grupo" target="_blank" rel="noopener">ENTRAR NO GRUPO →</a>
     </div>
   </section>
 </div>
