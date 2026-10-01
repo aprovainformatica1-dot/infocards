@@ -22,3 +22,8 @@ button{font:inherit;cursor:pointer;border-radius:16px;padding:16px;width:100%;fo
 .msg{padding:14px;border-radius:14px;margin-bottom:12px;font-weight:600}
 .ok{background:var(--gl);color:var(--gd)}
 .erro{background:#fff1f1;color:#9b1c1c;white-space:pre-line}
+[hidden]{display:none!important}
+.radios{display:grid;gap:8px}
+label.radio{display:flex;align-items:center;gap:10px;margin:0;padding:12px 14px;border:2px solid var(--bd);border-radius:14px;font-weight:700;cursor:pointer}
+label.radio:has(input:checked){border-color:var(--g);background:var(--gl)}
+input[type=radio]{width:20px;height:20px;padding:0;accent-color:var(--g)}
