@@ -118,15 +118,22 @@ h1{font-size:17px;line-height:1.2;margin:0;letter-spacing:.03em}
 .go p{font-size:13.5px;line-height:1.45;margin:8px 0 0;color:#3f5247}
 .go .btn{margin-top:14px;padding:13px;font-size:14px}
 .ico{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-size:23px;margin:0 auto 8px;background:var(--gl)}
-.capa{position:relative;width:104px;height:136px;margin:0 auto 12px;border-radius:12px;background:var(--gl);border:2px dashed #bfe8cf;display:grid;place-items:center;font-size:36px;overflow:hidden;box-shadow:0 4px 10px rgba(15,61,36,.12)}
-.capa img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.capa.has{border:0;font-size:0;background:#fff}
-.aviso{font-size:11.5px;line-height:1.4;color:var(--mu);background:var(--bg);border-radius:10px;padding:8px 10px;margin-top:12px}
+.capa{width:132px;min-height:132px;margin:0 auto 12px;border-radius:16px;background:var(--gl);border:2px dashed #bfe8cf;display:grid;place-items:center;font-size:38px;overflow:hidden;box-shadow:0 4px 12px rgba(15,61,36,.14)}
+.capa img{display:block;width:100%;height:auto}
+.capa.has{min-height:0;border:0;font-size:0;background:#fff}
+.kick{font-size:12px;font-weight:800;letter-spacing:.06em;color:var(--g);margin:0 0 6px}
+.importante{margin-top:14px;background:#fff4cc;border:2px solid #f4b400;border-radius:14px;padding:10px 12px;font-size:14px;line-height:1.35;font-weight:800;color:#5a3b00}
+.importante span{display:block;font-size:12px;letter-spacing:.06em;margin-bottom:3px}
+.wbtn{display:flex;align-items:center;justify-content:center;gap:8px}
+.wbtn svg{flex:none;width:20px;height:20px;fill:currentColor}
+.go.wa .kick{color:#128C7E}
+.go.gr .kick{color:#7ee2a8}
+.go.gr .wbtn svg{fill:#25D366}
 .go.a{border-top:6px solid var(--g)}
 .go.b{background:#f1f8f4;border-color:#cfe6d8}
 .go.wa{background:#e9fbef;border-color:var(--wa)}
 .go.wa .ico{background:var(--wa)}
-.go.wa .btn{background:var(--wa);color:#053b1d;font-size:13px;letter-spacing:0}
+.go.wa .btn{background:var(--wa);color:#053b1d;font-size:13.5px;letter-spacing:0}
 .go.gr{background:var(--gd);border-color:var(--gd)}
 .go.gr h2{color:#fff}.go.gr p{color:#cfe9d9}
 .go.gr .ico{background:#1f6b45}
@@ -170,32 +177,33 @@ h1{font-size:17px;line-height:1.2;margin:0;letter-spacing:.03em}
 
     <!-- TEXTOS DOS CARDS: edite aqui. Os links ficam em CTA_LINKS, no final do arquivo. -->
     <div class="go a">
-      <div class="capa" data-capa="simulado">📚</div>
-      <h2>📚 Continue praticando</h2>
-      <p>Gostou de resolver as questões e do formato dos comentários?</p>
-      <p>Continue praticando com meu simulado em PDF, com mais de 100 questões comentadas para você testar seus conhecimentos e chegar mais preparado para a prova.</p>
-      <div class="aviso">Este desafio é uma demonstração interativa gratuita. O material completo é disponibilizado em PDF.</div>
-      <a class="btn" data-cta="simulado" target="_blank" rel="noopener">QUERO MAIS QUESTÕES →</a>
+      <div class="capa" data-capa="simulado">📄</div>
+      <div class="kick">📄 SIMULADO DE INFORMÁTICA</div>
+      <h2>GOSTOU DE RESOLVER AS QUESTÕES ASSIM?</h2>
+      <p>O que você acabou de fazer foi uma demonstração interativa gratuita de como trabalho minhas questões e comentários.</p>
+      <p>No material completo, você encontra mais de 100 questões de Informática comentadas para continuar praticando e revisar seus conhecimentos.</p>
+      <div class="importante"><span>📌 IMPORTANTE</span>O MATERIAL COMPLETO É DISPONIBILIZADO EM PDF.</div>
+      <a class="btn" data-cta="simulado" target="_blank" rel="noopener">📄 QUERO MAIS QUESTÕES</a>
     </div>
     <div class="go b">
       <div class="capa" data-capa="mapas">🗺️</div>
-      <h2>🗺️ Revise Informática de forma mais organizada</h2>
-      <p>Precisa revisar Informática de forma mais rápida e organizada?</p>
-      <p>Conheça os Mapas de Informática e tenha os principais conteúdos organizados para facilitar seus estudos e revisões.</p>
-      <a class="btn" data-cta="mapas" target="_blank" rel="noopener">CONHECER OS MAPAS →</a>
+      <div class="kick">🗺️ MAPAS DE INFORMÁTICA</div>
+      <h2>E QUANDO VOCÊ PRECISAR REVISAR O CONTEÚDO?</h2>
+      <p>Depois de praticar questões, você consegue perceber quais assuntos ainda precisam de atenção.</p>
+      <p>Os Mapas de Informática organizam os principais conteúdos de forma resumida para facilitar suas revisões.</p>
+      <a class="btn" data-cta="mapas" target="_blank" rel="noopener">🗺️ CONHECER OS MAPAS</a>
     </div>
     <div class="go wa">
-      <div class="ico">💚</div>
-      <h2>Estuda para um concurso específico?</h2>
-      <p>Posso preparar um simulado personalizado de acordo com seu concurso e sua banca.</p>
-      <a class="btn" data-cta="whatsapp" target="_blank" rel="noopener">💚 FALAR COMIGO NO WHATSAPP →</a>
+      <div class="kick">🎯 SIMULADO PERSONALIZADO</div>
+      <h2>ESTUDANDO PARA UM CONCURSO ESPECÍFICO?</h2>
+      <p>Posso preparar um simulado personalizado de Informática, de acordo com o seu concurso e sua banca.</p>
+      <a class="btn wbtn" data-cta="whatsapp" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg><span>FALAR COMIGO NO WHATSAPP</span></a>
     </div>
     <div class="go gr">
-      <div class="ico">💚</div>
-      <h2>Continue estudando com o DevMapas</h2>
-      <p>Quer continuar recebendo questões, dicas e conteúdos de Informática para concursos?</p>
-      <p>Entre gratuitamente no grupo de estudos do DevMapas.</p>
-      <a class="btn" data-cta="grupo" target="_blank" rel="noopener">ENTRAR NO GRUPO →</a>
+      <div class="kick">💚 GRUPO GRATUITO DE ESTUDOS</div>
+      <h2>QUER CONTINUAR RECEBENDO QUESTÕES E DICAS?</h2>
+      <p>Entre no grupo gratuito do DevMapas e receba questões, dicas e conteúdos de Informática para concursos diretamente no WhatsApp.</p>
+      <a class="btn wbtn" data-cta="grupo" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg><span>ENTRAR NO GRUPO GRATUITO</span></a>
     </div>
   </section>
 </div>
@@ -212,8 +220,8 @@ const CTA_LINKS = {
 /* ===== IMAGENS DAS CAPAS (cards do simulado e dos mapas) =====
    Se a imagem não existir, o card mostra um espaço com emoji no lugar. */
 const IMAGENS = {
-    simulado: "https://devmapas.vercel.app/imagens/capa-simulado.png",
-    mapas: "https://devmapas.vercel.app/imagens/capa-mapas.png"
+    simulado: "https://devmapas.vercel.app/img/capa-simulado.png",
+    mapas: "https://devmapas.vercel.app/img/capa-mapas.png"
 };
 
 /* ===== QUESTÕES (geradas automaticamente) ===== */
