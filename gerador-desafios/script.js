@@ -1,8 +1,35 @@
 /* GERADOR DE DESAFIOS DEVMAPAS — HTML/CSS/JS puro, sem dependências */
+/* =========================================
+   CONFIGURAÇÕES DOS CARDS — DESAFIO PADRÃO
+   (usadas no tipo "Desafio geral": edite aqui UMA vez)
+   ========================================= */
+const BASE_IMG = "https://devmapas.vercel.app/img/";   // pasta /img/ do site
+const PADRAO = {
+  imagens: {
+    simulado: BASE_IMG + "capa-simulado.png",
+    mapas: BASE_IMG + "capa-mapas.png"
+  },
+  links: {
+    simulado: "COLE_AQUI_O_LINK_DO_SIMULADO",
+    mapas: "COLE_AQUI_O_LINK_DOS_MAPAS",
+    whatsapp: "COLE_AQUI_O_LINK_DO_WHATSAPP",
+    grupo: "COLE_AQUI_O_LINK_DO_GRUPO"
+  },
+  imagemCompartilhamento: BASE_IMG + "desafio-informatica.png"   // prévia ao compartilhar (igual para todos)
+};
+
+/* =========================================
+   CONFIGURAÇÕES — SIMULADO ESPECÍFICO
+   (concurso, nome, descrição, capa e links vêm dos campos do gerador;
+    a capa é montada como BASE_IMG + nome informado)
+   ========================================= */
+const ESPECIFICO = { icone: "📄" };
+
 const EXEMPLO = document.getElementById('exemplo').textContent;
 const EXEMPLO_SEM_MEM = EXEMPLO.replace(/\n*PARA MEMORIZAR:[\s\S]*$/, '');
 const EXEMPLO_CE = document.getElementById('exemploCE').textContent;
 const $ = id => document.getElementById(id);
+const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
 // ---------- Campos das 5 questões ----------
 for (let n = 1; n <= 5; n++) {
@@ -50,6 +77,61 @@ function parseQuestao(texto, n) {
 }
 
 // ---------- Modelo do HTML gerado (tudo embutido) ----------
+const WA_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>';
+
+// Cards finais do DESAFIO GERAL (4 cards)
+const CARDS_GERAL = `<div class="go a">
+      <div class="capa" data-capa="simulado">📄</div>
+      <div class="kick">📄 SIMULADO DE INFORMÁTICA</div>
+      <h2>GOSTOU DE RESOLVER AS QUESTÕES ASSIM?</h2>
+      <p>O que você acabou de fazer foi uma demonstração interativa gratuita de como trabalho minhas questões e comentários.</p>
+      <p>No material completo, você encontra mais de 100 questões de Informática comentadas para continuar praticando e revisar seus conhecimentos.</p>
+      <div class="importante"><span>📌 IMPORTANTE</span>O MATERIAL COMPLETO É DISPONIBILIZADO EM PDF.</div>
+      <a class="btn" data-cta="simulado" target="_blank" rel="noopener">📄 QUERO MAIS QUESTÕES</a>
+    </div>
+    <div class="go b">
+      <div class="capa" data-capa="mapas">🗺️</div>
+      <div class="kick">🗺️ MAPAS DE INFORMÁTICA</div>
+      <h2>E QUANDO VOCÊ PRECISAR REVISAR O CONTEÚDO?</h2>
+      <p>Depois de praticar questões, você consegue perceber quais assuntos ainda precisam de atenção.</p>
+      <p>Os Mapas de Informática organizam os principais conteúdos de forma resumida para facilitar suas revisões.</p>
+      <a class="btn" data-cta="mapas" target="_blank" rel="noopener">🗺️ CONHECER OS MAPAS</a>
+    </div>
+    <div class="go wa">
+      <div class="kick">🎯 SIMULADO PERSONALIZADO</div>
+      <h2>ESTUDANDO PARA UM CONCURSO ESPECÍFICO?</h2>
+      <p>Posso preparar um simulado personalizado de Informática, de acordo com o seu concurso e sua banca.</p>
+      <a class="btn wbtn" data-cta="whatsapp" target="_blank" rel="noopener">${WA_SVG}<span>FALAR COMIGO NO WHATSAPP</span></a>
+    </div>
+    <div class="go gr">
+      <div class="kick">💚 GRUPO GRATUITO DE ESTUDOS</div>
+      <h2>QUER CONTINUAR RECEBENDO QUESTÕES E DICAS?</h2>
+      <p>Entre no grupo gratuito do DevMapas e receba questões, dicas e conteúdos de Informática para concursos diretamente no WhatsApp.</p>
+      <a class="btn wbtn" data-cta="grupo" target="_blank" rel="noopener">${WA_SVG}<span>ENTRAR NO GRUPO GRATUITO</span></a>
+    </div>
+  `;
+
+// Cards finais do SIMULADO ESPECÍFICO (2 cards) — conteúdo dinâmico
+function cardsEspecifico(d) {
+  return `<div class="go a">
+      <div class="capa" data-capa="simulado">${ESPECIFICO.icone}</div>
+      <div class="kick">${ESPECIFICO.icone} ${esc(d.simulado.toUpperCase())}</div>
+      <h2>GOSTOU DE RESOLVER AS QUESTÕES?</h2>
+      <p>O que você acabou de fazer foi uma demonstração interativa gratuita com 5 questões.</p>
+      <p>Continue praticando com o simulado completo de Informática para a ${esc(d.concurso)}.</p>
+      <p>${esc(d.descricao)}</p>
+      <div class="importante"><span>📌 IMPORTANTE</span>O MATERIAL COMPLETO É DISPONIBILIZADO EM PDF.</div>
+      <a class="btn" data-cta="simulado" target="_blank" rel="noopener">📄 QUERO MAIS QUESTÕES</a>
+    </div>
+    <div class="go gr">
+      <div class="kick">💚 GRUPO GRATUITO DE ESTUDOS</div>
+      <h2>NÃO QUER CONTINUAR SOZINHO?</h2>
+      <p>Mesmo que você não adquira o simulado, pode continuar acompanhando o DevMapas gratuitamente.</p>
+      <p>Receba questões, dicas e conteúdos de Informática para concursos diretamente no WhatsApp.</p>
+      <a class="btn wbtn" data-cta="grupo" target="_blank" rel="noopener">${WA_SVG}<span>ENTRAR NO GRUPO GRATUITO</span></a>
+    </div>`;
+}
+
 const MODELO = `<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -61,18 +143,18 @@ const MODELO = `<!DOCTYPE html>
 <meta property="og:type" content="website">
 <meta property="og:title" content="__TITULO__ — Desafio de Informática | DevMapas">
 <meta property="og:description" content="Teste seus conhecimentos com 5 questões comentadas de Informática para concursos.">
-<meta property="og:image" content="https://devmapas.vercel.app/imagens/desafio-informatica.png">
+<meta property="og:image" content="__OGIMG__">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://devmapas.vercel.app/imagens/desafio-informatica.png">
+<meta name="twitter:image" content="__OGIMG__">
 <style>
-:root{--g:#16a34a;--gd:#0f3d24;--gl:#e8f7ee;--bg:#f3f7f5;--tx:#14201a;--mu:#5c6b63;--bd:#dfe6e2;--ok:#16a34a;--bad:#d97706;--wa:#25D366}
+:root{--g:#7a4fd6;--gd:#3b1d6e;--gl:#efe8fb;--bg:#f7f4fd;--tx:#1f1a33;--mu:#6b6485;--bd:#e4def0;--ok:#16a34a;--bad:#d97706;--wa:#25D366}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 .app{max-width:520px;margin:0 auto;padding:12px 12px 40px}
 [hidden]{display:none!important}
-.hero{background:linear-gradient(160deg,#15803d,#0f3d24);color:#fff;border-radius:24px;padding:12px 16px 14px;text-align:center;box-shadow:0 6px 18px rgba(15,61,36,.18)}
+.hero{background:linear-gradient(160deg,#6a3fc4,#3b1d6e);color:#fff;border-radius:24px;padding:12px 16px 14px;text-align:center;box-shadow:0 6px 18px rgba(59,29,110,.18)}
 .brand{font-size:17px;font-weight:900;letter-spacing:.2em;line-height:1.1}
 .by{font-size:10.5px;opacity:.7;margin:1px 0 0}
 .line{height:1px;background:rgba(255,255,255,.22);margin:9px 28px}
@@ -111,14 +193,14 @@ h1{font-size:17px;line-height:1.2;margin:0;letter-spacing:.03em}
 .center{text-align:center}
 .center h2{font-size:18px;margin:0 0 4px;color:var(--gd)}
 .center p{margin:4px 0}
-.center{background:linear-gradient(#fff,#f1f8f4)}
+.center{background:linear-gradient(#fff,#f1ebfc)}
 .next{font-size:12px;font-weight:800;letter-spacing:.06em;color:var(--mu);margin:18px 4px 0;text-align:center}
-.go{border-radius:22px;padding:16px;margin-top:12px;border:2px solid #cfe6d8;background:#fff;text-align:center}
+.go{border-radius:22px;padding:16px;margin-top:12px;border:2px solid #d9cdf3;background:#fff;text-align:center}
 .go h2{font-size:16px;line-height:1.25;margin:0;color:var(--gd)}
-.go p{font-size:13.5px;line-height:1.45;margin:8px 0 0;color:#3f5247}
+.go p{font-size:13.5px;line-height:1.45;margin:8px 0 0;color:#4b4264}
 .go .btn{margin-top:14px;padding:13px;font-size:14px}
 .ico{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-size:23px;margin:0 auto 8px;background:var(--gl)}
-.capa{width:132px;min-height:132px;margin:0 auto 12px;border-radius:16px;background:var(--gl);border:2px dashed #bfe8cf;display:grid;place-items:center;font-size:38px;overflow:hidden;box-shadow:0 4px 12px rgba(15,61,36,.14)}
+.capa{width:132px;min-height:132px;margin:0 auto 12px;border-radius:16px;background:var(--gl);border:2px dashed #d6c8f3;display:grid;place-items:center;font-size:38px;overflow:hidden;box-shadow:0 4px 12px rgba(59,29,110,.14)}
 .capa img{display:block;width:100%;height:auto}
 .capa.has{min-height:0;border:0;font-size:0;background:#fff}
 .kick{font-size:12px;font-weight:800;letter-spacing:.06em;color:var(--g);margin:0 0 6px}
@@ -127,17 +209,20 @@ h1{font-size:17px;line-height:1.2;margin:0;letter-spacing:.03em}
 .wbtn{display:flex;align-items:center;justify-content:center;gap:8px}
 .wbtn svg{flex:none;width:20px;height:20px;fill:currentColor}
 .go.wa .kick{color:#128C7E}
+.go.wa h2{color:#075E54}
 .go.gr .kick{color:#7ee2a8}
 .go.gr .wbtn svg{fill:#25D366}
 .go.a{border-top:6px solid var(--g)}
-.go.b{background:#f1f8f4;border-color:#cfe6d8}
+.go.b{background:#ece3fb;border-color:#c9b6f0}
+.go.b .btn{background:var(--gd)}
+.go.b .kick{color:var(--gd)}
 .go.wa{background:#e9fbef;border-color:var(--wa)}
 .go.wa .ico{background:var(--wa)}
 .go.wa .btn{background:var(--wa);color:#053b1d;font-size:13.5px;letter-spacing:0}
-.go.gr{background:var(--gd);border-color:var(--gd)}
-.go.gr h2{color:#fff}.go.gr p{color:#cfe9d9}
-.go.gr .ico{background:#1f6b45}
-.go.gr .btn{background:#fff;color:var(--gd)}
+.go.gr{background:#075E54;border-color:#075E54}
+.go.gr h2{color:#fff}.go.gr p{color:#d3efe3}
+.go.gr .ico{background:#128C7E}
+.go.gr .btn{background:#fff;color:#075E54}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -176,53 +261,17 @@ h1{font-size:17px;line-height:1.2;margin:0;letter-spacing:.03em}
     <div class="next">PRÓXIMOS PASSOS</div>
 
     <!-- TEXTOS DOS CARDS: edite aqui. Os links ficam em CTA_LINKS, no final do arquivo. -->
-    <div class="go a">
-      <div class="capa" data-capa="simulado">📄</div>
-      <div class="kick">📄 SIMULADO DE INFORMÁTICA</div>
-      <h2>GOSTOU DE RESOLVER AS QUESTÕES ASSIM?</h2>
-      <p>O que você acabou de fazer foi uma demonstração interativa gratuita de como trabalho minhas questões e comentários.</p>
-      <p>No material completo, você encontra mais de 100 questões de Informática comentadas para continuar praticando e revisar seus conhecimentos.</p>
-      <div class="importante"><span>📌 IMPORTANTE</span>O MATERIAL COMPLETO É DISPONIBILIZADO EM PDF.</div>
-      <a class="btn" data-cta="simulado" target="_blank" rel="noopener">📄 QUERO MAIS QUESTÕES</a>
-    </div>
-    <div class="go b">
-      <div class="capa" data-capa="mapas">🗺️</div>
-      <div class="kick">🗺️ MAPAS DE INFORMÁTICA</div>
-      <h2>E QUANDO VOCÊ PRECISAR REVISAR O CONTEÚDO?</h2>
-      <p>Depois de praticar questões, você consegue perceber quais assuntos ainda precisam de atenção.</p>
-      <p>Os Mapas de Informática organizam os principais conteúdos de forma resumida para facilitar suas revisões.</p>
-      <a class="btn" data-cta="mapas" target="_blank" rel="noopener">🗺️ CONHECER OS MAPAS</a>
-    </div>
-    <div class="go wa">
-      <div class="kick">🎯 SIMULADO PERSONALIZADO</div>
-      <h2>ESTUDANDO PARA UM CONCURSO ESPECÍFICO?</h2>
-      <p>Posso preparar um simulado personalizado de Informática, de acordo com o seu concurso e sua banca.</p>
-      <a class="btn wbtn" data-cta="whatsapp" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg><span>FALAR COMIGO NO WHATSAPP</span></a>
-    </div>
-    <div class="go gr">
-      <div class="kick">💚 GRUPO GRATUITO DE ESTUDOS</div>
-      <h2>QUER CONTINUAR RECEBENDO QUESTÕES E DICAS?</h2>
-      <p>Entre no grupo gratuito do DevMapas e receba questões, dicas e conteúdos de Informática para concursos diretamente no WhatsApp.</p>
-      <a class="btn wbtn" data-cta="grupo" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg><span>ENTRAR NO GRUPO GRATUITO</span></a>
-    </div>
+    __CARDS__
   </section>
 </div>
 
 <script>
 /* ===== EDITE OS LINKS DOS CTAs AQUI ===== */
-const CTA_LINKS = {
-    simulado: "COLE_SEU_LINK_AQUI",
-    mapas: "COLE_SEU_LINK_AQUI",
-    whatsapp: "COLE_SEU_LINK_AQUI",
-    grupo: "COLE_SEU_LINK_AQUI"
-};
+const CTA_LINKS = __LINKS__;
 
 /* ===== IMAGENS DAS CAPAS (cards do simulado e dos mapas) =====
    Se a imagem não existir, o card mostra um espaço com emoji no lugar. */
-const IMAGENS = {
-    simulado: "https://devmapas.vercel.app/img/capa-simulado.png",
-    mapas: "https://devmapas.vercel.app/img/capa-mapas.png"
-};
+const IMAGENS = __IMAGENS__;
 
 /* ===== QUESTÕES (geradas automaticamente) ===== */
 const QUESTOES = __DADOS__;
@@ -328,7 +377,6 @@ render();
 </html>`;
 
 // ---------- Utilitários ----------
-const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 function nomeArquivo(v) {
   const n = v.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
     .replace(/\.html$/, '').replace(/[^a-z0-9_-]+/g, '-').replace(/^-+|-+$/g, '');
@@ -342,12 +390,18 @@ $('btnExemplo').addEventListener('click', () => {
   $('arquivo').dispatchEvent(new Event('input'));
 });
 
+// ---------- Tipo de desafio ----------
+const tipoAtual = () => document.querySelector('input[name="tipo"]:checked').value;
+document.querySelectorAll('input[name="tipo"]').forEach(r => r.addEventListener('change', () => { $('especifico').hidden = tipoAtual() !== 'especifico'; }));
+
 // ---------- Gerar ----------
 $('btnGerar').addEventListener('click', () => {
   $('ok').hidden = true; $('erro').hidden = true;
   const titulo = $('titulo').value.trim();
+  const tipo = tipoAtual();
   const erros = [];
   if (!titulo) erros.push('Preencha o título do desafio.');
+  if (!$('arquivo').value.trim()) erros.push('Preencha o nome do arquivo.');
   const dados = [];
   for (let n = 1; n <= 5; n++) {
     const txt = $('q' + n).value.trim();
@@ -356,12 +410,37 @@ $('btnGerar').addEventListener('click', () => {
     erros.push(...r.erros);
     dados.push(r.q);
   }
+  // configuração dos cards finais conforme o tipo
+  let links, imagens, cards;
+  if (tipo === 'especifico') {
+    const d = { concurso: $('concurso').value.trim(), simulado: $('nomeSimulado').value.trim(), descricao: $('descricao').value.trim(),
+                imagem: $('imgCapa').value.trim(), linkSimulado: $('linkSimulado').value.trim(), linkGrupo: $('linkGrupo').value.trim() };
+    if (!d.concurso) erros.push('Simulado específico: preencha o nome do concurso.');
+    if (!d.simulado) erros.push('Simulado específico: preencha o nome do simulado.');
+    if (!d.descricao) erros.push('Simulado específico: preencha a descrição do simulado.');
+    if (!d.imagem) erros.push('Simulado específico: preencha o nome da imagem da capa (ex.: capa-pmma.png).');
+    else if (!/^[A-Za-z0-9._-]+\.(png|jpe?g|webp)$/i.test(d.imagem)) erros.push('Nome da imagem inválido: use só o nome do arquivo, ex.: capa-pmma.png (sem pasta, sem espaços).');
+    if (!d.linkSimulado) erros.push('Simulado específico: preencha o link do simulado.');
+    else if (!/^https?:\/\/\S+$/i.test(d.linkSimulado)) erros.push('O link do simulado deve começar com http:// ou https://');
+    if (!d.linkGrupo) erros.push('Simulado específico: preencha o link do grupo gratuito.');
+    else if (!/^https?:\/\/\S+$/i.test(d.linkGrupo)) erros.push('O link do grupo deve começar com http:// ou https://');
+    links = { simulado: d.linkSimulado, grupo: d.linkGrupo };
+    imagens = { simulado: BASE_IMG + d.imagem };
+    cards = erros.length ? '' : cardsEspecifico(d);
+  } else {
+    links = PADRAO.links; imagens = PADRAO.imagens; cards = CARDS_GERAL;
+  }
   if (erros.length) { $('erro').textContent = erros.join('\n'); $('erro').hidden = false; return; }
 
+  const js = o => JSON.stringify(o, null, 4).replace(/</g, '\\u003c');
   const json = JSON.stringify(dados).replace(/</g, '\\u003c').replace(/\u2028|\u2029/g, ' ');
   const html = MODELO
+    .split('__CARDS__').join(cards)
     .split('__TITULO__').join(esc(titulo))
     .split('__SUBTITULO__').join(esc($('subtitulo').value.trim()))
+    .split('__LINKS__').join(js(links))
+    .split('__IMAGENS__').join(js(imagens))
+    .split('__OGIMG__').join(PADRAO.imagemCompartilhamento)
     .split('__DADOS__').join(json);
 
   const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
