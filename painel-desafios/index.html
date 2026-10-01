@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Painel de Desafios — DevMapas</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="app">
+  <header class="hero">
+    <div class="brand">DEVMAPAS</div>
+    <h1>PAINEL DE DESAFIOS</h1>
+  </header>
+
+  <section id="acesso" class="card" aria-labelledby="tAcesso">
+    <h2 id="tAcesso">Acesso privado</h2>
+    <form id="form" autocomplete="off">
+      <label for="chave">Chave de acesso</label>
+      <input id="chave" type="password" autocomplete="off" required>
+      <button type="submit" class="btn" id="entrar">ENTRAR NO PAINEL</button>
+    </form>
+    <p id="msgAcesso" class="msg" role="alert"></p>
+  </section>
+
+  <section id="painel" hidden aria-label="Painel">
+    <div class="card topo">
+      <div>
+        <span class="rot">📅 Período analisado</span>
+        <strong>Últimos 30 dias</strong>
+        <small id="atualizado"></small>
+      </div>
+      <div class="acoes">
+        <button type="button" class="btn" id="atualizar">ATUALIZAR DADOS</button>
+        <button type="button" class="btn ghost" id="sair">SAIR</button>
+      </div>
+    </div>
+
+    <p id="estado" class="msg" role="status"></p>
+    <p id="parcial" class="aviso" hidden>Alguns dados podem estar incompletos devido ao limite de dados do período.</p>
+
+    <div id="conteudo" hidden>
+      <h2 class="sec">VISÃO GERAL</h2>
+      <div class="grid3">
+        <article class="kpi"><span class="ico" aria-hidden="true">👀</span><div><span class="rot">ACESSOS</span><strong id="kAcessos">0</strong></div></article>
+        <article class="kpi simulado"><span class="ico" aria-hidden="true">📄</span><div><span class="rot">CLIQUES EM SIMULADOS</span><strong id="kSimulado">0</strong></div></article>
+        <article class="kpi grupo"><span class="ico" aria-hidden="true">💚</span><div><span class="rot">CLIQUES NO GRUPO</span><strong id="kGrupo">0</strong></div></article>
+      </div>
+
+      <h2 class="sec">DESAFIOS</h2>
+      <div id="lista"></div>
+      <p id="vazio" class="msg" hidden>Nenhum desafio possui dados no período selecionado.</p>
+    </div>
+  </section>
+</main>
+<script src="script.js"></script>
+</body>
+</html>
