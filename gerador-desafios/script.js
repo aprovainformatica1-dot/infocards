@@ -115,11 +115,12 @@ const CARDS_GERAL = `<div class="go a">
 function cardsEspecifico(d) {
   return `<div class="go a">
       <div class="capa" data-capa="simulado">${ESPECIFICO.icone}</div>
-      <div class="kick">${ESPECIFICO.icone} ${esc(d.simulado.toUpperCase())}</div>
+      <div class="kick">📄 SIMULADO DE INFORMÁTICA</div>
       <h2>GOSTOU DE RESOLVER AS QUESTÕES?</h2>
       <p>O que você acabou de fazer foi uma demonstração interativa gratuita com 5 questões.</p>
-      <p>Continue praticando com o simulado completo de Informática para a ${esc(d.concurso)}.</p>
-      <p class="qtd">📚 ${esc(d.descricao)}</p>
+      <p>Para ser aprovado, não basta só estudar a teoria. Você precisa praticar muitas questões e aprender enquanto resolve.</p>
+      <p>Este simulado foi feito especificamente para a ${esc(d.concurso)}, com mais de 100 questões de Informática comentadas.</p>
+      <p>🧠 Estudo reverso: você resolve, identifica seus erros e aprende com comentários em formato de mini aula.</p>
       <div class="importante azul"><span>📌 IMPORTANTE</span>O MATERIAL COMPLETO É DISPONIBILIZADO EM PDF.</div>
       <a class="btn laranja" data-cta="simulado" target="_blank" rel="noopener">📄 QUERO MAIS QUESTÕES</a>
     </div>
