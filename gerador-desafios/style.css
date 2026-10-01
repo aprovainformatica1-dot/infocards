@@ -27,3 +27,4 @@ button{font:inherit;cursor:pointer;border-radius:16px;padding:16px;width:100%;fo
 label.radio{display:flex;align-items:center;gap:10px;margin:0;padding:12px 14px;border:2px solid var(--bd);border-radius:14px;font-weight:700;cursor:pointer}
 label.radio:has(input:checked){border-color:var(--g);background:var(--gl)}
 input[type=radio]{width:20px;height:20px;padding:0;accent-color:var(--g)}
+#ok2{white-space:pre-line;font-weight:500;font-size:14px}
