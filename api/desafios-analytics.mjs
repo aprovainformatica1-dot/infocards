@@ -50,7 +50,7 @@ async function buscarVisitas({ token, projectId, teamId, desde, ate }) {
     }
     try {
       const json = JSON.parse(texto);
-      return json;
+      return Array.isArray(json && json.data) ? json.data : [];
     } catch {
       throw Object.assign(new Error('json_invalido'), {
         status: r.status
