@@ -324,6 +324,18 @@ function el(tag, cls, txt) {
   return x;
 }
 
+// Converte **texto** em negrito (<strong>) sem usar innerHTML; ** sem par fica como foi digitado
+function negrito(node, txt) {
+  const p = txt.split('**');
+  if (p.length % 2 === 0) { node.textContent = txt; return node; }
+  p.forEach((t, k) => {
+    if (!t) return;
+    if (k % 2) node.appendChild(el('strong', '', t));
+    else node.appendChild(document.createTextNode(t));
+  });
+  return node;
+}
+
 function render() {
   const q = QUESTOES[i];
   sel = null; feito = false;
@@ -367,11 +379,11 @@ $('confirmar').addEventListener('click', () => {
   fb.innerHTML = '';
   fb.appendChild(el('h3', '', certo ? '✅ VOCÊ ACERTOU!' : '❌ NÃO FOI DESSA VEZ!'));
   fb.appendChild(el('p', '', 'Gabarito: ' + (q.t === 'ce' ? q.a[q.g] : q.g)));
-  fb.appendChild(el('p', '', q.c));
+  fb.appendChild(negrito(el('p'), q.c));
   if (q.m) {
     const m = el('div', 'mem');
     m.appendChild(el('strong', '', '📚 PARA MEMORIZAR'));
-    m.appendChild(el('p', '', q.m));
+    m.appendChild(negrito(el('p'), q.m));
     fb.appendChild(m);
   }
   fb.hidden = false;
