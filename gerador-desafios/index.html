@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gerador de Desafios DevMapas</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="wrap">
+  <header class="head">
+    <span class="brand">DEVMAPAS</span>
+    <h1>GERADOR DE DESAFIOS DEVMAPAS</h1>
+    <p>Crie desafios interativos com 5 questões para compartilhar com seus seguidores.</p>
+  </header>
+
+  <section class="card">
+    <label for="titulo">Título do desafio</label>
+    <input id="titulo" type="text" placeholder="Desafio de Excel">
+    <label for="subtitulo">Subtítulo <small>(opcional)</small></label>
+    <input id="subtitulo" type="text" placeholder="5 questões para testar seus conhecimentos">
+    <label for="arquivo">Nome do arquivo</label>
+    <input id="arquivo" type="text" placeholder="excel">
+    <small id="prev">Arquivo gerado: desafio.html</small>
+  </section>
+
+  <section class="card guide">
+    <h2>Como colar cada questão</h2>
+    <p>Use exatamente estes rótulos, cada um no início de uma linha. As alternativas vão de A) até E). "PARA MEMORIZAR" é opcional.</p>
+    <pre id="exemplo">ENUNCIADO:
+No Microsoft Excel, qual função soma valores?
+
+A) MÉDIA
+B) MÁXIMO
+C) SOMA
+D) CONT.SE
+E) SE
+
+GABARITO: C
+
+COMENTÁRIO:
+A função SOMA adiciona os valores do intervalo.
+
+PARA MEMORIZAR:
+SOMA = somar.</pre>
+    <p>Questão Certo/Errado: não coloque alternativas e escreva <b>GABARITO: CERTO</b> ou <b>GABARITO: ERRADO</b> (também vale C ou E).</p>
+    <pre id="exemploCE">ENUNCIADO:
+A função SOMA do Excel calcula a média dos valores.
+
+GABARITO: ERRADO
+
+COMENTÁRIO:
+A SOMA adiciona os valores. A média é calculada por MÉDIA.
+
+PARA MEMORIZAR:
+SOMA = somar; MÉDIA = média.</pre>
+    <button type="button" class="ghost" id="btnExemplo">Preencher com exemplo</button>
+  </section>
+
+  <div id="questoes"></div>
+
+  <div id="erro" class="msg erro" hidden></div>
+  <div id="ok" class="msg ok" hidden>✅ Desafio gerado com sucesso!</div>
+  <button type="button" class="primary" id="btnGerar">GERAR DESAFIO</button>
+</main>
+<script src="script.js"></script>
+</body>
+</html>
