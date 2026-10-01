@@ -154,6 +154,9 @@ const MODELO = `<!DOCTYPE html>
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="__OGIMG__">
+<!-- Vercel Web Analytics (conta os acessos; só funciona no site publicado na Vercel) -->
+<script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
+<script defer src="/_vercel/insights/script.js"></script>
 <style>
 :root{--g:#7a4fd6;--gd:#3b1d6e;--gl:#efe8fb;--bg:#f7f4fd;--tx:#1f1a33;--mu:#6b6485;--bd:#e4def0;--ok:#16a34a;--bad:#d97706;--wa:#25D366}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -282,6 +285,12 @@ h1{font-size:17px;line-height:1.2;margin:0;letter-spacing:.03em}
 /* ===== EDITE OS LINKS DOS CTAs AQUI ===== */
 const CTA_LINKS = __LINKS__;
 
+/* ===== RASTREAMENTO DE CLIQUES (gerado automaticamente) =====
+   Os botões listados em RASTREAR abrem /ir/<desafio>-<botão>.html (página que conta o clique
+   e redireciona). Para trocar esses links, gere o desafio de novo no gerador. */
+const DESAFIO_ID = "__SLUG__";
+const RASTREAR = __RASTREAR__;
+
 /* ===== IMAGENS DAS CAPAS (cards do simulado e dos mapas) =====
    Se a imagem não existir, o card mostra um espaço com emoji no lugar. */
 const IMAGENS = __IMAGENS__;
@@ -295,7 +304,7 @@ let i = 0, sel = null, feito = false, acertos = 0;
 
 document.querySelectorAll('[data-cta]').forEach(a => {
   const l = CTA_LINKS[a.dataset.cta];
-  if (l && l.indexOf('COLE_') !== 0) a.href = l;
+  if (l && l.indexOf('COLE_') !== 0) a.href = RASTREAR.indexOf(a.dataset.cta) >= 0 ? '/ir/' + DESAFIO_ID + '-' + a.dataset.cta + '.html' : l;
   else a.addEventListener('click', e => e.preventDefault());
 });
 if (!$('subtitulo').textContent.trim()) $('subtitulo').textContent = 'Teste seus conhecimentos';
@@ -389,6 +398,33 @@ render();
 </body>
 </html>`;
 
+// Página /ir/<desafio>-<botão>.html: registra a visita (Vercel Web Analytics) e redireciona
+const REDIRECT_MODELO = `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Abrindo… — DevMapas</title>
+<script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};<\/script>
+<script defer src="/_vercel/insights/script.js"><\/script>
+<style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#f7f4fd;color:#3b1d6e;font:16px system-ui,sans-serif;text-align:center}
+b{letter-spacing:.2em}a{display:inline-block;margin-top:12px;background:#7a4fd6;color:#fff;padding:12px 22px;border-radius:14px;text-decoration:none;font-weight:700}</style>
+</head>
+<body><main><b>DEVMAPAS</b><p>Abrindo o link…</p><a href="__DESTINO_HTML__">Continuar</a></main>
+<script>
+var DESTINO = __DESTINO_JS__, ok = false;
+function ir() { if (ok) return; ok = true; location.replace(DESTINO); }
+window.addEventListener('load', function () { setTimeout(ir, 700); });
+setTimeout(ir, 2500);
+<\/script>
+</body>
+</html>`;
+function paginaRedirect(destino) {
+  return REDIRECT_MODELO.split('__DESTINO_HTML__').join(esc(destino).replace(/"/g, '&quot;'))
+    .split('__DESTINO_JS__').join(JSON.stringify(destino).replace(/</g, '\\u003c'));
+}
+
 // ---------- Utilitários ----------
 function nomeArquivo(v) {
   const n = v.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
@@ -409,7 +445,7 @@ document.querySelectorAll('input[name="tipo"]').forEach(r => r.addEventListener(
 
 // ---------- Gerar ----------
 $('btnGerar').addEventListener('click', () => {
-  $('ok').hidden = true; $('erro').hidden = true;
+  $('ok').hidden = true; $('ok2').hidden = true; $('erro').hidden = true;
   const titulo = $('titulo').value.trim();
   const tipo = tipoAtual();
   const erros = [];
@@ -445,6 +481,8 @@ $('btnGerar').addEventListener('click', () => {
   }
   if (erros.length) { $('erro').textContent = erros.join('\n'); $('erro').hidden = false; return; }
 
+  const slug = nomeArquivo($('arquivo').value).replace(/\.html$/, '');
+  const rastrear = ['simulado', 'grupo'].filter(k => /^https?:\/\/\S+$/i.test(links[k] || ''));
   const js = o => JSON.stringify(o, null, 4).replace(/</g, '\\u003c');
   const json = JSON.stringify(dados).replace(/</g, '\\u003c').replace(/\u2028|\u2029/g, ' ');
   const html = MODELO
@@ -453,14 +491,24 @@ $('btnGerar').addEventListener('click', () => {
     .split('__SUBTITULO__').join(esc($('subtitulo').value.trim()))
     .split('__LINKS__').join(js(links))
     .split('__IMAGENS__').join(js(imagens))
+    .split('__SLUG__').join(slug)
+    .split('__RASTREAR__').join(JSON.stringify(rastrear))
     .split('__OGIMG__').join(PADRAO.imagemCompartilhamento)
     .split('__DADOS__').join(json);
 
-  const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = nomeArquivo($('arquivo').value);
-  document.body.appendChild(a); a.click(); a.remove();
-  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  const baixar = (nome, conteudo) => {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([conteudo], { type: 'text/html;charset=utf-8' }));
+    a.download = nome;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  };
+  baixar(nomeArquivo($('arquivo').value), html);
+  // páginas de contagem de cliques (uma por botão rastreado)
+  rastrear.forEach((k, i) => setTimeout(() => baixar(slug + '-' + k + '.html', paginaRedirect(links[k])), 500 * (i + 1)));
+  if (rastrear.length) {
+    $('ok2').textContent = 'Envie para o site:\n• ' + nomeArquivo($('arquivo').value) + ' → pasta /desafios/\n' + rastrear.map(k => '• ' + slug + '-' + k + '.html → pasta /ir/').join('\n') + '\n(Se o navegador perguntar, permita baixar vários arquivos.)';
+    $('ok2').hidden = false;
+  }
   $('ok').hidden = false;
 });
