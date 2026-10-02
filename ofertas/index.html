@@ -1,1 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Central de Ofertas — DevMapas</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="app">
+  <a class="voltar" href="/central/">← VOLTAR PARA CENTRAL</a>
+  <header class="hero">
+    <div class="brand">DEVMAPAS</div>
+    <h1>Central de Ofertas</h1>
+    <p>Gerencie as ofertas utilizadas nos seus desafios.</p>
+  </header>
+  <p class="aviso">Prévia: as alterações valem só nesta sessão. Ao recarregar a página, voltam ao original.</p>
+  <button type="button" class="btn" id="nova">+ NOVA OFERTA</button>
+  <div id="lista"></div>
+</main>
 
+<dialog id="ed" aria-labelledby="edTitulo">
+  <form id="form" method="dialog" novalidate>
+    <div class="corpo">
+      <h2 id="edTitulo">Editar oferta</h2>
+      <label for="f-nome">Nome da oferta</label><input id="f-nome" type="text">
+      <label for="f-tipo">Tipo</label>
+      <select id="f-tipo"><option value="geral">Oferta geral</option><option value="mapa">Mapa individual</option></select>
+      <label for="f-kick">Kick (rótulo do card)</label><input id="f-kick" type="text">
+      <label for="f-titulo">Título</label><input id="f-titulo" type="text">
+      <label for="f-textos">Textos <small>(um parágrafo por linha)</small></label><textarea id="f-textos" rows="5"></textarea>
+      <label for="f-importante">Texto importante <small>(opcional)</small></label><input id="f-importante" type="text">
+      <label for="f-botao">Texto do botão</label><input id="f-botao" type="text">
+      <label for="f-imagem">Imagem <small>(URL, opcional)</small></label><input id="f-imagem" type="url" inputmode="url">
+      <label for="f-link">Link</label><input id="f-link" type="url" inputmode="url">
+      <label for="f-cta">CTA <small>(nome do botão no sistema)</small></label><input id="f-cta" type="text" list="ctas"><datalist id="ctas"><option value="simulado"><option value="mapas"><option value="whatsapp"><option value="grupo"></datalist>
+      <label for="f-classe">Classe visual</label>
+      <select id="f-classe"><option value="go a">Roxo com faixa (go a)</option><option value="go b">Lilás (go b)</option><option value="go wa">Verde WhatsApp (go wa)</option><option value="go gr">Verde escuro (go gr)</option></select>
+      <p id="erro" class="erro" role="alert" hidden></p>
+    </div>
+    <div class="rodape">
+      <button type="button" class="btn ghost" id="cancelar">CANCELAR</button>
+      <button type="submit" class="btn" id="salvar">SALVAR</button>
+    </div>
+  </form>
+</dialog>
+<script src="script.js"></script>
+</body>
+</html>
