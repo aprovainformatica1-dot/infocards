@@ -1,1 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Gerador de Dicas — DevMapas</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="app">
+  <header class="hero">
+    <div class="brand">DEVMAPAS</div>
+    <h1>Gerador de Dicas</h1>
+    <p>Preencha a dica e gere uma página pronta para publicar.</p>
+  </header>
 
+  <section class="card">
+    <h2>1. Identificação</h2>
+    <label for="nome">Nome interno da dica</label>
+    <input id="nome" type="text" placeholder="Atalhos do Excel">
+    <small id="prev">Arquivo gerado: dica.html → pasta /dicas/</small>
+    <label for="titulo">Título principal</label>
+    <input id="titulo" type="text" placeholder="3 atalhos do Excel que mais caem em prova">
+    <label for="frase">Frase final</label>
+    <input id="frase" type="text" placeholder="Praticar um pouco por dia faz toda a diferença.">
+  </section>
+
+  <section class="card">
+    <h2>2. Cards de conteúdo</h2>
+    <div id="cards"></div>
+    <button type="button" class="btn ghost" id="addCard">+ ADICIONAR CARD</button>
+  </section>
+
+  <section class="card">
+    <h2>3. ⚡ Rodada relâmpago</h2>
+    <small>De 3 a 4 questões, com 3 alternativas cada.</small>
+    <div id="questoes"></div>
+    <button type="button" class="btn ghost" id="addQ">+ ADICIONAR QUESTÃO</button>
+    <small id="avisoQ"></small>
+  </section>
+
+  <div id="erro" class="msg erro" role="alert" hidden></div>
+  <div id="ok" class="msg ok" role="status" hidden></div>
+  <button type="button" class="btn" id="gerar">GERAR DICA</button>
+</main>
+<script src="script.js"></script>
+</body>
+</html>

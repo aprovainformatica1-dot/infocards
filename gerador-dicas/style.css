@@ -1,0 +1,28 @@
+:root{--g:#7a4fd6;--gd:#3b1d6e;--gl:#efe8fb;--bg:#f7f4fd;--tx:#1f1a33;--mu:#6b6485;--bd:#e4def0}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+[hidden]{display:none!important}
+.app{max-width:680px;margin:0 auto;padding:14px 14px 48px}
+.hero{background:linear-gradient(160deg,#6a3fc4,#3b1d6e);color:#fff;border-radius:24px;padding:18px 16px;text-align:center;box-shadow:0 8px 22px rgba(59,29,110,.2)}
+.brand{font-size:19px;font-weight:900;letter-spacing:.22em}
+h1{font-size:16px;margin:4px 0 0}
+.hero p{margin:6px 0 0;font-size:13px;opacity:.88}
+.card{background:#fff;border:1px solid var(--bd);border-radius:20px;padding:16px;margin-top:14px;box-shadow:0 4px 16px rgba(59,29,110,.07)}
+.card h2{font-size:17px;margin:0 0 4px;color:var(--gd)}
+label{display:block;font-weight:700;margin:12px 0 6px}
+small{color:var(--mu)}
+input,textarea,select{width:100%;min-height:48px;font:inherit;padding:12px 14px;border:2px solid var(--bd);border-radius:14px;background:#fff;color:var(--tx)}
+textarea{min-height:110px;resize:vertical}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--g)}
+.btn{display:block;width:100%;min-height:52px;border:0;border-radius:14px;padding:12px;margin-top:12px;font:inherit;font-weight:800;letter-spacing:.03em;background:var(--g);color:#fff;cursor:pointer;box-shadow:0 3px 0 rgba(0,0,0,.18)}
+.btn:active{transform:translateY(2px);box-shadow:none}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.ghost{background:#fff;color:var(--gd);border:2px solid var(--bd);box-shadow:none}
+.btn.rem{min-height:44px;margin-top:10px;background:#fff;color:#9b1c1c;border:2px solid #f3c9c9;box-shadow:none;font-size:13px}
+:focus-visible{outline:3px solid #b79af0;outline-offset:2px}
+.item{background:var(--bg);border:1px solid var(--bd);border-radius:16px;padding:14px;margin-top:12px}
+.item h3{margin:0;font-size:15px;color:var(--gd)}
+.alts{display:grid;gap:8px}
+.msg{margin-top:14px;padding:12px 14px;border-radius:14px;font-weight:600;white-space:pre-line}
+.erro{background:#fff1f1;color:#9b1c1c}
+.ok{background:#e8f7ee;color:#0f3d24}
