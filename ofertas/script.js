@@ -1,66 +1,17 @@
 /* Central de Ofertas — INTERFACE (prévia). Sem banco, login nem backend; nada é salvo: as edições valem só nesta sessão.
-   Os dados iniciais abaixo são uma CÓPIA da configuração OFERTAS de gerador-desafios/script.js (o gerador não é lido
-   nem alterado). Ligar esta tela ao gerador de verdade fica para outra etapa. */
-const BASE_IMG = "https://devmapas.vercel.app/img/";
+   Os dados vêm de ../config/ofertas.js (fonte única, carregada antes deste arquivo): OFERTAS e MAPAS_INDIVIDUAIS.
+   Ligar a edição desta tela à configuração de verdade fica para outra etapa. */
+if (typeof OFERTAS === 'undefined') { alert('Não encontrei o arquivo ../config/ofertas.js. Envie a pasta /config/ junto com esta página.'); throw new Error('config/ofertas.js ausente'); }
 
-/* ----- cópia de OFERTAS (gerador-desafios/script.js) ----- */
-const OFERTAS = {
-  simulado: {
-    id: 'simulado', cta: 'simulado', classe: 'go a',
-    kick: '📄 SIMULADO DE INFORMÁTICA',
-    titulo: 'GOSTOU DE RESOLVER AS QUESTÕES ASSIM?',
-    textos: [
-      'O que você acabou de fazer foi uma demonstração interativa gratuita de como trabalho minhas questões e comentários.',
-      'No material completo, você encontra mais de 100 questões de Informática comentadas para continuar praticando e revisar seus conhecimentos.'
-    ],
-    importante: 'O MATERIAL COMPLETO É DISPONIBILIZADO EM PDF.',
-    botao: '📄 QUERO MAIS QUESTÕES',
-    imagem: BASE_IMG + 'capa-simulado.png', capaEmoji: '📄',
-    link: 'https://pay.kiwify.com.br/gpyqBa2'
-  },
-  mapas: {
-    id: 'mapas', cta: 'mapas', classe: 'go b',
-    kick: '🗺️ MAPAS DE INFORMÁTICA',
-    titulo: 'E QUANDO VOCÊ PRECISAR REVISAR O CONTEÚDO?',
-    textos: [
-      'Depois de praticar questões, você consegue perceber quais assuntos ainda precisam de atenção.',
-      'Os Mapas de Informática organizam os principais conteúdos de forma resumida para facilitar suas revisões.'
-    ],
-    botao: '🗺️ CONHECER OS MAPAS',
-    imagem: BASE_IMG + 'capa-mapas.png', capaEmoji: '🗺️',
-    link: 'https://pay.kiwify.com.br/6nLacpi'
-  },
-  personalizado: {
-    id: 'personalizado', cta: 'whatsapp', classe: 'go wa',
-    kick: '🎯 SIMULADO PERSONALIZADO',
-    titulo: 'ESTUDANDO PARA UM CONCURSO ESPECÍFICO?',
-    textos: ['Posso preparar um simulado personalizado de Informática, de acordo com o seu concurso e sua banca.'],
-    botao: 'FALAR COMIGO NO WHATSAPP', iconeWhatsapp: true,
-    link: 'https://wa.me/5561996169903'
-  },
-  grupo: {
-    id: 'grupo', cta: 'grupo', classe: 'go gr',
-    kick: '💚 GRUPO GRATUITO DE ESTUDOS',
-    titulo: 'QUER CONTINUAR RECEBENDO QUESTÕES E DICAS?',
-    textos: ['Entre no grupo gratuito do DevMapas e receba questões, dicas e conteúdos de Informática para concursos diretamente no WhatsApp.'],
-    botao: 'ENTRAR NO GRUPO GRATUITO', iconeWhatsapp: true,
-    link: 'https://chat.whatsapp.com/EB9OpUq1uOl1KA5TdiLheD?mode=gi_t'
-  }
-};
-/* Nome e ícone de cada oferta na Central. "tipo": 'geral' ou 'mapa' (mapas individuais virão aqui no futuro:
-   Microsoft 365, Segurança da Informação, Sistemas Operacionais, Internet, Hardware, Correio Eletrônico, Navegadores, Cartilha de atalhos). */
-const META = {
-  simulado: { nome: 'Simulado', icone: '📄' },
-  mapas: { nome: 'Mapas', icone: '🗺️' },
-  personalizado: { nome: 'Simulado personalizado', icone: '🎯' },
-  grupo: { nome: 'Grupo gratuito', icone: '💚' }
-};
+/* "tipo": 'geral' ou 'mapa'. Mapas individuais virão de MAPAS_INDIVIDUAIS (Microsoft 365, Segurança da Informação,
+   Sistemas Operacionais, Internet, Hardware, Correio Eletrônico, Navegadores, Cartilha de atalhos). */
 const SECOES = [
   { tipo: 'geral', titulo: 'OFERTAS GERAIS', vazio: 'Nenhuma oferta geral cadastrada.' },
   { tipo: 'mapa', titulo: 'MAPAS INDIVIDUAIS', vazio: 'Nenhum mapa individual cadastrado ainda.' }
 ];
 
-let ofertas = Object.values(OFERTAS).map((o) => ({ ...JSON.parse(JSON.stringify(o)), tipo: 'geral', ...META[o.id] }));
+const copia = (o, tipo) => ({ ...JSON.parse(JSON.stringify(o)), tipo });
+let ofertas = [...Object.values(OFERTAS).map((o) => copia(o, 'geral')), ...Object.values(MAPAS_INDIVIDUAIS).map((o) => copia(o, 'mapa'))];
 let editando = null;   // índice em "ofertas"; null = nova oferta
 
 const $ = (id) => document.getElementById(id);
