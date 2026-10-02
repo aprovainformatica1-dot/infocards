@@ -1,1 +1,32 @@
-
+:root{--g:#7a4fd6;--gd:#3b1d6e;--gl:#efe8fb;--bg:#f7f4fd;--tx:#1f1a33;--mu:#6b6485;--bd:#e4def0;--wa:#25D366;--wad:#075E54}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.app{max-width:640px;margin:0 auto;padding:14px 14px 48px}
+.hero{background:linear-gradient(160deg,#6a3fc4,#3b1d6e);color:#fff;border-radius:24px;padding:18px 16px;text-align:center;box-shadow:0 8px 22px rgba(59,29,110,.2)}
+.brand{font-size:19px;font-weight:900;letter-spacing:.22em}
+h1{font-size:15px;font-weight:600;margin:4px 0 0;opacity:.9}
+.sec{margin-top:22px}
+.sec h2{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:800;letter-spacing:.08em;color:var(--g);margin:0 4px 8px}
+.item{display:flex;align-items:center;gap:14px;min-height:72px;padding:14px 16px;margin-bottom:10px;background:#fff;border:1px solid var(--bd);border-radius:20px;box-shadow:0 4px 16px rgba(59,29,110,.07);color:inherit;text-decoration:none}
+a.item:hover{border-color:var(--g)}
+a.item:active{transform:translateY(1px)}
+:focus-visible{outline:3px solid #b79af0;outline-offset:2px}
+.ico{flex:none;width:44px;height:44px;border-radius:14px;display:grid;place-items:center;font-size:22px;background:var(--gl)}
+.txt{flex:1;min-width:0}
+.nome{display:block;font-weight:800;color:var(--gd);overflow-wrap:anywhere}
+.desc{display:block;font-size:13px;color:var(--mu)}
+.seta{flex:none;font-size:20px;color:var(--g);font-weight:800}
+.item.breve{background:#fbfaff;border-style:dashed;box-shadow:none}
+.item.breve .nome{color:var(--mu)}
+.badge{flex:none;font-size:11px;font-weight:800;letter-spacing:.05em;color:var(--gd);background:var(--gl);padding:4px 10px;border-radius:99px}
+.item.verde{border-color:var(--wa)}
+.item.verde .ico{background:#e9fbef}
+.item.verde .nome{color:var(--wad)}
+.item.verde .seta{color:var(--wad)}
+.lista{display:block}
+.lista .topo{display:flex;align-items:center;gap:14px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.chip{display:inline-flex;align-items:center;min-height:44px;padding:0 18px;border-radius:99px;background:var(--gl);color:var(--gd);font-weight:800;text-decoration:none;border:2px solid transparent}
+.chip:hover{border-color:var(--g)}
+.aviso{color:var(--mu);text-align:center}
+@media (min-width:640px){.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.grid .item{margin-bottom:0}}
