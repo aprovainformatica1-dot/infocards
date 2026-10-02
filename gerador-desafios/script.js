@@ -80,7 +80,8 @@ function parseQuestao(texto, n) {
 const WA_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>';
 
 // Cards finais do DESAFIO GERAL (4 cards)
-const CARDS_GERAL = `<div class="go a">
+// Cards finais do DESAFIO GERAL — um por constante (textos e visual iguais aos de sempre)
+const CARD_GERAL_SIMULADO = `<div class="go a">
       <div class="capa" data-capa="simulado">📄</div>
       <div class="kick">📄 SIMULADO DE INFORMÁTICA</div>
       <h2>GOSTOU DE RESOLVER AS QUESTÕES ASSIM?</h2>
@@ -88,28 +89,39 @@ const CARDS_GERAL = `<div class="go a">
       <p>No material completo, você encontra mais de 100 questões de Informática comentadas para continuar praticando e revisar seus conhecimentos.</p>
       <div class="importante"><span>📌 IMPORTANTE</span>O MATERIAL COMPLETO É DISPONIBILIZADO EM PDF.</div>
       <a class="btn" data-cta="simulado" target="_blank" rel="noopener">📄 QUERO MAIS QUESTÕES</a>
-    </div>
-    <div class="go b">
+    </div>`;
+
+const CARD_GERAL_MAPAS = `<div class="go b">
       <div class="capa" data-capa="mapas">🗺️</div>
       <div class="kick">🗺️ MAPAS DE INFORMÁTICA</div>
       <h2>E QUANDO VOCÊ PRECISAR REVISAR O CONTEÚDO?</h2>
       <p>Depois de praticar questões, você consegue perceber quais assuntos ainda precisam de atenção.</p>
       <p>Os Mapas de Informática organizam os principais conteúdos de forma resumida para facilitar suas revisões.</p>
       <a class="btn" data-cta="mapas" target="_blank" rel="noopener">🗺️ CONHECER OS MAPAS</a>
-    </div>
-    <div class="go wa">
+    </div>`;
+
+const CARD_GERAL_PERSONALIZADO = `<div class="go wa">
       <div class="kick">🎯 SIMULADO PERSONALIZADO</div>
       <h2>ESTUDANDO PARA UM CONCURSO ESPECÍFICO?</h2>
       <p>Posso preparar um simulado personalizado de Informática, de acordo com o seu concurso e sua banca.</p>
       <a class="btn wbtn" data-cta="whatsapp" target="_blank" rel="noopener">${WA_SVG}<span>FALAR COMIGO NO WHATSAPP</span></a>
-    </div>
-    <div class="go gr">
+    </div>`;
+
+const CARD_GERAL_GRUPO = `<div class="go gr">
       <div class="kick">💚 GRUPO GRATUITO DE ESTUDOS</div>
       <h2>QUER CONTINUAR RECEBENDO QUESTÕES E DICAS?</h2>
       <p>Entre no grupo gratuito do DevMapas e receba questões, dicas e conteúdos de Informática para concursos diretamente no WhatsApp.</p>
       <a class="btn wbtn" data-cta="grupo" target="_blank" rel="noopener">${WA_SVG}<span>ENTRAR NO GRUPO GRATUITO</span></a>
-    </div>
-  `;
+    </div>`;
+
+// Opções do desafio geral, NA ORDEM FIXA de exibição. "ctas" = botões rastreados que o card contém.
+const MAX_CARDS_GERAL = 4;
+const OPCOES_CARDS_GERAL = [
+  { id: 'simulado', html: CARD_GERAL_SIMULADO, ctas: ['simulado'] },
+  { id: 'mapas', html: CARD_GERAL_MAPAS, ctas: ['mapas'] },
+  { id: 'personalizado', html: CARD_GERAL_PERSONALIZADO, ctas: ['whatsapp'] },
+  { id: 'grupo', html: CARD_GERAL_GRUPO, ctas: ['grupo'] }
+];
 
 // Cards finais do SIMULADO ESPECÍFICO (2 cards) — conteúdo dinâmico
 function cardsEspecifico(d) {
@@ -453,7 +465,14 @@ $('btnExemplo').addEventListener('click', () => {
 
 // ---------- Tipo de desafio ----------
 const tipoAtual = () => document.querySelector('input[name="tipo"]:checked').value;
-document.querySelectorAll('input[name="tipo"]').forEach(r => r.addEventListener('change', () => { $('especifico').hidden = tipoAtual() !== 'especifico'; }));
+document.querySelectorAll('input[name="tipo"]').forEach(r => r.addEventListener('change', () => { $('especifico').hidden = tipoAtual() !== 'especifico'; $('cardsGeral').hidden = tipoAtual() === 'especifico'; }));
+
+// Seleção dos cards finais (desafio geral): no máximo MAX_CARDS_GERAL
+document.querySelectorAll('.cardGeral').forEach(c => c.addEventListener('change', () => {
+  const excedeu = document.querySelectorAll('.cardGeral:checked').length > MAX_CARDS_GERAL;
+  if (excedeu) c.checked = false;
+  $('avisoCards').textContent = excedeu ? 'Você pode escolher no máximo ' + MAX_CARDS_GERAL + ' cards.' : '';
+}));
 
 // ---------- Gerar ----------
 $('btnGerar').addEventListener('click', () => {
@@ -472,7 +491,7 @@ $('btnGerar').addEventListener('click', () => {
     dados.push(r.q);
   }
   // configuração dos cards finais conforme o tipo
-  let links, imagens, cards;
+  let links, imagens, cards, ctasPresentes = ['simulado', 'grupo'];
   if (tipo === 'especifico') {
     const d = { concurso: $('concurso').value.trim(), simulado: $('nomeSimulado').value.trim(), descricao: $('descricao').value.trim(),
                 imagem: $('imgCapa').value.trim(), linkSimulado: $('linkSimulado').value.trim(), linkGrupo: $('linkGrupo').value.trim() };
@@ -489,12 +508,16 @@ $('btnGerar').addEventListener('click', () => {
     imagens = { simulado: BASE_IMG + d.imagem };
     cards = erros.length ? '' : cardsEspecifico(d);
   } else {
-    links = PADRAO.links; imagens = PADRAO.imagens; cards = CARDS_GERAL;
+    links = PADRAO.links; imagens = PADRAO.imagens;
+    const escolhidos = OPCOES_CARDS_GERAL.filter(o => $('card-' + o.id).checked);   // ordem fixa, não a do clique
+    if (!escolhidos.length) erros.push('Escolha pelo menos um card final.');
+    cards = escolhidos.map(o => o.html).join('\n    ') + '\n  ';
+    ctasPresentes = escolhidos.flatMap(o => o.ctas);
   }
   if (erros.length) { $('erro').textContent = erros.join('\n'); $('erro').hidden = false; return; }
 
   const slug = nomeArquivo($('arquivo').value).replace(/\.html$/, '');
-  const rastrear = ['simulado', 'grupo'].filter(k => /^https?:\/\/\S+$/i.test(links[k] || ''));
+  const rastrear = ['simulado', 'grupo'].filter(k => ctasPresentes.includes(k) && /^https?:\/\/\S+$/i.test(links[k] || ''));
   const js = o => JSON.stringify(o, null, 4).replace(/</g, '\\u003c');
   const json = JSON.stringify(dados).replace(/</g, '\\u003c').replace(/\u2028|\u2029/g, ' ');
   const html = MODELO
