@@ -1,0 +1,41 @@
+:root{--g:#7a4fd6;--gd:#3b1d6e;--gl:#efe8fb;--bg:#f7f4fd;--tx:#1f1a33;--mu:#6b6485;--bd:#e4def0;--wa:#25D366;--wad:#075E54}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.app{max-width:640px;margin:0 auto;padding:14px 14px 48px}
+.voltar{display:flex;align-items:center;min-height:48px;padding:0 4px;font-weight:800;color:var(--gd);text-decoration:none;letter-spacing:.03em}
+.hero{background:linear-gradient(160deg,#6a3fc4,#3b1d6e);color:#fff;border-radius:24px;padding:18px 16px;text-align:center;box-shadow:0 8px 22px rgba(59,29,110,.2)}
+.brand{font-size:19px;font-weight:900;letter-spacing:.22em}
+h1{font-size:16px;margin:4px 0 0}
+.hero p{margin:6px 0 0;font-size:13px;opacity:.88}
+.aviso{margin:12px 2px 0;padding:10px 12px;border-radius:12px;background:#e8f0fe;color:#1e3a8a;font-size:13px}
+.btn{display:block;width:100%;min-height:52px;border:0;border-radius:14px;padding:12px;margin-top:12px;font:inherit;font-weight:800;letter-spacing:.03em;background:var(--g);color:#fff;cursor:pointer;box-shadow:0 3px 0 rgba(0,0,0,.18)}
+.btn:active{transform:translateY(2px);box-shadow:none}
+.btn.ghost{background:#fff;color:var(--gd);border:2px solid var(--bd);box-shadow:none}
+:focus-visible{outline:3px solid #b79af0;outline-offset:2px}
+.sec{font-size:13px;font-weight:800;letter-spacing:.08em;color:var(--g);margin:22px 4px 8px}
+.vazio{margin:0 4px;color:var(--mu);font-size:14px;padding:14px;border:2px dashed var(--bd);border-radius:16px;text-align:center}
+.card{background:#fff;border:1px solid var(--bd);border-radius:20px;padding:16px;margin-bottom:12px;box-shadow:0 4px 16px rgba(59,29,110,.07)}
+.card h3{display:flex;align-items:center;gap:10px;margin:0;font-size:17px;color:var(--gd)}
+.card .ico{flex:none;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:20px;background:var(--gl)}
+.card .capa{display:block;width:96px;height:auto;margin:12px 0 0;border-radius:12px;box-shadow:0 3px 10px rgba(59,29,110,.15)}
+.kick{margin:12px 0 0;font-size:12px;font-weight:800;letter-spacing:.06em;color:var(--g)}
+.tit{margin:2px 0 0;font-weight:800}
+.res{margin:6px 0 0;font-size:14px;color:var(--mu)}
+.dados{margin:12px 0 0;display:grid;gap:6px;font-size:13px}
+.dados div{display:flex;flex-direction:column;border-top:1px solid var(--bd);padding-top:6px}
+.dados span{font-size:11px;font-weight:800;letter-spacing:.05em;color:var(--mu)}
+.dados b{font-weight:600;overflow-wrap:anywhere}
+.badge{display:inline-block;background:var(--gl);color:var(--gd);font-weight:800;font-size:12px;padding:2px 10px;border-radius:99px;width:max-content}
+.card.verde{border-color:var(--wa)}
+dialog{border:0;border-radius:24px;padding:0;width:min(100% - 20px,560px);max-height:92vh;color:var(--tx);box-shadow:0 20px 50px rgba(0,0,0,.3)}
+dialog::backdrop{background:rgba(31,26,51,.55)}
+.corpo{padding:18px 16px 4px;overflow-y:auto;max-height:calc(92vh - 92px)}
+.corpo h2{margin:0 0 4px;font-size:18px;color:var(--gd)}
+label{display:block;font-weight:700;margin:12px 0 6px}
+label small{font-weight:400;color:var(--mu)}
+input,select,textarea{width:100%;min-height:48px;font:inherit;padding:12px 14px;border:2px solid var(--bd);border-radius:14px;background:#fff;color:var(--tx)}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--g)}
+.rodape{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:8px 16px 16px;border-top:1px solid var(--bd)}
+.rodape .btn{margin-top:0}
+.erro{margin:12px 0 0;padding:10px 12px;border-radius:12px;background:#fff1f1;color:#9b1c1c;font-weight:600}
+[hidden]{display:none!important}
