@@ -1,22 +1,68 @@
 /* GERADOR DE DESAFIOS DEVMAPAS — HTML/CSS/JS puro, sem dependências */
 /* =========================================
-   CONFIGURAÇÕES DOS CARDS — DESAFIO PADRÃO
-   (usadas no tipo "Desafio geral": edite aqui UMA vez)
+   CENTRAL DE OFERTAS — DESAFIO PADRÃO (cards do "Desafio geral")
+   Cada oferta tem num só lugar: texto, imagem, link e o botão (CTA) usado pelo sistema.
+   Os textos entram no card como HTML: evite os caracteres < e &.
+   A ordem das ofertas abaixo é a ordem FIXA dos cards no desafio.
+   Campos:  id · cta (nome do botão rastreado) · classe (visual do card) · kick (rótulo)
+            titulo · textos (parágrafos) · importante (caixa, opcional) · botao (texto)
+            imagem + capaEmoji (capa, opcional) · iconeWhatsapp (opcional) · link
    ========================================= */
 const BASE_IMG = "https://devmapas.vercel.app/img/";   // pasta /img/ do site
+const OFERTAS = {
+  simulado: {
+    id: 'simulado', cta: 'simulado', classe: 'go a',
+    kick: '📄 SIMULADO DE INFORMÁTICA',
+    titulo: 'GOSTOU DE RESOLVER AS QUESTÕES ASSIM?',
+    textos: [
+      'O que você acabou de fazer foi uma demonstração interativa gratuita de como trabalho minhas questões e comentários.',
+      'No material completo, você encontra mais de 100 questões de Informática comentadas para continuar praticando e revisar seus conhecimentos.'
+    ],
+    importante: 'O MATERIAL COMPLETO É DISPONIBILIZADO EM PDF.',
+    botao: '📄 QUERO MAIS QUESTÕES',
+    imagem: BASE_IMG + 'capa-simulado.png', capaEmoji: '📄',
+    link: 'https://pay.kiwify.com.br/gpyqBa2'
+  },
+  mapas: {
+    id: 'mapas', cta: 'mapas', classe: 'go b',
+    kick: '🗺️ MAPAS DE INFORMÁTICA',
+    titulo: 'E QUANDO VOCÊ PRECISAR REVISAR O CONTEÚDO?',
+    textos: [
+      'Depois de praticar questões, você consegue perceber quais assuntos ainda precisam de atenção.',
+      'Os Mapas de Informática organizam os principais conteúdos de forma resumida para facilitar suas revisões.'
+    ],
+    botao: '🗺️ CONHECER OS MAPAS',
+    imagem: BASE_IMG + 'capa-mapas.png', capaEmoji: '🗺️',
+    link: 'https://pay.kiwify.com.br/6nLacpi'
+  },
+  personalizado: {
+    id: 'personalizado', cta: 'whatsapp', classe: 'go wa',
+    kick: '🎯 SIMULADO PERSONALIZADO',
+    titulo: 'ESTUDANDO PARA UM CONCURSO ESPECÍFICO?',
+    textos: ['Posso preparar um simulado personalizado de Informática, de acordo com o seu concurso e sua banca.'],
+    botao: 'FALAR COMIGO NO WHATSAPP', iconeWhatsapp: true,
+    link: 'https://wa.me/5561996169903'
+  },
+  grupo: {
+    id: 'grupo', cta: 'grupo', classe: 'go gr',
+    kick: '💚 GRUPO GRATUITO DE ESTUDOS',
+    titulo: 'QUER CONTINUAR RECEBENDO QUESTÕES E DICAS?',
+    textos: ['Entre no grupo gratuito do DevMapas e receba questões, dicas e conteúdos de Informática para concursos diretamente no WhatsApp.'],
+    botao: 'ENTRAR NO GRUPO GRATUITO', iconeWhatsapp: true,
+    link: 'https://chat.whatsapp.com/EB9OpUq1uOl1KA5TdiLheD?mode=gi_t'
+  }
+};
+
+// PADRAO é derivado de OFERTAS (links por botão, imagens das capas) — não edite aqui, edite OFERTAS.
 const PADRAO = {
-  imagens: {
-    simulado: BASE_IMG + "capa-simulado.png",
-    mapas: BASE_IMG + "capa-mapas.png"
-  },
-  links: {
-    simulado: "https://pay.kiwify.com.br/gpyqBa2",
-    mapas: "https://pay.kiwify.com.br/6nLacpi",
-    whatsapp: "https://wa.me/5561996169903",
-    grupo: "https://chat.whatsapp.com/EB9OpUq1uOl1KA5TdiLheD?mode=gi_t"
-  },
+  imagens: {},
+  links: {},
   imagemCompartilhamento: BASE_IMG + "desafio-informatica.png"   // prévia ao compartilhar (igual para todos)
 };
+Object.values(OFERTAS).forEach(o => {
+  PADRAO.links[o.cta] = o.link;
+  if (o.imagem) PADRAO.imagens[o.id] = o.imagem;
+});
 
 /* =========================================
    CONFIGURAÇÕES — SIMULADO ESPECÍFICO
@@ -80,48 +126,23 @@ function parseQuestao(texto, n) {
 const WA_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>';
 
 // Cards finais do DESAFIO GERAL (4 cards)
-// Cards finais do DESAFIO GERAL — um por constante (textos e visual iguais aos de sempre)
-const CARD_GERAL_SIMULADO = `<div class="go a">
-      <div class="capa" data-capa="simulado">📄</div>
-      <div class="kick">📄 SIMULADO DE INFORMÁTICA</div>
-      <h2>GOSTOU DE RESOLVER AS QUESTÕES ASSIM?</h2>
-      <p>O que você acabou de fazer foi uma demonstração interativa gratuita de como trabalho minhas questões e comentários.</p>
-      <p>No material completo, você encontra mais de 100 questões de Informática comentadas para continuar praticando e revisar seus conhecimentos.</p>
-      <div class="importante"><span>📌 IMPORTANTE</span>O MATERIAL COMPLETO É DISPONIBILIZADO EM PDF.</div>
-      <a class="btn" data-cta="simulado" target="_blank" rel="noopener">📄 QUERO MAIS QUESTÕES</a>
-    </div>`;
+// Monta o HTML de um card do DESAFIO GERAL a partir da oferta em OFERTAS (estrutura e visual iguais aos de sempre)
+function cardGeral(o) {
+  const l = [];
+  if (o.imagem) l.push('<div class="capa" data-capa="' + o.id + '">' + o.capaEmoji + '</div>');
+  l.push('<div class="kick">' + o.kick + '</div>');
+  l.push('<h2>' + o.titulo + '</h2>');
+  o.textos.forEach(t => l.push('<p>' + t + '</p>'));
+  if (o.importante) l.push('<div class="importante"><span>📌 IMPORTANTE</span>' + o.importante + '</div>');
+  l.push(o.iconeWhatsapp
+    ? '<a class="btn wbtn" data-cta="' + o.cta + '" target="_blank" rel="noopener">' + WA_SVG + '<span>' + o.botao + '</span></a>'
+    : '<a class="btn" data-cta="' + o.cta + '" target="_blank" rel="noopener">' + o.botao + '</a>');
+  return '<div class="' + o.classe + '">\n      ' + l.join('\n      ') + '\n    </div>';
+}
 
-const CARD_GERAL_MAPAS = `<div class="go b">
-      <div class="capa" data-capa="mapas">🗺️</div>
-      <div class="kick">🗺️ MAPAS DE INFORMÁTICA</div>
-      <h2>E QUANDO VOCÊ PRECISAR REVISAR O CONTEÚDO?</h2>
-      <p>Depois de praticar questões, você consegue perceber quais assuntos ainda precisam de atenção.</p>
-      <p>Os Mapas de Informática organizam os principais conteúdos de forma resumida para facilitar suas revisões.</p>
-      <a class="btn" data-cta="mapas" target="_blank" rel="noopener">🗺️ CONHECER OS MAPAS</a>
-    </div>`;
-
-const CARD_GERAL_PERSONALIZADO = `<div class="go wa">
-      <div class="kick">🎯 SIMULADO PERSONALIZADO</div>
-      <h2>ESTUDANDO PARA UM CONCURSO ESPECÍFICO?</h2>
-      <p>Posso preparar um simulado personalizado de Informática, de acordo com o seu concurso e sua banca.</p>
-      <a class="btn wbtn" data-cta="whatsapp" target="_blank" rel="noopener">${WA_SVG}<span>FALAR COMIGO NO WHATSAPP</span></a>
-    </div>`;
-
-const CARD_GERAL_GRUPO = `<div class="go gr">
-      <div class="kick">💚 GRUPO GRATUITO DE ESTUDOS</div>
-      <h2>QUER CONTINUAR RECEBENDO QUESTÕES E DICAS?</h2>
-      <p>Entre no grupo gratuito do DevMapas e receba questões, dicas e conteúdos de Informática para concursos diretamente no WhatsApp.</p>
-      <a class="btn wbtn" data-cta="grupo" target="_blank" rel="noopener">${WA_SVG}<span>ENTRAR NO GRUPO GRATUITO</span></a>
-    </div>`;
-
-// Opções do desafio geral, NA ORDEM FIXA de exibição. "ctas" = botões rastreados que o card contém.
+// Opções do desafio geral, NA ORDEM FIXA de OFERTAS. "ctas" = botões rastreados que o card contém.
 const MAX_CARDS_GERAL = 4;
-const OPCOES_CARDS_GERAL = [
-  { id: 'simulado', html: CARD_GERAL_SIMULADO, ctas: ['simulado'] },
-  { id: 'mapas', html: CARD_GERAL_MAPAS, ctas: ['mapas'] },
-  { id: 'personalizado', html: CARD_GERAL_PERSONALIZADO, ctas: ['whatsapp'] },
-  { id: 'grupo', html: CARD_GERAL_GRUPO, ctas: ['grupo'] }
-];
+const OPCOES_CARDS_GERAL = Object.values(OFERTAS).map(o => ({ id: o.id, html: cardGeral(o), ctas: [o.cta] }));
 
 // Cards finais do SIMULADO ESPECÍFICO (2 cards) — conteúdo dinâmico
 function cardsEspecifico(d) {
