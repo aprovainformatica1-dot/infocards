@@ -16,18 +16,17 @@ const BASE_IMG = "https://devmapas.vercel.app/img/";   // pasta /img/ do site
 // Ofertas gerais — são os 4 cards finais do "Desafio geral"
 const OFERTAS = {
   simulado: {
-    id: 'simulado', nome: 'Simulado', icone: '📄', cta: 'simulado', classe: 'go a',
-    kick: '📄 SIMULADO DE INFORMÁTICA',
-    titulo: 'QUER CONTINUAR PRATICANDO?',
-    textos: [
-      'O que você acabou de fazer foi uma demonstração interativa gratuita de como trabalho minhas questões e comentários.',
-      'No material completo, você encontra mais de 100 questões de Informática comentadas para continuar praticando e revisar seus conhecimentos.'
-    ],
-    importante: 'O MATERIAL COMPLETO É DISPONIBILIZADO EM PDF.',
-    botao: '📄 QUERO MAIS QUESTÕES',
-    imagem: BASE_IMG + 'capa-simulado.png', capaEmoji: '📄',
-    link: 'https://pay.kiwify.com.br/gpyqBa2'
-  },
+  id: 'simulado', nome: 'Simulado', icone: '📄', cta: 'simulado', classe: 'go a',
+  kick: '📄 SIMULADO DE INFORMÁTICA',
+  titulo: 'EM CONCURSO, NÃO BASTA ESTUDAR. É PRECISO PRATICAR!',
+  textos: [
+    'É resolvendo questões que você descobre quais assuntos ainda precisam de atenção.',
+    'Pratique com <strong>100 questões de Informática comentadas</strong> e reforce seus conhecimentos antes da prova.'
+  ],
+  botao: '📄 QUERO AS 100 QUESTÕES',
+  imagem: BASE_IMG + 'capa-simulado.png', capaEmoji: '📄',
+  link: 'https://pay.kiwify.com.br/gpyqBa2'
+},
   mapas: {
     id: 'mapas', nome: 'Mapas', icone: '🗺️', cta: 'mapas', classe: 'go b',
     kick: '🗺️ MAPAS DE INFORMÁTICA',
