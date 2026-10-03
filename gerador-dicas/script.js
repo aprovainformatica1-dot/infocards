@@ -172,92 +172,37 @@ function fim() {
 </body>
 </html>`;
 
-// ---------- Formulário: cards e questões ----------
+// ---------- Formulário simplificado: nome + material bruto + conteúdo estruturado (JSON) ----------
 const mk = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt !== undefined) e.textContent = txt; return e; };
-function campo(rotulo, el_) { const l = mk('label', '', rotulo); l.append(el_); return l; }
-function input(cls, ph) { const i = mk('input', cls); i.type = 'text'; if (ph) i.placeholder = ph; return i; }
-function area(cls, ph) { const t = mk('textarea', cls); if (ph) t.placeholder = ph; return t; }
 
-function renumerar() {
-  document.querySelectorAll('.card-item h3').forEach((h, i) => { h.textContent = 'Card ' + (i + 1); });
-  document.querySelectorAll('.q-item h3').forEach((h, i) => { h.textContent = 'Questão ' + (i + 1); });
-  const n = document.querySelectorAll('.q-item').length;
-  $('addQ').disabled = n >= MAX_Q;
-  $('avisoQ').textContent = n >= MAX_Q ? 'Máximo de ' + MAX_Q + ' questões.' : (n < MIN_Q ? 'Adicione pelo menos ' + MIN_Q + ' questões.' : '');
-}
-
-function novoCard() {
-  const d = mk('div', 'item card-item'); d.append(mk('h3'));
-  d.append(campo('Título do card', input('c-titulo', 'Atalho Ctrl + T')), campo('Conteúdo', area('c-conteudo', 'Uma linha por parágrafo')), campo('🧠 Para memorizar (opcional)', area('c-mem')));
-  const r = mk('button', 'btn rem', 'REMOVER CARD'); r.type = 'button';
-  r.addEventListener('click', () => { d.remove(); renumerar(); });
-  d.append(r); $('cards').append(d); renumerar();
-}
-
-function novaQuestao() {
-  const d = mk('div', 'item q-item'); d.append(mk('h3'));
-  const sel = mk('select', 'q-certa'); ['A', 'B', 'C'].forEach((l) => sel.add(new Option('Alternativa ' + l, l)));
-  const alts = mk('div', 'alts'); ['A', 'B', 'C'].forEach((l) => alts.append(campo('Alternativa ' + l, input('q-alt'))));
-  d.append(campo('Enunciado', area('q-enun')), alts, campo('Alternativa correta', sel), campo('Explicação', area('q-exp')), campo('🧠 Para memorizar (opcional)', area('q-mem')));
-  const r = mk('button', 'btn rem', 'REMOVER QUESTÃO'); r.type = 'button';
-  r.addEventListener('click', () => { d.remove(); renumerar(); });
-  d.append(r); $('questoes').append(d); renumerar();
-}
+const EXEMPLO = JSON.stringify({
+  titulo: 'PRINCIPAIS PROTOCOLOS',
+  fraseFinal: 'Agora você já revisou os principais protocolos cobrados em concursos.',
+  cards: [
+    { itens: [
+      { nome: 'HTTP', explicacao: 'Usado para transferência de páginas e recursos da Web.', memoria: 'HTTP → Web' },
+      { nome: 'HTTPS', explicacao: 'Versão segura do HTTP, com criptografia.', memoria: 'HTTPS → Web + seguro' }
+    ] },
+    { itens: [
+      { nome: 'DNS', explicacao: 'Traduz nomes de domínio para endereços IP.', memoria: 'DNS → nome vira IP' }
+    ] }
+  ],
+  questoes: [
+    { pergunta: 'Qual protocolo é usado para transferência de páginas e recursos da Web?', alternativas: ['HTTP', 'SMTP', 'FTP'], correta: 0,
+      comentario: 'O HTTP é utilizado na transferência de páginas e recursos da Web.', memoria: 'HTTP → Web' },
+    { pergunta: 'Qual protocolo traduz nomes de domínio para endereços IP?', alternativas: ['DHCP', 'DNS', 'POP3'], correta: 1,
+      comentario: 'O DNS faz a tradução de nomes de domínio para endereços IP.', memoria: 'DNS → nome vira IP' },
+    { pergunta: 'Qual protocolo é a versão segura do HTTP?', alternativas: ['FTP', 'IMAP', 'HTTPS'], correta: 2,
+      comentario: 'O HTTPS usa criptografia para proteger a comunicação.' }
+  ]
+}, null, 2);
+$('formato').textContent = EXEMPLO;
 
 function slug(v) {
   return v.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\.html$/, '').replace(/[^a-z0-9_-]+/g, '-').replace(/^-+|-+$/g, '');
 }
 $('nome').addEventListener('input', () => { $('prev').textContent = 'Arquivo gerado: ' + (slug($('nome').value) || 'dica') + '.html → pasta /dicas/'; });
-$('addCard').addEventListener('click', novoCard);
-$('addQ').addEventListener('click', () => { if (document.querySelectorAll('.q-item').length < MAX_Q) novaQuestao(); });
-
-// ---------- Validar e gerar ----------
-const val = (n, sel) => n.querySelector(sel).value.trim();
-$('gerar').addEventListener('click', () => {
-  $('ok').hidden = true; $('erro').hidden = true;
-  const erros = [];
-  const nome = slug($('nome').value);
-  if (!$('nome').value.trim()) erros.push('Preencha o nome interno da dica.');
-  else if (!nome) erros.push('O nome interno precisa ter letras ou números.');
-  const titulo = $('titulo').value.trim(), frase = $('frase').value.trim();
-  if (!titulo) erros.push('Preencha o título principal.');
-  if (!frase) erros.push('Preencha a frase final.');
-
-  const cards = [];
-  const itens = [...document.querySelectorAll('.card-item')];
-  if (!itens.length) erros.push('Adicione pelo menos 1 card de conteúdo.');
-  itens.forEach((c, i) => {
-    const t = val(c, '.c-titulo'), ct = val(c, '.c-conteudo');
-    if (!t) erros.push('Card ' + (i + 1) + ': preencha o título.');
-    if (!ct) erros.push('Card ' + (i + 1) + ': preencha o conteúdo.');
-    cards.push({ t, c: ct, m: val(c, '.c-mem') });
-  });
-
-  const qs = [], qitens = [...document.querySelectorAll('.q-item')];
-  if (qitens.length < MIN_Q) erros.push('A Rodada Relâmpago precisa de ' + MIN_Q + ' a ' + MAX_Q + ' questões (agora há ' + qitens.length + ').');
-  qitens.forEach((q, i) => {
-    const n = 'Questão ' + (i + 1) + ': ';
-    const e = val(q, '.q-enun'), x = val(q, '.q-exp');
-    const a = [...q.querySelectorAll('.q-alt')].map((v) => v.value.trim());
-    if (!e) erros.push(n + 'preencha o enunciado.');
-    a.forEach((v, k) => { if (!v) erros.push(n + 'preencha a alternativa ' + 'ABC'[k] + '.'); });
-    if (!x) erros.push(n + 'preencha a explicação.');
-    qs.push({ e, a, c: 'ABC'.indexOf(q.querySelector('.q-certa').value), x, m: val(q, '.q-mem') });
-  });
-  if (erros.length) { $('erro').textContent = erros.join('\n'); $('erro').hidden = false; $('erro').scrollIntoView({ block: 'center' }); return; }
-
-  const ofertasIds = [...document.querySelectorAll('.of-sel:checked')].map((c) => c.value);   // ordem da lista = mapas, depois gerais
-  const dados = JSON.stringify({ f: frase, o: ofertasIds, cards, q: qs }).replace(/</g, '\\u003c').replace(/\u2028|\u2029/g, ' ');
-  const html = MODELO.split('__TITULO__').join(esc(titulo)).split('__CONFIG__').join(ofertasIds.length ? '<script src="../config/ofertas.js"></' + 'script>\n' : '')
-    .split('__DADOS__').join(dados);
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([html], { type: 'text/html;charset=utf-8' }));
-  a.download = nome + '.html';
-  document.body.appendChild(a); a.click(); a.remove();
-  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
-  $('ok').textContent = '✅ Dica gerada com sucesso!\nEnvie o arquivo ' + nome + '.html para a pasta /dicas/ do site (ficará em /dicas/' + nome + '.html).' + (ofertasIds.length ? '\nAs ofertas são lidas de /config/ofertas.js: mantenha essa pasta no site.' : '');
-  $('ok').hidden = false;
-});
+$('exemplo').addEventListener('click', () => { $('estruturado').value = EXEMPLO; });
 
 // ---------- Ofertas (lidas de ../config/ofertas.js; sem limite) ----------
 (function () {
@@ -278,5 +223,77 @@ $('gerar').addEventListener('click', () => {
   grupo('OFERTAS GERAIS', gerais);          // depois as gerais, na ordem de OFERTAS
 })();
 
-novoCard();
-for (let i = 0; i < MIN_Q; i++) novaQuestao();
+
+// Lê e valida o conteúdo estruturado. Não interpreta texto livre: só converte o JSON na estrutura da Dica.
+function lerEstruturado(texto) {
+  const t = texto.trim().replace(/^```[a-zA-Z]*\s*/, '').replace(/\s*```$/, '');   // aceita o JSON dentro de um bloco ``` do ChatGPT
+  let j;
+  try { j = JSON.parse(t); }
+  catch (e) { return { erros: ['O conteúdo estruturado não é um JSON válido (' + e.message + '). Confira vírgulas, aspas e chaves.'] }; }
+  if (!j || typeof j !== 'object' || Array.isArray(j)) return { erros: ['O conteúdo estruturado precisa ser um objeto { ... } com "titulo", "cards" e "questoes".'] };
+  const s = (v) => (typeof v === 'string' ? v.trim() : '');
+  const erros = [], cards = [], qs = [];
+  const titulo = s(j.titulo);
+  if (!titulo) erros.push('Falta o "titulo" no conteúdo estruturado.');
+
+  if (!Array.isArray(j.cards) || !j.cards.length) erros.push('É preciso ter pelo menos 1 card em "cards".');
+  else j.cards.forEach((c, i) => {
+    const n = 'Card ' + (i + 1) + ': ';
+    const itens = c && Array.isArray(c.itens) ? c.itens : [];
+    if (!itens.length) return erros.push(n + '"itens" precisa ter 1 ou 2 itens.');
+    if (itens.length > 2) return erros.push(n + 'no máximo 2 itens por card (tem ' + itens.length + ').');
+    let ok = true;
+    itens.forEach((x, k) => {
+      if (!s(x && x.nome)) { erros.push(n + 'item ' + (k + 1) + ': falta "nome".'); ok = false; }
+      if (!s(x && x.explicacao)) { erros.push(n + 'item ' + (k + 1) + ': falta "explicacao".'); ok = false; }
+    });
+    if (ok) cards.push({
+      t: s(c.titulo) || itens.map((x) => s(x.nome)).join(' + '),
+      c: itens.map((x) => s(x.nome) + ': ' + s(x.explicacao)).join('\n'),
+      m: itens.map((x) => s(x.memoria)).filter(Boolean).join('\n')
+    });
+  });
+
+  const lista = Array.isArray(j.questoes) ? j.questoes : [];
+  if (lista.length < MIN_Q || lista.length > MAX_Q) erros.push('A Rodada Relâmpago precisa de ' + MIN_Q + ' a ' + MAX_Q + ' questões em "questoes" (agora há ' + lista.length + ').');
+  lista.forEach((q, i) => {
+    const n = 'Questão ' + (i + 1) + ': ';
+    const e = s(q && q.pergunta), x = s(q && q.comentario);
+    const a = q && Array.isArray(q.alternativas) ? q.alternativas.map((v) => s(v)) : [];
+    let ok = true;
+    if (!e) { erros.push(n + 'falta "pergunta".'); ok = false; }
+    if (a.length !== 3 || a.some((v) => !v)) { erros.push(n + '"alternativas" precisa ter exatamente 3 textos preenchidos.'); ok = false; }
+    let c = q ? q.correta : undefined;
+    if (typeof c === 'string' && /^[abc]$/i.test(c.trim())) c = 'abc'.indexOf(c.trim().toLowerCase());
+    if (!Number.isInteger(c) || c < 0 || c > 2) { erros.push(n + '"correta" precisa ser 0, 1 ou 2 (0 = primeira alternativa, 1 = segunda, 2 = terceira).'); ok = false; }
+    if (!x) { erros.push(n + 'falta "comentario".'); ok = false; }
+    if (ok) qs.push({ e, a, c, x, m: s(q.memoria) });
+  });
+  return { erros, titulo, f: s(j.fraseFinal), cards, q: qs };
+}
+
+// ---------- Validar e gerar ----------
+$('gerar').addEventListener('click', () => {
+  $('ok').hidden = true; $('erro').hidden = true;
+  const erros = [];
+  const nome = slug($('nome').value);
+  if (!$('nome').value.trim()) erros.push('Preencha o nome interno da dica.');
+  else if (!nome) erros.push('O nome interno precisa ter letras ou números.');
+  let L = null;
+  if (!$('estruturado').value.trim()) erros.push('Cole o conteúdo estruturado (o JSON que o ChatGPT devolveu).');
+  else { L = lerEstruturado($('estruturado').value); erros.push(...L.erros); }
+  if (erros.length) { $('erro').textContent = erros.join('\n'); $('erro').hidden = false; $('erro').scrollIntoView({ block: 'center' }); return; }
+
+  const ofertasIds = [...document.querySelectorAll('.of-sel:checked')].map((c) => c.value);   // ordem da lista = mapas, depois gerais
+  const dados = JSON.stringify({ f: L.f, o: ofertasIds, cards: L.cards, q: L.q }).replace(/</g, '\\u003c').replace(/\u2028|\u2029/g, ' ');
+  const html = MODELO.split('__TITULO__').join(esc(L.titulo))
+    .split('__CONFIG__').join(ofertasIds.length ? '<script src="../config/ofertas.js"></' + 'script>\n' : '')
+    .split('__DADOS__').join(dados);
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([html], { type: 'text/html;charset=utf-8' }));
+  a.download = nome + '.html';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  $('ok').textContent = '✅ Dica gerada com sucesso!\nEnvie o arquivo ' + nome + '.html para a pasta /dicas/ do site (ficará em /dicas/' + nome + '.html).' + (ofertasIds.length ? '\nAs ofertas são lidas de /config/ofertas.js: mantenha essa pasta no site.' : '');
+  $('ok').hidden = false;
+});
