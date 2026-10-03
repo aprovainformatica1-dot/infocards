@@ -12,32 +12,31 @@
   <header class="hero">
     <div class="brand">DEVMAPAS</div>
     <h1>Gerador de Dicas</h1>
-    <p>Preencha a dica e gere uma página pronta para publicar.</p>
+    <p>Cole o conteúdo estruturado e gere a página da Dica.</p>
   </header>
 
   <section class="card">
     <h2>1. Identificação</h2>
     <label for="nome">Nome interno da dica</label>
-    <input id="nome" type="text" placeholder="Atalhos do Excel">
+    <input id="nome" type="text" placeholder="protocolos">
     <small id="prev">Arquivo gerado: dica.html → pasta /dicas/</small>
-    <label for="titulo">Título principal</label>
-    <input id="titulo" type="text" placeholder="3 atalhos do Excel que mais caem em prova">
-    <label for="frase">Frase final</label>
-    <input id="frase" type="text" placeholder="Praticar um pouco por dia faz toda a diferença.">
   </section>
 
   <section class="card">
-    <h2>2. Cards de conteúdo</h2>
-    <div id="cards"></div>
-    <button type="button" class="btn ghost" id="addCard">+ ADICIONAR CARD</button>
+    <h2>2. Material bruto <small>(opcional)</small></h2>
+    <small>Só para você guardar o material enquanto prepara o conteúdo estruturado. Não gera a Dica sozinho.</small>
+    <textarea id="bruto" class="grande" placeholder="Cole aqui o material bruto…"></textarea>
   </section>
 
   <section class="card">
-    <h2>3. ⚡ Rodada relâmpago</h2>
-    <small>De 3 a 4 questões, com 3 alternativas cada.</small>
-    <div id="questoes"></div>
-    <button type="button" class="btn ghost" id="addQ">+ ADICIONAR QUESTÃO</button>
-    <small id="avisoQ"></small>
+    <h2>3. Conteúdo estruturado</h2>
+    <small>Cole o JSON que o ChatGPT devolveu a partir do seu material. Cada card tem 1 ou 2 itens; a rodada tem de 3 a 4 questões com 3 alternativas. Em "correta": 0 = primeira alternativa, 1 = segunda, 2 = terceira.</small>
+    <textarea id="estruturado" class="grande mono" spellcheck="false" placeholder='{ "titulo": "...", "fraseFinal": "...", "cards": [...], "questoes": [...] }'></textarea>
+    <button type="button" class="btn ghost" id="exemplo">PREENCHER COM EXEMPLO</button>
+    <details>
+      <summary>Ver formato esperado</summary>
+      <pre id="formato" class="mono"></pre>
+    </details>
   </section>
 
   <section class="card" id="secOfertas">
