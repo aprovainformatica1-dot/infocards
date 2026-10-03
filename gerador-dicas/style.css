@@ -30,3 +30,8 @@ label.chk{display:flex;align-items:center;gap:12px;margin:8px 0 0;padding:12px 1
 label.chk:has(input:checked){border-color:var(--g);background:var(--gl)}
 label.chk input{flex:none;width:22px;height:22px;min-height:0;padding:0;accent-color:var(--g)}
 .grp{margin:14px 0 0;font-size:12px;font-weight:800;letter-spacing:.06em;color:var(--g)}
+textarea.grande{min-height:180px;margin-top:10px}
+.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px}
+details{margin-top:12px}
+summary{cursor:pointer;font-weight:700;color:var(--gd);min-height:44px;display:flex;align-items:center}
+pre{white-space:pre-wrap;overflow-wrap:anywhere;background:var(--gl);border-radius:14px;padding:12px;margin:8px 0 0;max-height:320px;overflow:auto}
