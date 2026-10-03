@@ -21,7 +21,7 @@ const OFERTAS = {
   titulo: 'EM CONCURSO, NÃO BASTA ESTUDAR. É PRECISO PRATICAR!',
   textos: [
     'É resolvendo questões que você descobre quais assuntos ainda precisam de atenção.',
-    'Pratique com <b>100 questões de Informática comentadas</b> e reforce seus conhecimentos antes da prova.'
+    'Pratique com 100 questões de Informática comentadas e reforce seus conhecimentos antes da prova.'
   ],
   botao: '📄 QUERO AS 100 QUESTÕES',
   imagem: BASE_IMG + 'capa-simulado.png', capaEmoji: '📄',
