@@ -16,7 +16,7 @@ const MODELO = `<!DOCTYPE html>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 [hidden]{display:none!important}
-.app{max-width:560px;margin:0 auto;padding:12px 12px 40px}
+.app{max-width:560px;margin:0 auto;padding:12px 12px calc(40px + var(--barra,0px))}
 .hero{background:linear-gradient(160deg,#6a3fc4,#3b1d6e);color:#fff;border-radius:24px;padding:14px 16px;text-align:center;box-shadow:0 8px 22px rgba(59,29,110,.2)}
 .kick{font-size:12px;font-weight:800;letter-spacing:.14em;opacity:.9}
 h1{font-size:20px;line-height:1.25;margin:6px 0 0}
@@ -52,6 +52,14 @@ h1{font-size:20px;line-height:1.25;margin:6px 0 0}
 .final h2{margin:0;color:var(--gd)}
 .placar{font-size:40px;font-weight:800;color:var(--gd);line-height:1.2}
 .frase{margin:10px 0 0;font-size:18px;font-weight:700;color:var(--gd)}
+html{scroll-padding-bottom:var(--barra,0px)}
+.ofertas{position:fixed;left:0;right:0;bottom:0;z-index:20;background:rgba(255,255,255,.97);border-top:1px solid var(--bd);box-shadow:0 -6px 20px rgba(59,29,110,.14);padding:8px 12px calc(8px + env(safe-area-inset-bottom,0px));max-height:34vh;overflow-y:auto;overscroll-behavior:contain}
+.ofertas-in{max-width:560px;margin:0 auto;display:grid;gap:8px}
+.of{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;min-height:52px;padding:8px 10px;border:2px solid var(--bd);border-radius:14px;background:#fff;color:var(--tx);text-decoration:none}
+.of .t{flex:1 1 130px;min-width:0;font-size:12px;font-weight:800;letter-spacing:.03em;color:var(--gd);overflow-wrap:anywhere}
+.of .b{flex:0 1 auto;max-width:100%;background:var(--g);color:#fff;font-weight:800;font-size:13px;padding:11px 14px;border-radius:12px;text-align:center}
+.of.verde{border-color:#25D366;background:#e9fbef}.of.verde .t{color:#075E54}.of.verde .b{background:#25D366;color:#053b1d}
+.of.escuro{border-color:#075E54}.of.escuro .t{color:#075E54}.of.escuro .b{background:#075E54}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -66,10 +74,9 @@ h1{font-size:20px;line-height:1.25;margin:6px 0 0}
     <div class="nav"><button class="setas" id="ant" aria-label="Card anterior">‹</button><div class="dots" id="dots"></div><button class="setas" id="prox" aria-label="Próximo card">›</button></div>
   </section>
   <section id="rodada" hidden aria-label="Rodada relâmpago"></section>
-  <!-- ÁREA RESERVADA PARA AS OFERTAS (aparece depois da rodada; ainda não implementada) -->
-  <section id="area-ofertas" aria-label="Ofertas"></section>
 </div>
-<script>
+<aside class="ofertas" id="area-ofertas" aria-label="Ofertas" hidden></aside>
+__CONFIG__<script>
 const D = __DADOS__;
 const NL = String.fromCharCode(10);
 const $ = (id) => document.getElementById(id);
@@ -134,12 +141,31 @@ function responder(i, opts, card) {
   fb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
+/* ----- ofertas fixas na parte inferior: só os IDs ficam salvos; os dados vêm de ../config/ofertas.js ----- */
+(function () {
+  if (!D.o || !D.o.length || typeof OFERTAS === 'undefined') return;
+  const mapas = typeof MAPAS_INDIVIDUAIS === 'undefined' ? {} : MAPAS_INDIVIDUAIS;
+  const lista = D.o.map((id) => mapas[id] || OFERTAS[id]).filter(Boolean);
+  if (!lista.length) return;
+  const barra = $('area-ofertas'), dentro = el('div', 'ofertas-in');
+  lista.forEach((o) => {
+    const cl = o.classe || '';
+    const a = el('a', 'of' + (cl.indexOf('wa') >= 0 ? ' verde' : cl.indexOf('gr') >= 0 ? ' escuro' : ''));
+    if (o.link && /^https?:/i.test(o.link)) { a.href = o.link; a.target = '_blank'; a.rel = 'noopener'; }
+    a.append(el('span', 't', o.kick || o.nome || ''), el('span', 'b', o.botao || ''));
+    dentro.append(a);
+  });
+  barra.append(dentro); barra.hidden = false;
+  const medir = () => document.documentElement.style.setProperty('--barra', barra.offsetHeight + 'px');
+  medir(); window.addEventListener('resize', medir);
+  if (window.ResizeObserver) new ResizeObserver(medir).observe(barra);
+})();
+
 function fim() {
   rodada.textContent = '';
   const c = el('div', 'card final');
   c.append(el('h2', '', '🎉 RODADA CONCLUÍDA!'), el('div', 'placar', acertos + '/' + D.q.length), el('p', 'frase', D.f));
   rodada.append(c);
-  $('area-ofertas').hidden = false;
   c.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 <\/script>
@@ -220,16 +246,37 @@ $('gerar').addEventListener('click', () => {
   });
   if (erros.length) { $('erro').textContent = erros.join('\n'); $('erro').hidden = false; $('erro').scrollIntoView({ block: 'center' }); return; }
 
-  const dados = JSON.stringify({ f: frase, cards, q: qs }).replace(/</g, '\\u003c').replace(/\u2028|\u2029/g, ' ');
-  const html = MODELO.split('__TITULO__').join(esc(titulo)).split('__DADOS__').join(dados);
+  const ofertasIds = [...document.querySelectorAll('.of-sel:checked')].map((c) => c.value);   // ordem da lista = mapas, depois gerais
+  const dados = JSON.stringify({ f: frase, o: ofertasIds, cards, q: qs }).replace(/</g, '\\u003c').replace(/\u2028|\u2029/g, ' ');
+  const html = MODELO.split('__TITULO__').join(esc(titulo)).split('__CONFIG__').join(ofertasIds.length ? '<script src="../config/ofertas.js"></' + 'script>\n' : '')
+    .split('__DADOS__').join(dados);
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([html], { type: 'text/html;charset=utf-8' }));
   a.download = nome + '.html';
   document.body.appendChild(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(a.href), 2000);
-  $('ok').textContent = '✅ Dica gerada com sucesso!\nEnvie o arquivo ' + nome + '.html para a pasta /dicas/ do site (ficará em /dicas/' + nome + '.html).';
+  $('ok').textContent = '✅ Dica gerada com sucesso!\nEnvie o arquivo ' + nome + '.html para a pasta /dicas/ do site (ficará em /dicas/' + nome + '.html).' + (ofertasIds.length ? '\nAs ofertas são lidas de /config/ofertas.js: mantenha essa pasta no site.' : '');
   $('ok').hidden = false;
 });
+
+// ---------- Ofertas (lidas de ../config/ofertas.js; sem limite) ----------
+(function () {
+  const box = $('listaOfertas');
+  const mapas = typeof MAPAS_INDIVIDUAIS === 'undefined' ? [] : Object.values(MAPAS_INDIVIDUAIS);
+  const gerais = typeof OFERTAS === 'undefined' ? [] : Object.values(OFERTAS);
+  if (typeof OFERTAS === 'undefined') { box.append(mk('p', 'msg erro', 'Não encontrei ../config/ofertas.js: não dá para escolher ofertas agora.')); return; }
+  const grupo = (titulo, itens) => {
+    if (!itens.length) return;
+    box.append(mk('p', 'grp', titulo));
+    itens.forEach((o) => {
+      const l = mk('label', 'chk'), c = mk('input'); c.type = 'checkbox'; c.value = o.id; c.className = 'of-sel';
+      l.append(c, mk('span', '', (o.icone || '🎁') + ' ' + (o.nome || o.id)));
+      box.append(l);
+    });
+  };
+  grupo('MAPAS INDIVIDUAIS', mapas);       // mapas individuais primeiro
+  grupo('OFERTAS GERAIS', gerais);          // depois as gerais, na ordem de OFERTAS
+})();
 
 novoCard();
 for (let i = 0; i < MIN_Q; i++) novaQuestao();
