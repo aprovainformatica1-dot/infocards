@@ -18,7 +18,7 @@ const OFERTAS = {
   simulado: {
     id: 'simulado', nome: 'Simulado', icone: '📄', cta: 'simulado', classe: 'go a',
     kick: '📄 SIMULADO DE INFORMÁTICA',
-    titulo: 'GOSTOU DE RESOLVER AS QUESTÕES ASSIM?',
+    titulo: 'QUER CONTINUAR PRATICANDO?',
     textos: [
       'O que você acabou de fazer foi uma demonstração interativa gratuita de como trabalho minhas questões e comentários.',
       'No material completo, você encontra mais de 100 questões de Informática comentadas para continuar praticando e revisar seus conhecimentos.'
