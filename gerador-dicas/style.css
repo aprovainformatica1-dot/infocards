@@ -26,3 +26,7 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--g)}
 .msg{margin-top:14px;padding:12px 14px;border-radius:14px;font-weight:600;white-space:pre-line}
 .erro{background:#fff1f1;color:#9b1c1c}
 .ok{background:#e8f7ee;color:#0f3d24}
+label.chk{display:flex;align-items:center;gap:12px;margin:8px 0 0;padding:12px 14px;border:2px solid var(--bd);border-radius:14px;font-weight:700;cursor:pointer;min-height:52px}
+label.chk:has(input:checked){border-color:var(--g);background:var(--gl)}
+label.chk input{flex:none;width:22px;height:22px;min-height:0;padding:0;accent-color:var(--g)}
+.grp{margin:14px 0 0;font-size:12px;font-weight:800;letter-spacing:.06em;color:var(--g)}
