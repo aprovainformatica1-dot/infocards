@@ -4,6 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>PRINCIPAIS PROTOCOLOS — Dica DevMapas</title>
+<meta name="description" content="Toque nos itens, revise o conteúdo e teste seus conhecimentos.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="PRINCIPAIS PROTOCOLOS — Dica DevMapas">
+<meta property="og:description" content="Toque nos itens, revise o conteúdo e teste seus conhecimentos.">
+<meta name="twitter:card" content="summary">
 <style>
 :root{--g:#7a4fd6;--gd:#3b1d6e;--gl:#efe8fb;--bg:#f7f4fd;--tx:#1f1a33;--mu:#6b6485;--bd:#e4def0;--ok:#16a34a;--bad:#d97706;--wa:#25D366}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -13,19 +18,22 @@ body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.55 system-ui,-app
 .hero{background:linear-gradient(160deg,#6a3fc4,#3b1d6e);color:#fff;border-radius:24px;padding:14px 16px;text-align:center;box-shadow:0 8px 22px rgba(59,29,110,.2)}
 .kick{font-size:12px;font-weight:800;letter-spacing:.14em;opacity:.9}
 h1{font-size:20px;line-height:1.25;margin:6px 0 0}
-.trilho{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;margin:14px 0 0;padding-bottom:4px;scrollbar-width:none}
-.trilho::-webkit-scrollbar{display:none}
-.slide{flex:0 0 100%;scroll-snap-align:center;background:#fff;border:1px solid var(--bd);border-radius:22px;padding:18px;box-shadow:0 4px 16px rgba(59,29,110,.08);min-width:0}
-.slide h2{font-size:19px;line-height:1.3;margin:0 0 10px;color:var(--gd)}
-.slide p{margin:0 0 8px;overflow-wrap:anywhere}
 .mem{margin-top:12px;background:#fff9e6;border-left:5px solid #f4b400;border-radius:12px;padding:10px 12px;font-size:15px}
 .mem b{display:block;font-size:12px;letter-spacing:.06em;margin-bottom:2px}
-.raio{text-align:center;background:linear-gradient(#fff,var(--gl))}
-.nav{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px}
-.setas{flex:none;width:48px;height:48px;border-radius:50%;border:2px solid var(--bd);background:#fff;color:var(--gd);font-size:22px;font-weight:800;cursor:pointer}
-.dots{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
-.dot{width:9px;height:9px;border-radius:99px;background:var(--bd);transition:background .2s,width .2s}
-.dot.on{background:var(--g);width:22px}
+.como{list-style:none;margin:12px 0 0;padding:12px 14px;background:#fff;border:1px solid var(--bd);border-radius:18px;font-size:14px;display:grid;gap:6px;color:var(--gd)}
+#itens{margin-top:12px;display:grid;gap:8px}
+.item{background:#fff;border:1px solid var(--bd);border-radius:16px;box-shadow:0 3px 12px rgba(59,29,110,.06);overflow:hidden}
+.item.aberto{border-color:var(--g)}
+.item-h{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;min-height:52px;padding:12px 16px;border:0;background:none;font:inherit;font-weight:800;color:var(--gd);text-align:left;cursor:pointer}
+.item-h .nome{min-width:0;overflow-wrap:anywhere}
+.item-h .sinal{flex:none;width:30px;height:30px;border-radius:50%;background:var(--gl);display:grid;place-items:center;font-size:18px;line-height:1}
+.item-c{padding:0 16px 14px}
+.item-c p{margin:0 0 8px;overflow-wrap:anywhere}
+.transicao,.teste{text-align:center;margin-top:18px}
+.transicao h2,.teste h2{font-size:18px;color:var(--gd);margin:0}
+.transicao p,.teste p{margin:4px 0 0}
+.seta{font-weight:700;color:var(--gd)}
+.teste #rodada{text-align:left}
 .btn{display:block;width:100%;min-height:52px;border:0;border-radius:14px;padding:12px;margin-top:12px;font:inherit;font-weight:800;letter-spacing:.03em;background:var(--g);color:#fff;cursor:pointer;box-shadow:0 3px 0 rgba(0,0,0,.18)}
 .btn:active{transform:translateY(2px);box-shadow:none}
 .card{background:#fff;border:1px solid var(--bd);border-radius:22px;padding:18px;margin-top:14px;box-shadow:0 4px 16px rgba(59,29,110,.08);animation:in .3s ease}
@@ -86,48 +94,49 @@ h1{font-size:20px;line-height:1.25;margin:6px 0 0}
     <div class="kick">💡 DICA DEVMAPAS</div>
     <h1>PRINCIPAIS PROTOCOLOS</h1>
   </header>
-  <section aria-label="Cards da dica">
-    <div class="trilho" id="trilho" tabindex="0"></div>
-    <div class="nav"><button class="setas" id="ant" aria-label="Card anterior">‹</button><div class="dots" id="dots"></div><button class="setas" id="prox" aria-label="Próximo card">›</button></div>
+  <ul class="como" id="como"></ul>
+  <section id="itens" aria-label="Itens da dica"></section>
+  <section class="transicao" id="transicao" hidden>
+    <h2>🎉 VOCÊ CHEGOU ATÉ AQUI!</h2>
+    <p>Gostou das dicas?</p>
+    <p class="seta">👇 Continue rolando para conhecer os materiais do DevMapas.</p>
   </section>
-  <section id="rodada" hidden aria-label="Rodada relâmpago"></section>
   <section id="area-ofertas" aria-label="Materiais do DevMapas" hidden></section>
+  <section class="teste" aria-label="Questões extras">
+    <h2>🧠 QUER TESTAR O QUE VOCÊ APRENDEU?</h2>
+    <p>Você chegou ao final das dicas.</p>
+    <p class="seta" id="tq"></p>
+    <div id="rodada"></div>
+  </section>
 </div>
 <script src="../config/ofertas.js"></script>
 <script>
-const D = {"f":"Agora você já revisou os principais protocolos cobrados em concursos.","o":["simulado","mapas","personalizado","grupo"],"cards":[{"t":"HTTP + HTTPS","c":"HTTP: Protocolo utilizado na comunicação entre cliente e servidor na Web.\nHTTPS: Versão do HTTP que utiliza mecanismos de segurança, incluindo criptografia, para proteger a comunicação.","m":"HTTP → Web\nHTTPS → HTTP + segurança"},{"t":"FTP + SFTP","c":"FTP: Protocolo utilizado para transferência de arquivos entre sistemas.\nSFTP: Protocolo de transferência de arquivos que utiliza uma conexão segura baseada em SSH.","m":"FTP → arquivos\nSFTP → arquivos + SSH"},{"t":"SMTP + POP3","c":"SMTP: Protocolo utilizado para o envio de mensagens de e-mail.\nPOP3: Protocolo utilizado para receber e-mails, tradicionalmente associado ao download das mensagens para o dispositivo.","m":"SMTP → envia\nPOP3 → recebe/baixa"},{"t":"IMAP + DNS","c":"IMAP: Protocolo de acesso a e-mails que mantém as mensagens sincronizadas com o servidor.\nDNS: Sistema responsável por resolver nomes de domínio em endereços IP.","m":"IMAP → sincroniza\nDNS → nome → IP"},{"t":"DHCP + TCP/IP","c":"DHCP: Protocolo que permite a configuração automática de parâmetros de rede, como endereço IP, máscara e gateway.\nTCP/IP: Conjunto de protocolos utilizado na comunicação e na troca de dados em redes, incluindo a Internet.","m":"DHCP → configura IP automaticamente\nTCP/IP → comunicação em rede"}],"q":[{"e":"Um usuário acessa um site pelo nome de domínio. O navegador precisa descobrir qual endereço IP corresponde àquele domínio antes de estabelecer a comunicação com o servidor.","a":["DHCP","DNS","IMAP"],"c":1,"x":"O DNS realiza a resolução de nomes, relacionando o domínio ao endereço IP correspondente.","m":"DNS → nome → IP"},{"e":"Um usuário acessa sua conta de e-mail em diferentes dispositivos e deseja manter as mensagens e alterações sincronizadas com o servidor.","a":["POP3","SMTP","IMAP"],"c":2,"x":"O IMAP mantém o gerenciamento das mensagens associado ao servidor, permitindo a sincronização entre dispositivos.","m":"IMAP → sincroniza"},{"e":"Um administrador precisa transferir arquivos entre computadores, mas exige que a transferência ocorra por meio de uma conexão segura baseada em SSH.","a":["FTP","SFTP","SMTP"],"c":1,"x":"O SFTP utiliza SSH para realizar a transferência segura de arquivos.","m":"SFTP → arquivos + SSH"}]};
+const D = {"f":"Agora você já revisou os principais protocolos cobrados em concursos.","o":["simulado","mapas","personalizado","grupo"],"itens":[{"n":"HTTP","e":"Protocolo utilizado na comunicação entre cliente e servidor na Web.","m":"HTTP → Web"},{"n":"HTTPS","e":"Versão do HTTP que utiliza mecanismos de segurança, incluindo criptografia, para proteger a comunicação.","m":"HTTPS → HTTP + segurança"},{"n":"FTP","e":"Protocolo utilizado para transferência de arquivos entre sistemas.","m":"FTP → arquivos"},{"n":"SFTP","e":"Protocolo de transferência de arquivos que utiliza uma conexão segura baseada em SSH.","m":"SFTP → arquivos + SSH"},{"n":"SMTP","e":"Protocolo utilizado para o envio de mensagens de e-mail.","m":"SMTP → envia"},{"n":"POP3","e":"Protocolo utilizado para receber e-mails, tradicionalmente associado ao download das mensagens para o dispositivo.","m":"POP3 → recebe/baixa"},{"n":"IMAP","e":"Protocolo de acesso a e-mails que mantém as mensagens sincronizadas com o servidor.","m":"IMAP → sincroniza"},{"n":"DNS","e":"Sistema responsável por resolver nomes de domínio em endereços IP.","m":"DNS → nome → IP"},{"n":"DHCP","e":"Protocolo que permite a configuração automática de parâmetros de rede, como endereço IP, máscara e gateway.","m":"DHCP → configura IP automaticamente"},{"n":"TCP/IP","e":"Conjunto de protocolos utilizado na comunicação e na troca de dados em redes, incluindo a Internet.","m":"TCP/IP → comunicação em rede"}],"q":[{"e":"Um usuário acessa um site pelo nome de domínio. O navegador precisa descobrir qual endereço IP corresponde àquele domínio antes de estabelecer a comunicação com o servidor.","a":["DHCP","DNS","IMAP"],"c":1,"x":"O DNS realiza a resolução de nomes, relacionando o domínio ao endereço IP correspondente.","m":"DNS → nome → IP"},{"e":"Um usuário acessa sua conta de e-mail em diferentes dispositivos e deseja manter as mensagens e alterações sincronizadas com o servidor.","a":["POP3","SMTP","IMAP"],"c":2,"x":"O IMAP mantém o gerenciamento das mensagens associado ao servidor, permitindo a sincronização entre dispositivos.","m":"IMAP → sincroniza"},{"e":"Um administrador precisa transferir arquivos entre computadores, mas exige que a transferência ocorra por meio de uma conexão segura baseada em SSH.","a":["FTP","SFTP","SMTP"],"c":1,"x":"O SFTP utiliza SSH para realizar a transferência segura de arquivos.","m":"SFTP → arquivos + SSH"}]};
 const NL = String.fromCharCode(10);
 const $ = (id) => document.getElementById(id);
 function el(tag, cls, txt) { const e = document.createElement(tag); if (cls) e.className = cls; if (txt !== undefined) e.textContent = txt; return e; }
 function paragrafos(no, txt) { txt.split(NL).forEach((l) => { if (l.trim()) no.appendChild(el('p', '', l)); }); return no; }
 function memorizar(txt) { const m = el('div', 'mem'); m.append(el('b', '', '🧠 PARA MEMORIZAR')); paragrafos(m, txt); return m; }
 
-/* ----- carrossel ----- */
-const trilho = $('trilho');
-D.cards.forEach((c) => {
-  const s = el('article', 'slide'); s.append(el('h2', '', c.t), paragrafos(el('div'), c.c));
-  if (c.m) s.append(memorizar(c.m));
-  trilho.append(s);
+/* ----- como usar + itens expansíveis (textos fixos genéricos, servem para qualquer mapa) ----- */
+const nq = D.q.length;
+['📌 Toque em cada item para abrir a explicação.', '👇 Role a tela para conhecer todas as dicas.', '🧠 No final, você ainda poderá testar seus conhecimentos com ' + nq + ' questões.']
+  .forEach((t) => $('como').append(el('li', '', t)));
+$('tq').textContent = '👇 Role mais um pouco para responder ' + nq + ' questões rápidas.';
+D.itens.forEach((it, i) => {
+  const box = el('article', 'item');
+  const h = el('button', 'item-h'); h.type = 'button'; h.setAttribute('aria-expanded', 'false'); h.setAttribute('aria-controls', 'item-' + i);
+  const sinal = el('span', 'sinal', '＋'); sinal.setAttribute('aria-hidden', 'true');
+  h.append(el('span', 'nome', it.n), sinal);
+  const c = el('div', 'item-c'); c.id = 'item-' + i; c.hidden = true;
+  c.append(paragrafos(el('div'), it.e)); if (it.m) c.append(memorizar(it.m));
+  h.addEventListener('click', () => { const abrir = c.hidden; c.hidden = !abrir; h.setAttribute('aria-expanded', String(abrir)); sinal.textContent = abrir ? '−' : '＋'; box.classList.toggle('aberto', abrir); });
+  box.append(h, c); $('itens').append(box);
 });
-const raio = el('article', 'slide raio');
-raio.append(el('h2', '', '⚡ RODADA RELÂMPAGO'), el('p', '', D.q.length + ' questões rápidas. Responda e veja o resultado na hora.'));
-const comecar = el('button', 'btn', 'COMEÇAR RODADA'); comecar.type = 'button'; raio.append(comecar);
-trilho.append(raio);
-const total = trilho.children.length;
-D.cards.concat([0]).forEach(() => $('dots').append(el('span', 'dot')));
-function atual() { return Math.max(0, Math.min(total - 1, Math.round(trilho.scrollLeft / (trilho.clientWidth + 12)))); }
-function marcar() { const a = atual(); [...$('dots').children].forEach((d, i) => d.classList.toggle('on', i === a)); }
-function ir(delta) { trilho.scrollTo({ left: (atual() + delta) * (trilho.clientWidth + 12), behavior: 'smooth' }); }
-trilho.addEventListener('scroll', marcar);
-$('ant').addEventListener('click', () => ir(-1));
-$('prox').addEventListener('click', () => ir(1));
-trilho.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight') ir(1); if (e.key === 'ArrowLeft') ir(-1); });
-marcar();
 
-/* ----- rodada relâmpago ----- */
+/* ----- questões extras (depois das ofertas) ----- */
 let qi = 0, acertos = 0;
 const rodada = $('rodada');
-comecar.addEventListener('click', () => { comecar.disabled = true; rodada.hidden = false; questao(); rodada.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
 
 function questao() {
   const q = D.q[qi];
@@ -159,7 +168,7 @@ function responder(i, opts, card) {
   fb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
-/* ----- ofertas: cards .go no fluxo normal da página, abaixo do carrossel (só os IDs ficam salvos; dados de ../config/ofertas.js) ----- */
+/* ----- ofertas: cards .go no fluxo normal da página, depois dos itens (só os IDs ficam salvos; dados de ../config/ofertas.js) ----- */
 const WA_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>';
 (function () {
   if (!D.o || !D.o.length || typeof OFERTAS === 'undefined') return;
@@ -175,21 +184,23 @@ const WA_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.472 14.
     }
     card.append(el('div', 'okick', o.kick || o.nome || ''), el('h2', '', o.titulo || ''));
     (o.textos || []).forEach((t) => card.append(el('p', '', t)));
-    if (o.importante) { const i = el('div', 'importante'); i.append(el('span', '', '📌 IMPORTANTE'), document.createTextNode(o.importante)); card.append(i); }
+    if (o.importante) { const i = el('div', 'importante'); i.append(el('span', '', '📌 IMPORTANTE'), documentcreateTextNode(o.importante)); card.append(i); }
     const a = el('a', 'btn' + (o.iconeWhatsapp ? ' wbtn' : ''));
     if (o.link && /^https?:/i.test(o.link)) { a.href = o.link; a.target = '_blank'; a.rel = 'noopener'; }
     if (o.iconeWhatsapp) { a.innerHTML = WA_SVG; a.append(el('span', '', o.botao || '')); } else a.textContent = o.botao || '';
     card.append(a); area.append(card);
   });
-  area.hidden = false;
+  area.hidden = false; $('transicao').hidden = false;
 })();
 
 function fim() {
   rodada.textContent = '';
   const c = el('div', 'card final');
-  c.append(el('h2', '', '🎉 RODADA CONCLUÍDA!'), el('p', '', 'Você terminou essa dica!'), el('p', 'frase', '👇 Role para baixo para conhecer os materiais do DevMapas.'));
-  rodada.append(c);   // só um lembrete: sem scroll automático
+  c.append(el('h2', '', '🎉 RODADA CONCLUÍDA!'), el('p', '', 'Você terminou essa dica!'));
+  if (D.f) c.append(el('p', 'frase', D.f));
+  rodada.append(c);
 }
+questao();
 </script>
 </body>
 </html>
