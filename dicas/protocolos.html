@@ -184,7 +184,7 @@ const WA_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.472 14.
     }
     card.append(el('div', 'okick', o.kick || o.nome || ''), el('h2', '', o.titulo || ''));
     (o.textos || []).forEach((t) => card.append(el('p', '', t)));
-    if (o.importante) { const i = el('div', 'importante'); i.append(el('span', '', '📌 IMPORTANTE'), documentcreateTextNode(o.importante)); card.append(i); }
+    if (o.importante) { const i = el('div', 'importante'); i.append(el('span', '', '📌 IMPORTANTE'), document.createTextNode(o.importante)); card.append(i); }
     const a = el('a', 'btn' + (o.iconeWhatsapp ? ' wbtn' : ''));
     if (o.link && /^https?:/i.test(o.link)) { a.href = o.link; a.target = '_blank'; a.rel = 'noopener'; }
     if (o.iconeWhatsapp) { a.innerHTML = WA_SVG; a.append(el('span', '', o.botao || '')); } else a.textContent = o.botao || '';
