@@ -125,13 +125,18 @@ const nq = D.q.length;
 ['📌 Toque em cada item para abrir a explicação.', '👇 Role a tela para conhecer todas as dicas.', '🧠 No final, você ainda poderá testar seus conhecimentos com ' + nq + ' questões.']
   .forEach((t) => $('como').append(el('li', '', t)));
 $('tq').textContent = '👇 Role mais um pouco para responder ' + nq + ' questões rápidas.';
-D.itens.forEach((it, i) => {
+D.itens.forEach((g, i) => {
   const box = el('article', 'item');
   const h = el('button', 'item-h'); h.type = 'button'; h.setAttribute('aria-expanded', 'false'); h.setAttribute('aria-controls', 'item-' + i);
   const sinal = el('span', 'sinal', '＋'); sinal.setAttribute('aria-hidden', 'true');
-  h.append(el('span', 'nome', it.n), sinal);
+  h.append(el('span', 'nome', g.itens.map((x) => x.n).join(' + ')), sinal);
   const c = el('div', 'item-c'); c.id = 'item-' + i; c.hidden = true;
-  c.append(paragrafos(el('div'), it.e)); if (it.m) c.append(memorizar(it.m));
+  g.itens.forEach((x, k) => {
+    const bloco = el('div'); if (k > 0) bloco.style.marginTop = '14px';
+    if (g.itens.length > 1) { const p = el('p'); p.append(el('strong', '', x.n)); bloco.append(p); }   // com 2 itens, o nome de cada um aparece dentro do card
+    bloco.append(paragrafos(el('div'), x.e)); if (x.m) bloco.append(memorizar(x.m));
+    c.append(bloco);
+  });
   h.addEventListener('click', () => { const abrir = c.hidden; c.hidden = !abrir; h.setAttribute('aria-expanded', String(abrir)); sinal.textContent = abrir ? '−' : '＋'; box.classList.toggle('aberto', abrir); });
   box.append(h, c); $('itens').append(box);
 });
@@ -240,22 +245,29 @@ $('nome').addEventListener('input', () => { $('prev').textContent = 'Arquivo ger
 $('exemplo').addEventListener('click', () => { $('estruturado').value = EXEMPLO; });
 
 // ---------- Ofertas (lidas de ../config/ofertas.js; sem limite) ----------
+// Opções geradas dinamicamente: OFERTAS (gerais) e MAPAS_INDIVIDUAIS (novas entradas aparecem sozinhas).
+// ordemOfertas = ordem em que as ofertas entram na Dica: mapas individuais (ordem do config) e depois as gerais (ordem do config).
+const ordemOfertas = [];
 (function () {
   const box = $('listaOfertas');
-  const mapas = typeof MAPAS_INDIVIDUAIS === 'undefined' ? [] : Object.values(MAPAS_INDIVIDUAIS);
-  const gerais = typeof OFERTAS === 'undefined' ? [] : Object.values(OFERTAS);
   if (typeof OFERTAS === 'undefined') { box.append(mk('p', 'msg erro', 'Não encontrei ../config/ofertas.js: não dá para escolher ofertas agora.')); return; }
+  const gerais = Object.entries(OFERTAS);
+  const todos = typeof MAPAS_INDIVIDUAIS === 'undefined' ? [] : Object.entries(MAPAS_INDIVIDUAIS);
+  const repetidos = todos.filter(([k]) => k in OFERTAS).map(([k]) => k);        // mesma chave de uma oferta geral: ambíguo, não é listado
+  const individuais = todos.filter(([k]) => !(k in OFERTAS));
   const grupo = (titulo, itens) => {
     if (!itens.length) return;
     box.append(mk('p', 'grp', titulo));
-    itens.forEach((o) => {
-      const l = mk('label', 'chk'), c = mk('input'); c.type = 'checkbox'; c.value = o.id; c.className = 'of-sel';
-      l.append(c, mk('span', '', (o.icone || '🎁') + ' ' + (o.nome || o.id)));
+    itens.forEach(([chave, o]) => {                                                // o valor salvo na Dica é a chave do objeto no config
+      const l = mk('label', 'chk'), c = mk('input'); c.type = 'checkbox'; c.value = chave; c.className = 'of-sel';
+      l.append(c, mk('span', '', (o.icone || '🎁') + ' ' + (o.nome || chave)));
       box.append(l);
     });
   };
-  grupo('MAPAS INDIVIDUAIS', mapas);       // mapas individuais primeiro
-  grupo('OFERTAS GERAIS', gerais);          // depois as gerais, na ordem de OFERTAS
+  grupo('OFERTAS GERAIS', gerais);
+  grupo('MAPAS E MATERIAIS INDIVIDUAIS', individuais);
+  ordemOfertas.push(...individuais.map(([k]) => k), ...gerais.map(([k]) => k));
+  if (repetidos.length) box.append(mk('p', 'msg erro', 'Ignorado em MAPAS_INDIVIDUAIS (mesma chave de uma oferta geral): ' + repetidos.join(', ') + '. Use outra chave.'));
 })();
 
 
@@ -282,7 +294,7 @@ function lerEstruturado(texto) {
       if (!s(x && x.nome)) { erros.push(n + 'item ' + (k + 1) + ': falta "nome".'); ok = false; }
       if (!s(x && x.explicacao)) { erros.push(n + 'item ' + (k + 1) + ': falta "explicacao".'); ok = false; }
     });
-    if (ok) itens.forEach((x) => cards.push({ n: s(x.nome), e: s(x.explicacao), m: s(x.memoria) }));   // cada item vira um card expansível
+    if (ok) cards.push({ itens: itens.map((x) => ({ n: s(x.nome), e: s(x.explicacao), m: s(x.memoria) })) });   // um card por objeto de "cards", com 1 ou 2 itens dentro
   });
 
   const lista = Array.isArray(j.questoes) ? j.questoes : [];
@@ -317,7 +329,7 @@ $('gerar').addEventListener('click', () => {
   else { L = lerEstruturado($('estruturado').value); erros.push(...L.erros); }
   if (erros.length) { $('erro').textContent = erros.join('\n'); $('erro').hidden = false; $('erro').scrollIntoView({ block: 'center' }); return; }
 
-  const ofertasIds = [...document.querySelectorAll('.of-sel:checked')].map((c) => c.value);   // ordem da lista = mapas, depois gerais
+  const ofertasIds = [...document.querySelectorAll('.of-sel:checked')].map((c) => c.value).sort((x, y) => ordemOfertas.indexOf(x) - ordemOfertas.indexOf(y));   // mapas individuais primeiro, depois as gerais
   const at = (v) => esc(v).replace(/"/g, '&quot;');
   const desc = 'Toque nos itens, revise o conteúdo e teste seus conhecimentos.';
   const meta = ['<meta name="description" content="' + desc + '">', '<meta property="og:type" content="website">',
