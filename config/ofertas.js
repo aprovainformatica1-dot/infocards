@@ -62,4 +62,28 @@ const OFERTAS = {
 //   internet: { id: 'internet', nome: 'Mapa Internet', icone: '🗺️', cta: 'mapas', classe: 'go b',
 //               kick: '🗺️ MAPA DE INTERNET', titulo: '...', textos: ['...'], botao: '🗺️ CONHECER O MAPA',
 //               imagem: BASE_IMG + 'capa-mapa-internet.png', capaEmoji: '🗺️', link: 'https://...' }
-const MAPAS_INDIVIDUAIS = {};
+const MAPAS_INDIVIDUAIS = {
+  internet_navegadores: {
+    id: 'internet_navegadores',
+    nome: 'Internet e Navegadores',
+    icone: '🗺️',
+    cta: 'mapas',
+    classe: 'go b',
+
+    kick: '🗺️ MAPA DE INTERNET E NAVEGADORES',
+
+    titulo: 'PRECISA REVISAR INTERNET E NAVEGADORES?',
+
+    textos: [
+      'Tenha os principais conteúdos de Internet e Navegadores organizados de forma resumida para facilitar sua revisão.',
+      'Um material prático para consultar os assuntos mais cobrados em Informática para concursos.'
+    ],
+
+    botao: '🗺️ CONHECER O MAPA',
+
+    imagem: BASE_IMG + 'capa-mapas.png',
+    capaEmoji: '🗺️',
+
+    link: 'https://pay.kiwify.com.br/2PaOYvp'
+  }
+};
