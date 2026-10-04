@@ -106,7 +106,7 @@ const MAPAS_INDIVIDUAIS = {
 
     botao: '🗺️ CONHECER O MAPA',
 
-    imagem: BASE_IMG + 'capa-internet.png',
+    imagem: BASE_IMG + 'capa-internet.PNG',
     capaEmoji: '🗺️',
 
     link: 'https://pay.kiwify.com.br/2PaOYvp'
