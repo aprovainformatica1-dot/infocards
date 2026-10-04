@@ -64,26 +64,27 @@ const OFERTAS = {
 //               imagem: BASE_IMG + 'capa-mapa-internet.png', capaEmoji: '🗺️', link: 'https://...' }
 const MAPAS_INDIVIDUAIS = {
   internet_navegadores: {
-    id: 'internet_navegadores',
-    nome: 'Internet e Navegadores',
-    icone: '🗺️',
-    cta: 'mapas',
-    classe: 'go b',
+  id: 'internet_navegadores',
+  nome: 'Internet e Navegadores',
+  icone: '🗺️',
+  cta: 'mapas',
+  classe: 'go b',
 
-    kick: '🗺️ MAPA DE INTERNET E NAVEGADORES',
+  kick: '🗺️ MAPA DE INTERNET E NAVEGADORES',
 
-    titulo: 'PRECISA REVISAR INTERNET E NAVEGADORES?',
+  titulo: 'NÃO PERCA TEMPO PROCURANDO CONTEÚDO!',
 
-    textos: [
-      'Tenha os principais conteúdos de Internet e Navegadores organizados de forma resumida para facilitar sua revisão.',
-      'Um material prático para consultar os assuntos mais cobrados em Informática para concursos.'
-    ],
+  textos: [
+    'As dicas são só uma parte. Para estudar Informática para concurso, você precisa revisar muito mais.',
+    '<strong>Neste mapa, você vai encontrar conteúdos cobrados em prova de:</strong><br><br>• Internet　• Navegadores　• Protocolos<br>• Serviços da Internet　• Segurança na navegação',
+    '<strong>Tudo já resumido, organizado e mastigado para você.</strong>'
+  ],
 
-    botao: '🗺️ CONHECER O MAPA',
+  botao: '🗺️ CONHECER O MAPA',
 
-    imagem: BASE_IMG + 'capa-mapas.png',
-    capaEmoji: '🗺️',
+  imagem: BASE_IMG + 'capa-mapas.png',
+  capaEmoji: '🗺️',
 
-    link: 'https://pay.kiwify.com.br/2PaOYvp'
-  }
+  link: 'https://pay.kiwify.com.br/2PaOYvp'
+}
 };
