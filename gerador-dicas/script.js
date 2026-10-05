@@ -11,7 +11,16 @@ const MODELO = `<!DOCTYPE html>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>__TITULO__ — Dica DevMapas</title>
-__META__
+<meta name="description" content="Teste seus conhecimentos com esta dica de Informática para concursos.">
+<!-- PRÉVIA AO COMPARTILHAR: imagem definida no campo Imagem para compartilhar -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="__TITULO__ — Dica de Informática | DevMapas">
+<meta property="og:description" content="Teste seus conhecimentos com esta dica de Informática para concursos.">
+<meta property="og:image" content="__OGIMG__">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="__OGIMG__">
 <style>
 :root{--g:#7a4fd6;--gd:#3b1d6e;--gl:#efe8fb;--bg:#f7f4fd;--tx:#1f1a33;--mu:#6b6485;--bd:#e4def0;--ok:#16a34a;--bad:#d97706;--wa:#25D366}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -330,26 +339,12 @@ $('gerar').addEventListener('click', () => {
   if (erros.length) { $('erro').textContent = erros.join('\n'); $('erro').hidden = false; $('erro').scrollIntoView({ block: 'center' }); return; }
 
   const ofertasIds = [...document.querySelectorAll('.of-sel:checked')].map((c) => c.value).sort((x, y) => ordemOfertas.indexOf(x) - ordemOfertas.indexOf(y));   // mapas individuais primeiro, depois as gerais
-  const at = (v) => esc(v).replace(/"/g, '&quot;');
-  const desc = 'Teste seus conhecimentos com esta dica de Informática para concursos.';
-  const meta = [
-    '<!-- Gerador de Dicas DevMapas — versão 2026-10-04 (cards agrupados; imagem de compartilhamento = campo Imagem para compartilhar) -->',
-    '<meta name="description" content="' + desc + '">',
-    '<meta property="og:type" content="website">',
-    '<meta property="og:title" content="' + at(L.titulo) + ' — Dica de Informática | DevMapas">',
-    '<meta property="og:description" content="' + desc + '">'
-  ].concat(imagemCompartilhar ? [
-    '<meta property="og:image" content="' + at(imagemCompartilhar) + '">',      // URL exatamente como foi informada
-    '<meta property="og:image:width" content="1200">',
-    '<meta property="og:image:height" content="630">',
-    '<meta name="twitter:card" content="summary_large_image">',
-    '<meta name="twitter:image" content="' + at(imagemCompartilhar) + '">'
-  ] : ['<meta name="twitter:card" content="summary">']).join('\n');
   const dados = JSON.stringify({ f: L.f, o: ofertasIds, itens: L.cards, q: L.q }).replace(/</g, '\\u003c').replace(/\u2028|\u2029/g, ' ');
   let html = MODELO.split('__TITULO__').join(esc(L.titulo))
-    .split('__META__').join(meta)
+    .split('__OGIMG__').join(imagemCompartilhar)
     .split('__CONFIG__').join(ofertasIds.length ? '<script src="../config/ofertas.js"></' + 'script>\n' : '')
     .split('__DADOS__').join(dados);
+  if (!imagemCompartilhar) html = html.replace(/<meta property="og:image[^>]*>\n|<meta name="twitter:image"[^>]*>\n/g, '').replace('content="summary_large_image"', 'content="summary"');   // campo vazio: sem imagem de compartilhamento
   html = html.replace(/documentcreateTextNode/g, 'document.createTextNode');   // garantia: nunca gerar este erro de digitação
   const inline = html.match(/<script>([\s\S]*?)<\/script>/);
   try { new Function(inline[1]); }                                                  // garantia: a página gerada precisa ter JavaScript válido
