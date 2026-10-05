@@ -322,8 +322,8 @@ $('gerar').addEventListener('click', () => {
   const nome = slug($('nome').value);
   if (!$('nome').value.trim()) erros.push('Preencha o nome interno da dica.');
   else if (!nome) erros.push('O nome interno precisa ter letras ou números.');
-  const imagem = $('imagem').value.trim();
-  if (imagem && !/^https?:\/\/\S+$/i.test(imagem)) erros.push('A imagem para compartilhar precisa ser uma URL que começa com http:// ou https://');
+  const imagemCompartilhar = $('imagem').value.trim();
+  if (imagemCompartilhar && !/^https?:\/\/\S+$/i.test(imagemCompartilhar)) erros.push('A imagem para compartilhar precisa ser uma URL que começa com http:// ou https://');
   let L = null;
   if (!$('estruturado').value.trim()) erros.push('Cole o conteúdo estruturado (o JSON que o ChatGPT devolveu).');
   else { L = lerEstruturado($('estruturado').value); erros.push(...L.erros); }
@@ -331,15 +331,29 @@ $('gerar').addEventListener('click', () => {
 
   const ofertasIds = [...document.querySelectorAll('.of-sel:checked')].map((c) => c.value).sort((x, y) => ordemOfertas.indexOf(x) - ordemOfertas.indexOf(y));   // mapas individuais primeiro, depois as gerais
   const at = (v) => esc(v).replace(/"/g, '&quot;');
-  const desc = 'Toque nos itens, revise o conteúdo e teste seus conhecimentos.';
-  const meta = ['<meta name="description" content="' + desc + '">', '<meta property="og:type" content="website">',
-    '<meta property="og:title" content="' + at(L.titulo) + ' — Dica DevMapas">', '<meta property="og:description" content="' + desc + '">']
-    .concat(imagem ? ['<meta property="og:image" content="' + at(imagem) + '">', '<meta name="twitter:card" content="summary_large_image">', '<meta name="twitter:image" content="' + at(imagem) + '">'] : ['<meta name="twitter:card" content="summary">']).join('\n');
+  const desc = 'Teste seus conhecimentos com esta dica de Informática para concursos.';
+  const meta = [
+    '<!-- Gerador de Dicas DevMapas — versão 2026-10-04 (cards agrupados; imagem de compartilhamento = campo Imagem para compartilhar) -->',
+    '<meta name="description" content="' + desc + '">',
+    '<meta property="og:type" content="website">',
+    '<meta property="og:title" content="' + at(L.titulo) + ' — Dica de Informática | DevMapas">',
+    '<meta property="og:description" content="' + desc + '">'
+  ].concat(imagemCompartilhar ? [
+    '<meta property="og:image" content="' + at(imagemCompartilhar) + '">',      // URL exatamente como foi informada
+    '<meta property="og:image:width" content="1200">',
+    '<meta property="og:image:height" content="630">',
+    '<meta name="twitter:card" content="summary_large_image">',
+    '<meta name="twitter:image" content="' + at(imagemCompartilhar) + '">'
+  ] : ['<meta name="twitter:card" content="summary">']).join('\n');
   const dados = JSON.stringify({ f: L.f, o: ofertasIds, itens: L.cards, q: L.q }).replace(/</g, '\\u003c').replace(/\u2028|\u2029/g, ' ');
-  const html = MODELO.split('__TITULO__').join(esc(L.titulo))
+  let html = MODELO.split('__TITULO__').join(esc(L.titulo))
     .split('__META__').join(meta)
     .split('__CONFIG__').join(ofertasIds.length ? '<script src="../config/ofertas.js"></' + 'script>\n' : '')
     .split('__DADOS__').join(dados);
+  html = html.replace(/documentcreateTextNode/g, 'document.createTextNode');   // garantia: nunca gerar este erro de digitação
+  const inline = html.match(/<script>([\s\S]*?)<\/script>/);
+  try { new Function(inline[1]); }                                                  // garantia: a página gerada precisa ter JavaScript válido
+  catch (e) { $('erro').textContent = 'A Dica gerada teria um erro de JavaScript (' + e.message + '). Nada foi baixado.'; $('erro').hidden = false; return; }
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([html], { type: 'text/html;charset=utf-8' }));
   a.download = nome + '.html';
