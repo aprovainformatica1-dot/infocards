@@ -124,7 +124,15 @@ module.exports = async function handler(req, res) {
 
     const resp = await fetchComTimeout(consulta, { headers: headersBase }, 5000);
     if (!resp.ok) {
-      console.error('[r] Falha ao buscar link. HTTP', resp.status);
+      // DIAGNÓSTICO TEMPORÁRIO (remover depois): mostra status e corpo do erro
+      // retornado pelo Supabase. Não registra nenhuma credencial.
+      let corpoErro = '';
+      try {
+        corpoErro = await resp.text();
+      } catch (e) {
+        corpoErro = '(não foi possível ler o corpo da resposta)';
+      }
+      console.error('[r][DIAGNOSTICO] Falha ao buscar link. HTTP', resp.status, 'Corpo:', corpoErro);
       return paginaErro(res, 503, 'Serviço indisponível', 'Tente novamente em instantes.');
     }
     const linhas = await resp.json();
