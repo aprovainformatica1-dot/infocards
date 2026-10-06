@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Gerador de Links — DevMapas</title>
+<style>
+:root{
+  --bg:#eef2f4; --card:#ffffff; --ink:#14202b; --mut:#5b6b79; --line:#cfd8de;
+  --ac:#0f766e; --ac-ink:#ffffff; --ac-soft:#d9f0ec; --err:#b42318; --field:#f8fafb;
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#0e1519; --card:#162026; --ink:#e6edf1; --mut:#93a4b0; --line:#2b3a43;
+        --ac:#2dd4bf; --ac-ink:#06201d; --ac-soft:#12332f; --err:#f97066; --field:#101a1f}
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:20px 14px 48px}
+main{max-width:560px;margin:0 auto}
+h1{font-size:1.5rem;line-height:1.2;margin:8px 0 4px;letter-spacing:-.01em}
+.sub{margin:0 0 20px;color:var(--mut);font-size:.95rem}
+form{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}
+.campo{margin:0 0 18px;border:0;padding:0;min-width:0}
+.campo:last-of-type{margin-bottom:0}
+legend,label.rot{display:block;font-weight:600;font-size:.95rem;margin:0 0 8px;padding:0}
+.opc{font-weight:400;color:var(--mut)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips input{position:absolute;opacity:0;pointer-events:none}
+.chips label{padding:9px 14px;border:1px solid var(--line);border-radius:999px;background:var(--field);
+  cursor:pointer;font-size:.95rem;user-select:none}
+.chips input:checked+label{background:var(--ac);border-color:var(--ac);color:var(--ac-ink);font-weight:600}
+.chips input:focus-visible+label{outline:3px solid var(--ac);outline-offset:2px}
+select,input[type=text]{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;
+  background:var(--field);color:var(--ink);font:inherit}
+select:focus-visible,input[type=text]:focus-visible,button:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
+.linha{display:flex;gap:8px}
+.linha input{flex:1;min-width:0}
+.dica{margin:6px 0 0;color:var(--mut);font-size:.85rem}
+.btn{font:inherit;font-weight:700;border:0;border-radius:10px;padding:12px 16px;cursor:pointer;
+  background:var(--ac);color:var(--ac-ink)}
+.btn.sec{background:transparent;color:var(--ink);border:1px solid var(--line);font-weight:600;white-space:nowrap}
+.gerar{width:100%;margin-top:22px;padding:14px;font-size:1.05rem}
+#erro{margin:14px 0 0;color:var(--err);font-size:.92rem;min-height:1.3em}
+#resultado{margin-top:20px;background:var(--ac-soft);border:1px solid var(--ac);border-radius:14px;padding:16px}
+#resultado[hidden]{display:none}
+#resultado h2{margin:0 0 8px;font-size:1rem}
+#link{display:block;padding:12px;background:var(--card);border:1px solid var(--line);border-radius:10px;
+  font:600 .95rem ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;word-break:break-all}
+#resumo{margin:10px 0 12px;color:var(--mut);font-size:.9rem}
+#copiar{width:100%}
+</style>
+</head>
+<body>
+<main>
+  <h1>Gerador de links</h1>
+  <p class="sub">Crie links rastreáveis para divulgar seus materiais.</p>
+
+  <form id="form" autocomplete="off" novalidate>
+    <fieldset class="campo">
+      <legend>Origem</legend>
+      <div class="chips" id="origens"></div>
+    </fieldset>
+
+    <div class="campo">
+      <label class="rot" for="material">Material</label>
+      <select id="material"></select>
+    </div>
+
+    <div class="campo">
+      <label class="rot" for="conteudo">Conteúdo <span class="opc">(opcional)</span></label>
+      <select id="conteudo"></select>
+    </div>
+
+    <div class="campo">
+      <label class="rot" for="codigo">Código do link</label>
+      <div class="linha">
+        <input type="text" id="codigo" maxlength="32" inputmode="url" autocapitalize="none" spellcheck="false" placeholder="pmma-stories">
+        <button type="button" class="btn sec" id="sugerir">Sugerir</button>
+      </div>
+      <p class="dica">De 3 a 32 caracteres: letras minúsculas, números, hífen (-) e sublinhado (_).</p>
+    </div>
+
+    <button type="submit" class="btn gerar">Gerar link</button>
+    <p id="erro" role="alert"></p>
+  </form>
+
+  <section id="resultado" hidden aria-live="polite">
+    <h2>Seu link está pronto</h2>
+    <code id="link"></code>
+    <p id="resumo"></p>
+    <button type="button" class="btn" id="copiar">COPIAR</button>
+  </section>
+</main>
+
+<script>
+const BASE_URL = 'https://devmapas.vercel.app/r/';
+
+// Origens fixas (iguais às do banco).
+const ORIGENS = [
+  { slug: 'stories',  nome: 'Stories'  },
+  { slug: 'direct',   nome: 'Direct'   },
+  { slug: 'bio',      nome: 'Bio'      },
+  { slug: 'whatsapp', nome: 'WhatsApp' },
+  { slug: 'desafios', nome: 'Desafios' },
+  { slug: 'dicas',    nome: 'Dicas'    },
+];
+
+// TEMPORÁRIO: listas apenas para testar a interface.
+// Na próxima etapa serão lidas do Supabase (tabelas materiais e conteudos).
+const MATERIAIS = [
+  { id: 'm1', nome: 'Simulado Informática' },
+  { id: 'm2', nome: 'Mapa Internet' },
+  { id: 'm3', nome: 'Grupo Gratuito' },
+  { id: 'm4', nome: 'Simulado Personalizado' },
+];
+const CONTEUDOS = [
+  { id: 'c1', nome: 'Desafio PMMA',    tipo: 'desafio' },
+  { id: 'c2', nome: 'Excel 3',         tipo: 'desafio' },
+  { id: 'c3', nome: 'Dica Protocolos', tipo: 'dica'    },
+];
+
+const $ = (id) => document.getElementById(id);
+const form = $('form'), erro = $('erro'), resultado = $('resultado');
+
+function origemSelecionada() {
+  const r = form.querySelector('input[name=origem]:checked');
+  return r ? ORIGENS.find((o) => o.slug === r.value) : null;
+}
+
+function slugify(t) {
+  return t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+}
+
+function montarOrigens() {
+  $('origens').innerHTML = ORIGENS.map((o) =>
+    `<input type="radio" name="origem" id="o-${o.slug}" value="${o.slug}">` +
+    `<label for="o-${o.slug}">${o.nome}</label>`).join('');
+}
+
+function montarMateriais() {
+  $('material').innerHTML = '<option value="">Escolha o material</option>' +
+    MATERIAIS.map((m) => `<option value="${m.id}">${m.nome}</option>`).join('');
+}
+
+// Em Desafios mostra só desafios; em Dicas só dicas; nas demais origens, todos.
+function montarConteudos() {
+  const o = origemSelecionada();
+  const tipo = o && o.slug === 'desafios' ? 'desafio' : o && o.slug === 'dicas' ? 'dica' : null;
+  const lista = CONTEUDOS.filter((c) => !tipo || c.tipo === tipo);
+  const atual = $('conteudo').value;
+  $('conteudo').innerHTML = '<option value="">Nenhum</option>' +
+    lista.map((c) => `<option value="${c.id}">${c.nome}</option>`).join('');
+  if (lista.some((c) => c.id === atual)) $('conteudo').value = atual;
+}
+
+function limparResultado() {
+  resultado.hidden = true;
+  erro.textContent = '';
+}
+
+form.addEventListener('input', (e) => {
+  if (e.target.name === 'origem') montarConteudos();
+  limparResultado();
+});
+
+$('codigo').addEventListener('input', (e) => {
+  e.target.value = e.target.value.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9_-]/g, '');
+});
+
+$('sugerir').addEventListener('click', () => {
+  const o = origemSelecionada();
+  const c = CONTEUDOS.find((x) => x.id === $('conteudo').value);
+  const m = MATERIAIS.find((x) => x.id === $('material').value);
+  const base = c || m;
+  if (!o || !base) { erro.textContent = 'Escolha a origem e o material (ou conteúdo) para sugerir um código.'; return; }
+  $('codigo').value = (slugify(base.nome) + '-' + o.slug).slice(0, 32).replace(/-+$/, '');
+  limparResultado();
+});
+
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const o = origemSelecionada();
+  const material = MATERIAIS.find((m) => m.id === $('material').value);
+  const conteudo = CONTEUDOS.find((c) => c.id === $('conteudo').value) || null;
+  const codigo = $('codigo').value;
+
+  if (!o) return mostrarErro('Escolha a origem.');
+  if (!material) return mostrarErro('Escolha o material.');
+  if (!/^[a-z0-9_-]{3,32}$/.test(codigo)) return mostrarErro('O código precisa ter de 3 a 32 caracteres, só com letras minúsculas, números, - e _.');
+
+  erro.textContent = '';
+
+  // Próxima etapa: aqui os dados abaixo serão gravados na tabela links do Supabase.
+  const dados = { codigo, origem: o.slug, material_id: material.id, conteudo_id: conteudo ? conteudo.id : null };
+  void dados;
+
+  $('link').textContent = BASE_URL + codigo;
+  $('resumo').textContent = [o.nome, material.nome, conteudo ? conteudo.nome : null].filter(Boolean).join(' · ');
+  $('copiar').textContent = 'COPIAR';
+  resultado.hidden = false;
+  resultado.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+});
+
+function mostrarErro(msg) {
+  erro.textContent = msg;
+  resultado.hidden = true;
+}
+
+$('copiar').addEventListener('click', async () => {
+  const texto = $('link').textContent;
+  try {
+    await navigator.clipboard.writeText(texto);
+  } catch (_) {
+    const t = document.createElement('textarea');
+    t.value = texto; t.style.position = 'fixed'; t.style.opacity = '0';
+    document.body.appendChild(t); t.select();
+    try { document.execCommand('copy'); } catch (__) {}
+    t.remove();
+  }
+  $('copiar').textContent = 'COPIADO ✓';
+  setTimeout(() => { $('copiar').textContent = 'COPIAR'; }, 2000);
+});
+
+montarOrigens();
+montarMateriais();
+montarConteudos();
+</script>
+</body>
+</html>
