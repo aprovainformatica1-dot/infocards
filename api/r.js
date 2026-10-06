@@ -64,6 +64,15 @@ function naoEncontrado(res) {
   paginaErro(res, 404, 'Link não encontrado', 'Este link não existe ou não está mais disponível.');
 }
 
+// Usado apenas pelo diagnóstico temporário.
+function escaparHtml(valor) {
+  return String(valor)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
 function ehPrefetch(req) {
   const h = req.headers || {};
   const valores = [h['purpose'], h['sec-purpose'], h['x-moz'], h['x-purpose']]
@@ -124,16 +133,29 @@ module.exports = async function handler(req, res) {
 
     const resp = await fetchComTimeout(consulta, { headers: headersBase }, 5000);
     if (!resp.ok) {
-      // DIAGNÓSTICO TEMPORÁRIO (remover depois): mostra status e corpo do erro
-      // retornado pelo Supabase. Não registra nenhuma credencial.
+      // DIAGNÓSTICO TEMPORÁRIO (remover depois): mostra na página o status e o
+      // corpo do erro retornado pelo Supabase. Não exibe nenhuma credencial.
       let corpoErro = '';
       try {
         corpoErro = await resp.text();
       } catch (e) {
         corpoErro = '(não foi possível ler o corpo da resposta)';
       }
-      console.error('[r][DIAGNOSTICO] Falha ao buscar link. HTTP', resp.status, 'Corpo:', corpoErro);
-      return paginaErro(res, 503, 'Serviço indisponível', 'Tente novamente em instantes.');
+      res.statusCode = 503;
+      res.setHeader('Content-Type', 'text/html; charset=utf-8');
+      res.setHeader('Cache-Control', 'no-store');
+      res.setHeader('X-Robots-Tag', 'noindex');
+      return res.end(
+        '<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">' +
+          '<meta name="viewport" content="width=device-width,initial-scale=1">' +
+          '<title>Diagnóstico Supabase</title></head>' +
+          '<body style="font-family:system-ui,sans-serif;padding:24px">' +
+          '<h1>Diagnóstico Supabase</h1>' +
+          '<p><strong>HTTP:</strong> ' + escaparHtml(resp.status) + '</p>' +
+          '<p><strong>Resposta:</strong></p>' +
+          '<pre style="white-space:pre-wrap;word-break:break-word">' +
+          escaparHtml(corpoErro).slice(0, 2000) + '</pre></body></html>'
+      );
     }
     const linhas = await resp.json();
     link = Array.isArray(linhas) && linhas.length ? linhas[0] : null;
