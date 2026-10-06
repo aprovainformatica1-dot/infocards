@@ -32,9 +32,9 @@ legend,label.rot{display:block;font-weight:600;font-size:.95rem;margin:0 0 8px;p
   cursor:pointer;font-size:.95rem;user-select:none}
 .chips input:checked+label{background:var(--ac);border-color:var(--ac);color:var(--ac-ink);font-weight:600}
 .chips input:focus-visible+label{outline:3px solid var(--ac);outline-offset:2px}
-select,input[type=text]{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;
+select,input[type=text],input[type=password]{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;
   background:var(--field);color:var(--ink);font:inherit}
-select:focus-visible,input[type=text]:focus-visible,button:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
+select:focus-visible,input[type=text]:focus-visible,input[type=password]:focus-visible,button:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
 .linha{display:flex;gap:8px}
 .linha input{flex:1;min-width:0}
 .dica{margin:6px 0 0;color:var(--mut);font-size:.85rem}
@@ -42,7 +42,9 @@ select:focus-visible,input[type=text]:focus-visible,button:focus-visible{outline
   background:var(--ac);color:var(--ac-ink)}
 .btn.sec{background:transparent;color:var(--ink);border:1px solid var(--line);font-weight:600;white-space:nowrap}
 .gerar{width:100%;margin-top:22px;padding:14px;font-size:1.05rem}
-#erro{margin:14px 0 0;color:var(--err);font-size:.92rem;min-height:1.3em}
+#sair{margin:0 0 16px}
+#acesso{margin-bottom:16px}
+#erro,#erro-acesso{margin:14px 0 0;color:var(--err);font-size:.92rem;min-height:1.3em}
 #resultado{margin-top:20px;background:var(--ac-soft);border:1px solid var(--ac);border-radius:14px;padding:16px}
 #resultado[hidden]{display:none}
 #resultado h2{margin:0 0 8px;font-size:1rem}
@@ -57,7 +59,19 @@ select:focus-visible,input[type=text]:focus-visible,button:focus-visible{outline
   <h1>Gerador de links</h1>
   <p class="sub">Crie links rastreáveis para divulgar seus materiais.</p>
 
-  <form id="form" autocomplete="off" novalidate>
+  <form id="acesso" autocomplete="off" novalidate>
+    <div class="campo">
+      <label class="rot" for="chave">Chave de acesso</label>
+      <div class="linha">
+        <input type="password" id="chave" autocomplete="off" autocapitalize="none" spellcheck="false">
+        <button type="submit" class="btn sec" id="entrar">Entrar</button>
+      </div>
+      <p id="erro-acesso" role="alert"></p>
+    </div>
+  </form>
+  <button type="button" class="btn sec" id="sair" hidden>Sair</button>
+
+  <form id="form" autocomplete="off" novalidate hidden>
     <fieldset class="campo">
       <legend>Origem</legend>
       <div class="chips" id="origens"></div>
@@ -107,19 +121,12 @@ const ORIGENS = [
   { slug: 'dicas',    nome: 'Dicas'    },
 ];
 
-// TEMPORÁRIO: listas apenas para testar a interface.
-// Na próxima etapa serão lidas do Supabase (tabelas materiais e conteudos).
-const MATERIAIS = [
-  { id: 'm1', nome: 'Simulado Informática' },
-  { id: 'm2', nome: 'Mapa Internet' },
-  { id: 'm3', nome: 'Grupo Gratuito' },
-  { id: 'm4', nome: 'Simulado Personalizado' },
-];
-const CONTEUDOS = [
-  { id: 'c1', nome: 'Desafio PMMA',    tipo: 'desafio' },
-  { id: 'c2', nome: 'Excel 3',         tipo: 'desafio' },
-  { id: 'c3', nome: 'Dica Protocolos', tipo: 'dica'    },
-];
+// Listas carregadas do Supabase (via /api/links-admin) depois da chave.
+let MATERIAIS = [];
+let CONTEUDOS = [];
+// A chave fica só em memória: recarregar ou fechar a página apaga.
+let CHAVE = '';
+const API_URL = '/api/links-admin';
 
 const $ = (id) => document.getElementById(id);
 const form = $('form'), erro = $('erro'), resultado = $('resultado');
@@ -127,6 +134,10 @@ const form = $('form'), erro = $('erro'), resultado = $('resultado');
 function origemSelecionada() {
   const r = form.querySelector('input[name=origem]:checked');
   return r ? ORIGENS.find((o) => o.slug === r.value) : null;
+}
+
+function esc(t) {
+  return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
 function slugify(t) {
@@ -141,8 +152,10 @@ function montarOrigens() {
 }
 
 function montarMateriais() {
-  $('material').innerHTML = '<option value="">Escolha o material</option>' +
-    MATERIAIS.map((m) => `<option value="${m.id}">${m.nome}</option>`).join('');
+  $('material').innerHTML = (MATERIAIS.length
+    ? '<option value="">Escolha o material</option>'
+    : '<option value="">Nenhum material cadastrado</option>') +
+    MATERIAIS.map((m) => `<option value="${esc(m.id)}">${esc(m.nome)}</option>`).join('');
 }
 
 // Em Desafios mostra só desafios; em Dicas só dicas; nas demais origens, todos.
@@ -152,7 +165,7 @@ function montarConteudos() {
   const lista = CONTEUDOS.filter((c) => !tipo || c.tipo === tipo);
   const atual = $('conteudo').value;
   $('conteudo').innerHTML = '<option value="">Nenhum</option>' +
-    lista.map((c) => `<option value="${c.id}">${c.nome}</option>`).join('');
+    lista.map((c) => `<option value="${esc(c.id)}">${esc(c.nome)}</option>`).join('');
   if (lista.some((c) => c.id === atual)) $('conteudo').value = atual;
 }
 
@@ -180,7 +193,7 @@ $('sugerir').addEventListener('click', () => {
   limparResultado();
 });
 
-form.addEventListener('submit', (e) => {
+form.addEventListener('submit', async (e) => {
   e.preventDefault();
   const o = origemSelecionada();
   const material = MATERIAIS.find((m) => m.id === $('material').value);
@@ -192,16 +205,41 @@ form.addEventListener('submit', (e) => {
   if (!/^[a-z0-9_-]{3,32}$/.test(codigo)) return mostrarErro('O código precisa ter de 3 a 32 caracteres, só com letras minúsculas, números, - e _.');
 
   erro.textContent = '';
+  const botao = form.querySelector('.gerar');
+  botao.disabled = true;
+  botao.textContent = 'Gerando…';
 
-  // Próxima etapa: aqui os dados abaixo serão gravados na tabela links do Supabase.
-  const dados = { codigo, origem: o.slug, material_id: material.id, conteudo_id: conteudo ? conteudo.id : null };
-  void dados;
+  try {
+    const r = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-admin-key': CHAVE },
+      body: JSON.stringify({
+        codigo,
+        origem: o.slug,
+        material_id: material.id,
+        conteudo_id: conteudo ? conteudo.id : null,
+      }),
+    });
+    const dados = await r.json().catch(() => ({}));
 
-  $('link').textContent = BASE_URL + codigo;
-  $('resumo').textContent = [o.nome, material.nome, conteudo ? conteudo.nome : null].filter(Boolean).join(' · ');
-  $('copiar').textContent = 'COPIAR';
-  resultado.hidden = false;
-  resultado.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    if (r.status === 401) return sair('Chave incorreta. Digite novamente.');
+    if (r.status === 409) return mostrarErro('Este código já está em uso. Escolha outro.');
+    if (!r.ok || !dados.ok || !dados.link) {
+      return mostrarErro('Não foi possível criar o link. Tente novamente.');
+    }
+
+    // Só mostra o link depois que o servidor confirmou a criação.
+    $('link').textContent = dados.link;
+    $('resumo').textContent = [o.nome, material.nome, conteudo ? conteudo.nome : null].filter(Boolean).join(' · ');
+    $('copiar').textContent = 'COPIAR';
+    resultado.hidden = false;
+    resultado.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  } catch (_) {
+    mostrarErro('Não foi possível criar o link. Verifique a conexão e tente novamente.');
+  } finally {
+    botao.disabled = false;
+    botao.textContent = 'Gerar link';
+  }
 });
 
 function mostrarErro(msg) {
@@ -224,9 +262,62 @@ $('copiar').addEventListener('click', async () => {
   setTimeout(() => { $('copiar').textContent = 'COPIAR'; }, 2000);
 });
 
+const acesso = $('acesso');
+
+async function carregarListas(chave) {
+  const r = await fetch(API_URL, { headers: { 'x-admin-key': chave } });
+  if (r.status === 401) throw new Error('chave');
+  if (!r.ok) throw new Error('falha');
+  const d = await r.json();
+  MATERIAIS = d.materiais || [];
+  CONTEUDOS = d.conteudos || [];
+}
+
+function sair(msg) {
+  CHAVE = '';
+  MATERIAIS = [];
+  CONTEUDOS = [];
+  form.reset();
+  limparResultado();
+  form.hidden = true;
+  $('sair').hidden = true;
+  acesso.hidden = false;
+  $('chave').value = '';
+  $('erro-acesso').textContent = msg || '';
+}
+
+acesso.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const chave = $('chave').value.trim();
+  const erroAcesso = $('erro-acesso');
+  if (!chave) { erroAcesso.textContent = 'Digite a chave de acesso.'; return; }
+
+  const b = $('entrar');
+  b.disabled = true;
+  b.textContent = 'Entrando…';
+  erroAcesso.textContent = '';
+  try {
+    await carregarListas(chave);
+    CHAVE = chave;
+    $('chave').value = '';
+    montarMateriais();
+    montarConteudos();
+    acesso.hidden = true;
+    form.hidden = false;
+    $('sair').hidden = false;
+  } catch (err) {
+    erroAcesso.textContent = err.message === 'chave'
+      ? 'Chave incorreta.'
+      : 'Não foi possível carregar os dados. Tente novamente.';
+  } finally {
+    b.disabled = false;
+    b.textContent = 'Entrar';
+  }
+});
+
+$('sair').addEventListener('click', () => sair());
+
 montarOrigens();
-montarMateriais();
-montarConteudos();
 </script>
 </body>
 </html>
