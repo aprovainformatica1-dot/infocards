@@ -101,13 +101,13 @@ function cardsEspecifico(d) {
   return `<div class="go a">
       <div class="capa" data-capa="simulado">${ESPECIFICO.icone}</div>
       <div class="kick">📄 SIMULADO DE INFORMÁTICA</div>
-      <h2>GOSTOU DE RESOLVER AS QUESTÕES?</h2>
-      <p>O que você acabou de fazer foi uma demonstração interativa gratuita com 5 questões.</p>
-      <p>Para ser aprovado, não basta só estudar a teoria. Você precisa praticar muitas questões e aprender enquanto resolve.</p>
-      <p>Este simulado foi feito especificamente para a ${esc(d.concurso)}, com mais de 100 questões de Informática comentadas.</p>
-      <p>🧠 Estudo reverso: você resolve, identifica seus erros e aprende com comentários em formato de mini aula.</p>
-      <div class="importante azul"><span>📌 IMPORTANTE</span>O MATERIAL COMPLETO É DISPONIBILIZADO EM PDF.</div>
-      <a class="btn laranja" data-cta="simulado" target="_blank" rel="noopener">📄 QUERO MAIS QUESTÕES</a>
+      <h2>⚠️ A PROVA DA ${esc(d.concurso.toUpperCase())} ESTÁ CHEGANDO!</h2>
+      <p>Você sabe como está seu nível em Informática?</p>
+      <p>O que você errar agora, ainda dá tempo de corrigir.</p>
+      <p>📚 +100 questões de Informática comentadas específicas para a ${esc(d.concurso)}.</p>
+      <p>Identifique seus pontos fracos e descubra o que ainda precisa revisar.</p>
+      <a class="btn laranja" data-cta="simulado" target="_blank" rel="noopener">QUERO FAZER O SIMULADO</a>
+      <p>📌 Material completo em PDF</p>
     </div>
     <div class="go wa">
       <div class="kick">💚 GRUPO GRATUITO DE ESTUDOS</div>
@@ -257,7 +257,7 @@ h1{font-size:17px;line-height:1.2;margin:0;letter-spacing:.03em}
       <div class="big" id="placar"></div>
       <p id="pct"></p>
       <div class="bar"><i id="barra"></i></div>
-      <p class="msg">Errar durante o treino faz parte. O importante é descobrir o erro antes que ele apareça na prova.</p>
+      <p class="msg" id="msgfinal">Errar durante o treino faz parte. O importante é descobrir o erro antes que ele apareça na prova.</p>
     </div>
     <div class="next">PRÓXIMOS PASSOS</div>
 
@@ -382,8 +382,19 @@ $('proxima').addEventListener('click', () => {
   if (i < QUESTOES.length - 1) { i++; render(); } else resultado();
 });
 
+const ESPECIFICO_MODO = __ESPECIFICO__;
+const MSGS_FINAL = [
+  'Esse resultado mostrou que ainda existem alguns pontos importantes para revisar. Que tal continuar treinando antes da prova?',
+  'Esse resultado mostrou alguns pontos que merecem atenção. Que tal continuar treinando antes da prova?',
+  'Você já acertou algumas, mas ainda há pontos para melhorar. Que tal continuar treinando com mais questões?',
+  'Você acertou 3 de 5. Quer descobrir se consegue manter esse desempenho em mais de 100 questões?',
+  'Você foi muito bem! Agora é hora de testar se consegue manter esse desempenho em mais de 100 questões.',
+  'Mandou bem! Agora é hora de aumentar o nível e testar seus conhecimentos em mais de 100 questões.'
+];
+
 function resultado() {
   $('quiz').hidden = true; $('resultado').hidden = false;
+  if (ESPECIFICO_MODO) { document.querySelector('.hero').hidden = true; $('msgfinal').textContent = MSGS_FINAL[acertos]; }   // só no simulado específico
   const p = Math.round(acertos / QUESTOES.length * 100);
   $('placar').textContent = acertos + '/' + QUESTOES.length;
   $('pct').textContent = p + '% de aproveitamento';
@@ -501,6 +512,7 @@ $('btnGerar').addEventListener('click', () => {
     .split('__IMAGENS__').join(js(imagens))
     .split('__SLUG__').join(slug)
     .split('__RASTREAR__').join(JSON.stringify(rastrear))
+    .split('__ESPECIFICO__').join(tipo === 'especifico' ? 'true' : 'false')
     .split('__OGIMG__').join(PADRAO.imagemCompartilhamento)
     .split('__DADOS__').join(json);
 
