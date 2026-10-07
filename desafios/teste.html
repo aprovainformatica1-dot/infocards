@@ -14,6 +14,9 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://devmapas.vercel.app/img/desafio-informatica.png">
+<!-- Vercel Web Analytics (conta os acessos; só funciona no site publicado na Vercel) -->
+<script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
+<script defer src="/_vercel/insights/script.js"></script>
 <style>
 :root{--g:#7a4fd6;--gd:#3b1d6e;--gl:#efe8fb;--bg:#f7f4fd;--tx:#1f1a33;--mu:#6b6485;--bd:#e4def0;--ok:#16a34a;--bad:#d97706;--wa:#25D366}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -129,20 +132,21 @@ h1{font-size:17px;line-height:1.2;margin:0;letter-spacing:.03em}
       <div class="big" id="placar"></div>
       <p id="pct"></p>
       <div class="bar"><i id="barra"></i></div>
-      <p class="msg">Errar durante o treino faz parte. O importante é descobrir o erro antes que ele apareça na prova.</p>
+      <p class="msg" id="msgfinal">Errar durante o treino faz parte. O importante é descobrir o erro antes que ele apareça na prova.</p>
     </div>
     <div class="next">PRÓXIMOS PASSOS</div>
 
     <!-- TEXTOS DOS CARDS: edite aqui. Os links ficam em CTA_LINKS, no final do arquivo. -->
     <div class="go a">
       <div class="capa" data-capa="simulado">📄</div>
-      <div class="kick">📄 TTT</div>
-      <h2>GOSTOU DE RESOLVER AS QUESTÕES?</h2>
-      <p>O que você acabou de fazer foi uma demonstração interativa gratuita com 5 questões.</p>
-      <p>Continue praticando com o simulado completo de Informática para a tttt.</p>
-      <p class="qtd">📚 ttt</p>
-      <div class="importante azul"><span>📌 IMPORTANTE</span>O MATERIAL COMPLETO É DISPONIBILIZADO EM PDF.</div>
-      <a class="btn laranja" data-cta="simulado" target="_blank" rel="noopener">📄 QUERO MAIS QUESTÕES</a>
+      <div class="kick">📄 SIMULADO DE INFORMÁTICA</div>
+      <h2>⚠️ A PROVA DA TESTE ESTÁ CHEGANDO!</h2>
+      <p>Você sabe como está seu nível em Informática?</p>
+      <p>O que você errar agora, ainda dá tempo de corrigir.</p>
+      <p>📚 +100 questões de Informática comentadas específicas para a teste.</p>
+      <p>Identifique seus pontos fracos e descubra o que ainda precisa revisar.</p>
+      <a class="btn laranja" data-cta="simulado" target="_blank" rel="noopener">QUERO FAZER O SIMULADO</a>
+      <p>📌 Material completo em PDF</p>
     </div>
     <div class="go wa">
       <div class="kick">💚 GRUPO GRATUITO DE ESTUDOS</div>
@@ -162,14 +166,20 @@ h1{font-size:17px;line-height:1.2;margin:0;letter-spacing:.03em}
 <script>
 /* ===== EDITE OS LINKS DOS CTAs AQUI ===== */
 const CTA_LINKS = {
-    "simulado": "https://pay.kiwify.com.br/7CTyNVx",
-    "grupo": "https://pay.kiwify.com.br/7CTyNVx"
+    "simulado": "https://www.example.com",
+    "grupo": "https://www.example.com"
 };
+
+/* ===== RASTREAMENTO DE CLIQUES (gerado automaticamente) =====
+   Os botões listados em RASTREAR abrem /ir/<desafio>-<botão>.html (página que conta o clique
+   e redireciona). Para trocar esses links, gere o desafio de novo no gerador. */
+const DESAFIO_ID = "teste";
+const RASTREAR = ["simulado","grupo"];
 
 /* ===== IMAGENS DAS CAPAS (cards do simulado e dos mapas) =====
    Se a imagem não existir, o card mostra um espaço com emoji no lugar. */
 const IMAGENS = {
-    "simulado": "https://devmapas.vercel.app/img/pmma.png"
+    "simulado": "https://devmapas.vercel.app/img/teste.png"
 };
 
 /* ===== QUESTÕES (geradas automaticamente) ===== */
@@ -181,7 +191,7 @@ let i = 0, sel = null, feito = false, acertos = 0;
 
 document.querySelectorAll('[data-cta]').forEach(a => {
   const l = CTA_LINKS[a.dataset.cta];
-  if (l && l.indexOf('COLE_') !== 0) a.href = l;
+  if (l && l.indexOf('COLE_') !== 0) a.href = RASTREAR.indexOf(a.dataset.cta) >= 0 ? '/ir/' + DESAFIO_ID + '-' + a.dataset.cta + '.html' : l;
   else a.addEventListener('click', e => e.preventDefault());
 });
 if (!$('subtitulo').textContent.trim()) $('subtitulo').textContent = 'Teste seus conhecimentos';
@@ -199,6 +209,18 @@ function el(tag, cls, txt) {
   if (cls) x.className = cls;
   if (txt !== undefined) x.textContent = txt;
   return x;
+}
+
+// Converte **texto** em negrito (<strong>) sem usar innerHTML; ** sem par fica como foi digitado
+function negrito(node, txt) {
+  const p = txt.split('**');
+  if (p.length % 2 === 0) { node.textContent = txt; return node; }
+  p.forEach((t, k) => {
+    if (!t) return;
+    if (k % 2) node.appendChild(el('strong', '', t));
+    else node.appendChild(document.createTextNode(t));
+  });
+  return node;
 }
 
 function render() {
@@ -244,11 +266,11 @@ $('confirmar').addEventListener('click', () => {
   fb.innerHTML = '';
   fb.appendChild(el('h3', '', certo ? '✅ VOCÊ ACERTOU!' : '❌ NÃO FOI DESSA VEZ!'));
   fb.appendChild(el('p', '', 'Gabarito: ' + (q.t === 'ce' ? q.a[q.g] : q.g)));
-  fb.appendChild(el('p', '', q.c));
+  fb.appendChild(negrito(el('p'), q.c));
   if (q.m) {
     const m = el('div', 'mem');
     m.appendChild(el('strong', '', '📚 PARA MEMORIZAR'));
-    m.appendChild(el('p', '', q.m));
+    m.appendChild(negrito(el('p'), q.m));
     fb.appendChild(m);
   }
   fb.hidden = false;
@@ -262,8 +284,19 @@ $('proxima').addEventListener('click', () => {
   if (i < QUESTOES.length - 1) { i++; render(); } else resultado();
 });
 
+const ESPECIFICO_MODO = true;
+const MSGS_FINAL = [
+  'Esse resultado mostrou que ainda existem alguns pontos importantes para revisar. Que tal continuar treinando antes da prova?',
+  'Esse resultado mostrou alguns pontos que merecem atenção. Que tal continuar treinando antes da prova?',
+  'Você já acertou algumas, mas ainda há pontos para melhorar. Que tal continuar treinando com mais questões?',
+  'Você acertou 3 de 5. Quer descobrir se consegue manter esse desempenho em mais de 100 questões?',
+  'Você foi muito bem! Agora é hora de testar se consegue manter esse desempenho em mais de 100 questões.',
+  'Mandou bem! Agora é hora de aumentar o nível e testar seus conhecimentos em mais de 100 questões.'
+];
+
 function resultado() {
   $('quiz').hidden = true; $('resultado').hidden = false;
+  if (ESPECIFICO_MODO) { document.querySelector('.hero').hidden = true; $('msgfinal').textContent = MSGS_FINAL[acertos]; }   // só no simulado específico
   const p = Math.round(acertos / QUESTOES.length * 100);
   $('placar').textContent = acertos + '/' + QUESTOES.length;
   $('pct').textContent = p + '% de aproveitamento';
