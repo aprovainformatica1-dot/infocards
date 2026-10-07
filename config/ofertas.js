@@ -111,4 +111,29 @@ const MAPAS_INDIVIDUAIS = {
 
     link: 'https://pay.kiwify.com.br/2PaOYvp'
   }
+   atalhos: {
+  id: 'atalhos',
+  nome: 'Atalhos',
+  icone: '⌨️',
+  cta: 'atalhos',
+  classe: 'go b',
+
+  kick: '⌨️ CARTILHA DE ATALHOS',
+
+  titulo: 'PARE DE ESQUECER OS ATALHOS QUE MAIS CAEM!',
+
+  textos: [
+    'Os atalhos podem economizar tempo na prova e aparecem com frequência em questões de Informática.',
+    'Nesta cartilha, você vai encontrar atalhos importantes de Windows • Word • Excel • Navegadores e outros comandos que podem aparecer na sua prova.',
+    'E ainda +200 questões comentadas de atalhos para você praticar, revisar e fixar o conteúdo.'
+  ],
+
+  botao: '⌨️ CONHECER A CARTILHA',
+
+  imagem: BASE_IMG + 'dica-atalhos.png',
+  capaEmoji: '⌨️',
+
+  link: 'https://pay.kiwify.com.br/YAxuo8m'
+}
+   
 };
