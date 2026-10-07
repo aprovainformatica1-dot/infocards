@@ -110,7 +110,7 @@ const MAPAS_INDIVIDUAIS = {
     capaEmoji: '🗺️',
 
     link: 'https://pay.kiwify.com.br/2PaOYvp'
-  }
+  },
    atalhos: {
   id: 'atalhos',
   nome: 'Atalhos',
