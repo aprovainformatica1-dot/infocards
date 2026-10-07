@@ -99,14 +99,12 @@ const OPCOES_CARDS_GERAL = Object.values(OFERTAS).map(o => ({ id: o.id, html: ca
 // Cards finais do SIMULADO ESPECÍFICO (2 cards) — conteúdo dinâmico
 function cardsEspecifico(d) {
   return `<div class="go a">
-      <div class="capa" data-capa="simulado">${ESPECIFICO.icone}</div>
       <div class="kick">📄 SIMULADO DE INFORMÁTICA</div>
       <h2>⚠️ A PROVA DA ${esc(d.concurso.toUpperCase())} ESTÁ CHEGANDO!</h2>
-      <p>Você sabe como está seu nível em Informática?</p>
-      <p>O que você errar agora, ainda dá tempo de corrigir.</p>
-      <p>📚 +100 questões de Informática comentadas específicas para a ${esc(d.concurso)}.</p>
+      <p>Agora você pode continuar sua preparação com o simulado completo:</p>
+      <p>📚 +100 questões de Informática comentadas, específicas para a ${esc(d.concurso)}.</p>
       <p>Identifique seus pontos fracos e descubra o que ainda precisa revisar.</p>
-      <a class="btn laranja" data-cta="simulado" target="_blank" rel="noopener">QUERO FAZER O SIMULADO</a>
+      <a class="btn laranja" data-cta="simulado" target="_blank" rel="noopener">QUERO O SIMULADO</a>
       <p>📌 Material completo em PDF</p>
     </div>
     <div class="go wa">
