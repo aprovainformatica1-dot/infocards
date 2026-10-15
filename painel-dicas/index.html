@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Painel de Dicas — DevMapas</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="app">
+  <header class="hero">
+    <div class="brand">DEVMAPAS</div>
+    <h1>Painel de Dicas</h1>
+    <p>Crie, confira e publique dicas sem enviar arquivo para o GitHub.</p>
+  </header>
+
+  <!-- 1) Conexão: a chave fica só na memória desta página (recarregar exige digitar de novo) -->
+  <section class="card" id="vConectar">
+    <h2>Conectar</h2>
+    <label for="chave">Chave administrativa</label>
+    <input id="chave" type="password" autocomplete="off" placeholder="Digite a chave">
+    <button type="button" class="btn" id="btnConectar">CONECTAR</button>
+    <div id="erroConexao" class="msg erro" role="alert" hidden></div>
+  </section>
+
+  <!-- 2) Lista -->
+  <section id="vLista" hidden>
+    <div class="topo-lista">
+      <input id="busca" type="search" placeholder="Buscar por título ou endereço" aria-label="Buscar dicas">
+      <button type="button" class="btn" id="btnNova">+ NOVA DICA</button>
+    </div>
+    <div id="lista" aria-live="polite"></div>
+  </section>
+
+  <!-- 3) Editor -->
+  <section id="vEditor" hidden>
+    <button type="button" class="btn ghost voltar" id="btnVoltar">← VOLTAR PARA A LISTA</button>
+    <div id="situacao" class="situacao" role="status"></div>
+
+    <div class="card">
+      <h2>1. Identificação</h2>
+      <label for="titulo">Título da dica</label>
+      <input id="titulo" type="text" maxlength="120" placeholder="Ex.: PRINCIPAIS PROTOCOLOS">
+      <label for="slug">Endereço (link)</label>
+      <input id="slug" type="text" maxlength="80" autocapitalize="off" spellcheck="false" placeholder="principais-protocolos">
+      <small id="slugInfo"></small>
+    </div>
+
+    <div class="card">
+      <h2>2. Conteúdo</h2>
+      <label for="txtTopicos">Texto completo da dica</label>
+      <small>Cole o texto como o ChatGPT preparou: tópicos, explicações e dicas de memorização. Sem JSON e sem marcadores obrigatórios.</small>
+      <textarea id="txtTopicos" class="grande" placeholder="Cole aqui o texto da dica…"></textarea>
+      <label for="txtQuestoes">Questões extras <small>(opcional)</small></label>
+      <small>Cole as questões com alternativas, gabarito e comentário. Se deixar vazio, a dica fica sem a rodada de questões.</small>
+      <textarea id="txtQuestoes" class="grande" placeholder="Cole aqui as questões extras (opcional)…"></textarea>
+      <button type="button" class="btn" id="btnInterpretar">INTERPRETAR E CONFERIR</button>
+    </div>
+
+    <div class="card" id="cardEstrutura" hidden>
+      <h2>3. Conferir e corrigir</h2>
+      <small>O sistema só organiza o que está no seu texto: nada é inventado. Corrija qualquer campo aqui antes de publicar.</small>
+      <div id="avisos"></div>
+      <div id="pendencias" class="msg" role="status"></div>
+      <div id="estrutura"></div>
+    </div>
+
+    <div class="card">
+      <h2>4. Ofertas e materiais</h2>
+      <small>Marque o que aparece ao final da dica. Vem de /config/ofertas.js.</small>
+      <div id="listaOfertas"></div>
+    </div>
+
+    <div class="card">
+      <h2>5. Imagem para compartilhar <small>(opcional)</small></h2>
+      <small>Aparece na prévia do link no WhatsApp e nas redes. Não aparece dentro da dica.</small>
+      <div id="imagemEscolhida" class="img-escolhida"></div>
+      <button type="button" class="btn ghost" id="btnImagem">ESCOLHER IMAGEM</button>
+    </div>
+
+    <div class="barra" role="group" aria-label="Ações da dica">
+      <button type="button" class="btn ghost" id="btnSalvar">SALVAR RASCUNHO</button>
+      <button type="button" class="btn ghost" id="btnPrevia">VISUALIZAR</button>
+      <button type="button" class="btn" id="btnPublicar">PUBLICAR</button>
+      <button type="button" class="btn ghost" id="btnCopiar">COPIAR LINK</button>
+    </div>
+  </section>
+</main>
+
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+<dialog id="dlgConfirma">
+  <h2 id="confTitulo"></h2>
+  <p id="confTexto"></p>
+  <div class="dlg-acoes"><button type="button" class="btn ghost" id="confNao">CANCELAR</button><button type="button" class="btn" id="confSim">CONFIRMAR</button></div>
+</dialog>
+
+<dialog id="dlgPrevia" class="grande">
+  <div class="dlg-topo"><strong>Prévia (como o leitor verá)</strong><button type="button" class="btn ghost fechar" id="fecharPrevia">FECHAR</button></div>
+  <iframe id="iframePrevia" title="Prévia da dica" sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox"></iframe>
+</dialog>
+
+<dialog id="dlgImagens" class="grande">
+  <div class="dlg-topo"><strong>Biblioteca de imagens</strong><button type="button" class="btn ghost fechar" id="fecharImagens">FECHAR</button></div>
+  <div class="dlg-corpo">
+    <div id="zona" class="zona" tabindex="0">
+      <p><strong>Adicionar imagem</strong></p>
+      <p class="mini">Arraste aqui, cole com Ctrl+V ou escolha um arquivo.</p>
+      <label for="nomeImagem" class="mini">Nome (opcional)</label>
+      <input id="nomeImagem" type="text" maxlength="80" placeholder="Se vazio, usa o nome do arquivo">
+      <button type="button" class="btn ghost" id="btnArquivo">ESCOLHER ARQUIVO</button>
+      <input id="arquivo" type="file" accept="image/*" multiple hidden>
+      <div id="envio" class="mini" role="status"></div>
+    </div>
+    <input id="buscaImagem" type="search" placeholder="Buscar imagem por nome" aria-label="Buscar imagem por nome">
+    <div id="gradeImagens" class="grade-img"></div>
+    <div class="pag"><button type="button" class="btn ghost" id="pagAnt">← ANTERIOR</button><span id="pagInfo"></span><button type="button" class="btn ghost" id="pagProx">PRÓXIMA →</button></div>
+  </div>
+</dialog>
+
+<script src="/config/ofertas.js"></script>
+<script src="regras.js"></script>
+<script src="interpretador.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
