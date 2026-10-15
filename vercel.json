@@ -1,5 +1,6 @@
 {
   "rewrites": [
-    { "source": "/r/:codigo", "destination": "/api/r?codigo=:codigo" }
+    { "source": "/r/:codigo", "destination": "/api/r?codigo=:codigo" },
+    { "source": "/dica/:slug", "destination": "/api/dica?slug=:slug" }
   ]
 }
