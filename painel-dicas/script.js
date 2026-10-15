@@ -282,12 +282,28 @@ async function salvar() {
   } catch (e) { aviso(msgErro(e), true); return false; }
 }
 $('btnSalvar').addEventListener('click', async () => { if (await salvar()) aviso('Rascunho salvo ✅'); });
+// Prévia. Três cuidados para poder usar "Visualizar" quantas vezes quiser sem recarregar a página:
+//  1) numeração dos pedidos: se duas respostas chegarem fora de ordem, a mais antiga é descartada (antes ela sobrescrevia a nova);
+//  2) iframe NOVO a cada abertura e em branco ao fechar: nada da vez anterior (rolagem, questão respondida, navegação) sobrevive;
+//  3) o botão mostra "ABRINDO…" enquanto o pedido está em andamento (continua clicável: o clique mais novo sempre vence).
+let previaSeq = 0;
+function iframeNovo() {
+  const velho = $('iframePrevia'), novo = el('iframe');
+  novo.id = 'iframePrevia'; novo.title = velho.title; novo.setAttribute('sandbox', velho.getAttribute('sandbox'));
+  velho.replaceWith(novo); return novo;
+}
+function previaOcupada(sim) { const b = $('btnPrevia'); b.textContent = sim ? 'ABRINDO…' : 'VISUALIZAR'; b.setAttribute('aria-busy', String(sim)); }
 async function abrirPrevia(p) {
+  const minha = ++previaSeq; previaOcupada(true);
   try {
     const r = await api('/api/dicas-admin', { metodo: 'POST', corpo: { acao: 'previa', titulo: p.titulo, conteudo: p.conteudo, og_imagem_id: p.og_imagem_id } });
-    $('iframePrevia').srcdoc = r.html; $('dlgPrevia').showModal();
-  } catch (e) { aviso(msgErro(e), true); }
+    if (minha !== previaSeq) return;                         // já existe um pedido mais novo: descarta esta resposta
+    iframeNovo().srcdoc = r.html;
+    if (!$('dlgPrevia').open) $('dlgPrevia').showModal();
+  } catch (e) { if (minha === previaSeq) aviso(msgErro(e), true); }
+  finally { if (minha === previaSeq) previaOcupada(false); }
 }
+$('dlgPrevia').addEventListener('close', iframeNovo);        // ao fechar (botão ou Esc): iframe em branco
 $('btnPrevia').addEventListener('click', () => { const p = coletar(); if (!p.titulo) { aviso('Preencha o título para visualizar.', true); return; } abrirPrevia(p); });
 $('fecharPrevia').addEventListener('click', () => $('dlgPrevia').close());
 $('btnPublicar').addEventListener('click', async () => {
