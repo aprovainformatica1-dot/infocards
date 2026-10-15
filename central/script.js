@@ -7,7 +7,7 @@
      externo: true            abre em nova aba (links de fora do site)
    Para ativar um card "EM BREVE": troque emBreve: true por href: '/caminho/'. */
 const CARDS = [
-  { nome: 'Painel de Dicas', desc: 'Cadastrar e gerenciar dicas', icone: '💡', emBreve: true },
+  { nome: 'Painel de Dicas', desc: 'Cadastrar e gerenciar dicas', icone: '💡', href: '/painel-dicas/' },
   { nome: 'Gerador de Desafios', desc: 'Criar desafios', icone: '🛠️', href: '/gerador-desafios/' },
   { nome: 'Ofertas e Materiais', desc: 'Gerenciar ofertas e materiais', icone: '🎁', emBreve: true },
   { nome: 'Gerenciador de Links', desc: 'Localizar e copiar links', icone: '🔗', emBreve: true },
