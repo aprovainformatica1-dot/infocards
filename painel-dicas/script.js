@@ -6,7 +6,7 @@ const $ = (id) => document.getElementById(id);
 const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt !== undefined) e.textContent = txt; return e; };
 const R = window.DicaRegras, INT = window.DicaInterpretador;
 const vazio = () => ({ f: '', o: [], itens: [], q: [] });
-const estado = { chave: '', dicas: [], dica: null, conteudo: vazio(), avisos: [], nao: [], imagem: null, slugManual: false, sujo: false };
+const estado = { chave: '', dicas: [], dica: null, conteudo: vazio(), avisos: [], nao: [], imagem: null, slugManual: false, sujo: false, ofRows: [] };
 
 const MENSAGENS = {
   chave_invalida: 'Chave administrativa incorreta.', slug_em_uso: 'Já existe uma dica com esse endereço. Escolha outro.', slug_invalido: 'Endereço inválido: use só letras minúsculas, números e hífen (mínimo 3 caracteres).',
@@ -142,6 +142,29 @@ function marcarOfertas(ids) {
   if (fora.length) aviso('Estas ofertas salvas não existem mais em ofertas.js e serão ignoradas: ' + fora.join(', '), true);
 }
 
+// ---------------------------------------------------------------- ofertas da Central de Ofertas (material + texto + link, separados)
+let ofertasCentral = null, ofertasCentralErro = '';
+async function carregarOfertasCentral() {
+  if (ofertasCentral || !window.DevMapasOfertas) { if (!window.DevMapasOfertas) ofertasCentralErro = 'Não encontrei /config/ofertas-api.js.'; return; }
+  try { ofertasCentral = await window.DevMapasOfertas.carregar(); ofertasCentralErro = ''; } catch (e) { ofertasCentralErro = 'Não consegui carregar as ofertas da Central de Ofertas agora.'; }
+}
+async function renderOfertasCentral() {
+  await carregarOfertasCentral();
+  const box = $('ofertasCentral'); box.textContent = '';
+  $('btnAddOferta').disabled = !ofertasCentral || estado.ofRows.length >= R.MAX_OFERTAS_CENTRAL;
+  if (ofertasCentralErro) box.append(el('p', 'msg erro', ofertasCentralErro));
+  estado.ofRows.forEach((sel, i) => {
+    const linha = el('div', 'of-linha'); linha.append(el('h3', '', 'Oferta da Central ' + (i + 1)));
+    if (ofertasCentral) {
+      if (sel && !window.DevMapasOfertas.achar(ofertasCentral, sel)) linha.append(el('p', 'msg erro', 'Esta oferta não está mais disponível (material, texto ou link pausado ou excluído). Escolha outra ou remova: enquanto isso ela não aparece na dica.'));
+      window.DevMapasOfertas.montarSeletor(linha, ofertasCentral, sel, (nova) => { estado.ofRows[i] = nova; marcarSujo(); });
+    }
+    const rm = el('button', 'btn rem', 'REMOVER OFERTA'); rm.type = 'button'; rm.addEventListener('click', () => { estado.ofRows.splice(i, 1); marcarSujo(); renderOfertasCentral(); });
+    linha.append(rm); box.append(linha);
+  });
+}
+$('btnAddOferta').addEventListener('click', () => { estado.ofRows.push(null); marcarSujo(); renderOfertasCentral(); });
+
 // ---------------------------------------------------------------- editor
 function marcarSujo() { estado.sujo = true; }
 async function abrirEditor(id) {
@@ -150,11 +173,12 @@ async function abrirEditor(id) {
     if (id) { const r = await api('/api/dicas-admin?id=' + id); d = r.dica; img = r.imagem; }
     estado.dica = d; estado.imagem = img; estado.slugManual = !!d; estado.avisos = []; estado.nao = [];
     estado.conteudo = d ? R.normalizar(d.conteudo) : vazio();
+    estado.ofRows = (estado.conteudo.of || []).map((x) => ({ ...x }));
     $('titulo').value = d ? d.titulo : ''; $('slug').value = d ? d.slug : '';
     $('txtTopicos').value = d ? d.texto_original || '' : ''; $('txtQuestoes').value = d ? d.questoes_originais || '' : '';
     marcarOfertas(estado.conteudo.o); atualizarSlugInfo(); renderImagemEscolhida(); renderSituacao();
     $('cardEstrutura').hidden = !(estado.conteudo.itens.length || estado.conteudo.q.length);
-    renderEstrutura(); estado.sujo = false; mostrar('vEditor');
+    renderEstrutura(); await renderOfertasCentral(); estado.sujo = false; mostrar('vEditor');
   } catch (e) { aviso(msgErro(e), true); }
 }
 $('btnVoltar').addEventListener('click', async () => {
@@ -187,7 +211,7 @@ $('btnInterpretar').addEventListener('click', async () => {
   const c = estado.conteudo;
   if ((c.itens.length || c.q.length) && !(await confirmar('Interpretar de novo?', 'Isso substitui os tópicos e as questões que estão em "Conferir e corrigir", inclusive as suas correções.', 'INTERPRETAR'))) return;
   const r = INT.interpretar({ topicos: t, questoes: z });
-  estado.conteudo = { f: r.f, o: ofertasMarcadas(), itens: r.cards, q: r.q }; estado.avisos = r.avisos; estado.nao = r.nao;
+  estado.conteudo = { f: r.f, o: ofertasMarcadas(), of: estado.ofRows.filter(Boolean), itens: r.cards, q: r.q }; estado.avisos = r.avisos; estado.nao = r.nao;
   marcarSujo(); $('cardEstrutura').hidden = false; renderEstrutura(); $('cardEstrutura').scrollIntoView({ behavior: 'smooth', block: 'start' });
 });
 
@@ -269,7 +293,7 @@ function coletar() {
   return {
     id: estado.dica ? estado.dica.id : undefined, slug: $('slug').value.trim(), titulo: $('titulo').value.replace(/\s+/g, ' ').trim(),
     texto_original: $('txtTopicos').value, questoes_originais: $('txtQuestoes').value,
-    conteudo: { ...estado.conteudo, o: ofertasMarcadas() }, og_imagem_id: estado.imagem ? estado.imagem.id : null,
+    conteudo: { ...estado.conteudo, o: ofertasMarcadas(), of: estado.ofRows.filter(Boolean) }, og_imagem_id: estado.imagem ? estado.imagem.id : null,
   };
 }
 async function salvar() {
