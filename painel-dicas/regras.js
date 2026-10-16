@@ -6,7 +6,7 @@
   else raiz.DicaRegras = fabrica();
 })(typeof self !== 'undefined' ? self : this, function () {
   const MIN_Q = 3, MAX_Q = 4;                 // quando houver questões extras
-  const MAX_CARDS = 60, MAX_QUESTOES = 10, MAX_ALTS = 6, MAX_OFERTAS = 30;
+  const MAX_CARDS = 60, MAX_QUESTOES = 10, MAX_ALTS = 6, MAX_OFERTAS = 30, MAX_OFERTAS_CENTRAL = 10;
   const MAX_JSON = 200000;                    // tamanho máximo do conteúdo salvo
   const SLUG_REGEX = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
   const OFERTA_REGEX = /^[A-Za-z0-9_-]{1,64}$/;
@@ -35,7 +35,10 @@
       m: s(x && x.m),
     }));
     const o = (Array.isArray(c.o) ? c.o : []).filter((id) => typeof id === 'string' && OFERTA_REGEX.test(id)).slice(0, MAX_OFERTAS);
-    return { f: s(c.f), o: [...new Set(o)], itens, q };
+    // ofertas da Central de Ofertas: { m: material, t: texto, l: link } (ids). Seleções incompletas são ignoradas.
+    const of = (Array.isArray(c.of) ? c.of : []).filter((x) => x && UUID_REGEX.test(x.m) && UUID_REGEX.test(x.t) && UUID_REGEX.test(x.l))
+      .slice(0, MAX_OFERTAS_CENTRAL).map((x) => ({ m: x.m.toLowerCase(), t: x.t.toLowerCase(), l: x.l.toLowerCase() }));
+    return { f: s(c.f), o: [...new Set(o)], of, itens, q };
   }
 
   // Lista de problemas que IMPEDEM a publicação (vazia = pode publicar).
@@ -65,5 +68,5 @@
     return erros;
   }
 
-  return { MIN_Q, MAX_Q, MAX_JSON, SLUG_REGEX, UUID_REGEX, OFERTA_REGEX, s, slugify, slugValido, normalizar, validar };
+  return { MIN_Q, MAX_Q, MAX_JSON, MAX_OFERTAS_CENTRAL, SLUG_REGEX, UUID_REGEX, OFERTA_REGEX, s, slugify, slugValido, normalizar, validar };
 });
