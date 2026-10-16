@@ -1,1 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Central de Ofertas — DevMapas</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="app">
+  <header class="hero">
+    <div class="brand">DEVMAPAS</div>
+    <h1>Central de Ofertas</h1>
+    <p>Materiais, textos de oferta e links num só lugar.</p>
+  </header>
+
+  <!-- Conexão: a chave fica só na memória desta página (recarregar exige digitar de novo) -->
+  <section class="card" id="vConectar">
+    <h2>Conectar</h2>
+    <label for="chave">Chave administrativa</label>
+    <input id="chave" type="password" autocomplete="off" placeholder="Digite a chave">
+    <button type="button" class="btn" id="btnConectar">CONECTAR</button>
+    <div id="erroConexao" class="msg erro" role="alert" hidden></div>
+  </section>
+
+  <!-- Lista de materiais -->
+  <section id="vLista" hidden>
+    <div class="topo-lista">
+      <input id="busca" type="search" placeholder="Buscar material" aria-label="Buscar material">
+      <button type="button" class="btn" id="btnNovo">+ NOVO MATERIAL</button>
+    </div>
+    <div id="bannerImportar" class="aviso-importar" hidden>
+      <strong>Ofertas do config/ofertas.js ainda não importadas</strong>
+      <p id="textoImportar"></p>
+      <button type="button" class="btn ghost" id="btnImportar">IMPORTAR AGORA</button>
+    </div>
+    <div id="lista" class="grade" aria-live="polite"></div>
+  </section>
+
+  <!-- Detalhe de um material (abas) -->
+  <section id="vDetalhe" hidden>
+    <button type="button" class="btn ghost voltar" id="btnVoltar">← VOLTAR PARA A LISTA</button>
+    <div class="cab-detalhe"><span id="detIcone" class="ico" aria-hidden="true"></span><div><h2 id="detNome"></h2><div id="detPills"></div></div></div>
+    <div class="abas" role="tablist" aria-label="Seções do material">
+      <button type="button" role="tab" id="tab-dados" aria-controls="aba-dados" aria-selected="true" data-aba="dados">Dados</button>
+      <button type="button" role="tab" id="tab-textos" aria-controls="aba-textos" aria-selected="false" data-aba="textos" tabindex="-1">Textos de oferta</button>
+      <button type="button" role="tab" id="tab-links" aria-controls="aba-links" aria-selected="false" data-aba="links" tabindex="-1">Links</button>
+    </div>
+    <div class="card painel" id="aba-dados" role="tabpanel" aria-labelledby="tab-dados"></div>
+    <div class="card painel" id="aba-textos" role="tabpanel" aria-labelledby="tab-textos" hidden></div>
+    <div class="card painel" id="aba-links" role="tabpanel" aria-labelledby="tab-links" hidden></div>
+  </section>
+</main>
+
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+<dialog id="dlgConfirma">
+  <h2 id="confTitulo"></h2>
+  <p id="confTexto"></p>
+  <div class="dlg-acoes"><button type="button" class="btn ghost" id="confNao">CANCELAR</button><button type="button" class="btn" id="confSim">CONFIRMAR</button></div>
+</dialog>
+
+<dialog id="dlgNovo">
+  <h2>Novo material</h2>
+  <p class="mini">Cria o material no Analytics (para os links rastreados) e a vitrine dele aqui. Textos de oferta você adiciona depois.</p>
+  <div id="formNovo"></div>
+  <div class="dlg-acoes"><button type="button" class="btn ghost" id="novoNao">CANCELAR</button><button type="button" class="btn" id="novoSim">CRIAR</button></div>
+</dialog>
+
+<script src="/config/ofertas.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
 
