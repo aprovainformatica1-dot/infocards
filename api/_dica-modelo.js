@@ -65,6 +65,8 @@ h1{font-size:20px;line-height:1.25;margin:6px 0 0}
 .go h2{font-size:16px;line-height:1.25;margin:0;color:var(--gd)}
 .go p{font-size:13.5px;line-height:1.45;margin:8px 0 0;color:#4b4264}
 .go .btn{margin-top:14px;padding:13px;font-size:14px}
+.go .preco{margin:10px 0 0;font-size:16px;font-weight:800;color:var(--gd)}
+.go.gr .preco{color:#fff}
 .capa{width:132px;min-height:132px;margin:0 auto 12px;border-radius:16px;background:var(--gl);border:2px dashed #d6c8f3;display:grid;place-items:center;font-size:38px;overflow:hidden;box-shadow:0 4px 12px rgba(59,29,110,.14)}
 .capa img{display:block;width:100%;height:auto}
 .capa.has{min-height:0;border:0;font-size:0;background:#fff}
@@ -184,26 +186,35 @@ function responder(i, opts, card) {
 /* ----- ofertas: cards .go no fluxo normal da página, depois dos itens (só os IDs ficam salvos; dados de /config/ofertas.js) ----- */
 const WA_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>';
 (function () {
-  if (!D.o || !D.o.length || typeof OFERTAS === 'undefined') return;
-  const mapas = typeof MAPAS_INDIVIDUAIS === 'undefined' ? {} : MAPAS_INDIVIDUAIS;
-  const lista = D.o.map((id) => mapas[id] || OFERTAS[id]).filter(Boolean);
-  if (!lista.length) return;
   const area = $('area-ofertas');
-  lista.forEach((o) => {
-    const card = el('div', (o.classe || '').indexOf('go') === 0 ? o.classe : 'go a');
-    if (o.imagem) {
-      const capa = el('div', 'capa', o.capaEmoji || ''); card.append(capa);
-      const im = new Image(); im.alt = 'Capa'; im.onload = () => { capa.append(im); capa.classList.add('has'); }; im.src = o.imagem;
-    }
-    card.append(el('div', 'okick', o.kick || o.nome || ''), el('h2', '', o.titulo || ''));
-    (o.textos || []).forEach((t) => card.append(el('p', '', t)));
-    if (o.importante) { const i = el('div', 'importante'); i.append(el('span', '', '📌 IMPORTANTE'), document.createTextNode(o.importante)); card.append(i); }
-    const a = el('a', 'btn' + (o.iconeWhatsapp ? ' wbtn' : ''));
-    if (o.link && /^https?:/i.test(o.link)) { a.href = o.link; a.target = '_blank'; a.rel = 'noopener'; }
-    if (o.iconeWhatsapp) { a.innerHTML = WA_SVG; a.append(el('span', '', o.botao || '')); } else a.textContent = o.botao || '';
-    card.append(a); area.append(card);
-  });
-  area.hidden = false; $('transicao').hidden = false;
+  function desenhar(lista) {
+    if (!lista.length) return;
+    lista.forEach((o) => {
+      const card = el('div', (o.classe || '').indexOf('go') === 0 ? o.classe : 'go a');
+      if (o.imagem) {
+        const capa = el('div', 'capa', o.capaEmoji || ''); card.append(capa);
+        const im = new Image(); im.alt = 'Capa'; im.onload = () => { capa.append(im); capa.classList.add('has'); }; im.src = o.imagem;
+      }
+      card.append(el('div', 'okick', o.kick || o.nome || ''), el('h2', '', o.titulo || ''));
+      (o.textos || []).forEach((t) => card.append(el('p', '', t)));
+      if (o.importante) { const i = el('div', 'importante'); i.append(el('span', '', '📌 IMPORTANTE'), document.createTextNode(o.importante)); card.append(i); }
+      if (o.preco) card.append(el('p', 'preco', o.preco));
+      const a = el('a', 'btn' + (o.iconeWhatsapp ? ' wbtn' : ''));
+      if (o.link && /^https?:/i.test(o.link)) { a.href = o.link; a.target = '_blank'; a.rel = 'noopener'; }
+      if (o.iconeWhatsapp) { a.innerHTML = WA_SVG; a.append(el('span', '', o.botao || '')); } else a.textContent = o.botao || '';
+      card.append(a); area.append(card);
+    });
+    area.hidden = false; $('transicao').hidden = false;
+  }
+  // 1) ofertas antigas (só os IDs ficam salvos; dados de /config/ofertas.js) — funciona como sempre
+  if (D.o && D.o.length && typeof OFERTAS !== 'undefined') {
+    const mapas = typeof MAPAS_INDIVIDUAIS === 'undefined' ? {} : MAPAS_INDIVIDUAIS;
+    desenhar(D.o.map((id) => mapas[id] || OFERTAS[id]).filter(Boolean));
+  }
+  // 2) ofertas da Central de Ofertas: material, texto e link escolhidos separadamente (dados ao vivo de /api/ofertas)
+  if (D.of && D.of.length && typeof DevMapasOfertas !== 'undefined') {
+    DevMapasOfertas.carregar().then((lista) => desenhar(DevMapasOfertas.resolver(lista, D.of))).catch(() => { /* sem as ofertas da Central a dica continua funcionando */ });
+  }
 })();
 
 function fim() {

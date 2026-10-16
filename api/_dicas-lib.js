@@ -73,11 +73,11 @@ const esc = (v) => String(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
 // Monta o HTML da Dica (o mesmo para a página pública e para a prévia do painel).
 function renderizarDica({ titulo, conteudo, imagemUrl }) {
   const c = regras.normalizar(conteudo);
-  const dados = JSON.stringify({ f: c.f, o: c.o, itens: c.itens, q: c.q }).replace(/</g, '\\u003c').replace(/\u2028|\u2029/g, ' ');
+  const dados = JSON.stringify({ f: c.f, o: c.o, of: c.of, itens: c.itens, q: c.q }).replace(/</g, '\\u003c').replace(/\u2028|\u2029/g, ' ');
   const img = imagemUrl && /^https?:\/\/\S+$/i.test(imagemUrl) ? esc(imagemUrl) : '';
   let html = MODELO.split('__TITULO__').join(esc(titulo))
     .split('__OGIMG__').join(img)
-    .split('__CONFIG__').join(c.o.length ? '<script src="/config/ofertas.js"></' + 'script>\n' : '')
+    .split('__CONFIG__').join((c.o.length ? '<script src="/config/ofertas.js"></' + 'script>\n' : '') + (c.of.length ? '<script src="/config/ofertas-api.js"></' + 'script>\n' : ''))
     .split('__DADOS__').join(dados);
   if (!img) {   // sem imagem de compartilhamento
     html = html.replace(/<meta property="og:image[^>]*>\n|<meta name="twitter:image"[^>]*>\n/g, '').replace('content="summary_large_image"', 'content="summary"');
