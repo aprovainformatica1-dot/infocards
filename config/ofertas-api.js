@@ -1,5 +1,5 @@
-/* DevMapas — cliente das ofertas da Central de Ofertas (arquivo NOVO; o config/ofertas.js continua como está).
-   Usado pelo Painel de Dicas, pelas dicas publicadas e pelo Gerador de Desafios.
+/* DevMapas — cliente das ofertas da Central de Ofertas (independente do config/ofertas.js, que não é usado aqui).
+   Usado pelo Painel de Dicas e pelas dicas publicadas.
    Lê GET /api/ofertas (público, só o que está no ar). Não tem chave nem segredo.
 
    Uma "seleção" é { m: id do material, t: id do texto, l: id do link } — os três escolhidos separadamente.
@@ -7,7 +7,7 @@
    API:  DevMapasOfertas.carregar()                   -> Promise<lista de materiais no ar>
          DevMapasOfertas.disponiveis(lista)           -> só materiais com ao menos 1 texto e 1 link
          DevMapasOfertas.achar(lista, sel)            -> { material, texto, link } ou null (se algo foi pausado/excluído)
-         DevMapasOfertas.paraLegado(achado, opcoes)   -> objeto no MESMO formato do config/ofertas.js (+ campo preco)
+         DevMapasOfertas.paraLegado(achado, opcoes)   -> objeto do card (capa, título, texto, botão, link, estilo); sem preço nem nomes internos
          DevMapasOfertas.resolver(lista, selecoes)    -> lista de objetos no formato legado, ignorando seleções que não valem mais
          DevMapasOfertas.montarSeletor(el, lista, sel, aoMudar) -> cria os 3 menus (Material / Texto / Link) */
 (function (raiz, fabrica) {
@@ -32,15 +32,15 @@
     return texto && link ? { material, texto, link } : null;
   }
 
-  // Formato idêntico ao dos objetos de config/ofertas.js (id, nome, icone, cta, classe, kick, titulo, textos, importante,
-  // botao, imagem, capaEmoji, iconeWhatsapp, link) + "preco". opcoes.html = true escapa os textos (para quem monta HTML por texto).
+  // Converte uma seleção no objeto que o card da dica sabe desenhar. O card público mostra SÓ: capa, título, texto e botão.
+  // Rótulo (kick), nome interno, caixa "importante", preço e identificação do link ficam VAZIOS de propósito (são só para a administração).
   function paraLegado(a, opcoes) {
     const e = opcoes && opcoes.html ? escHtml : (x) => (x == null ? '' : String(x));
     const m = a.material, t = a.texto, l = a.link;
     return {
-      id: m.chave, nome: m.nome, icone: m.icone, cta: m.cta, classe: m.classe, kick: e(t.kick || m.nome), titulo: e(t.titulo),
-      textos: (t.paragrafos || []).map(e), importante: t.importante ? e(t.importante) : '', botao: e(l.botao),
-      imagem: m.imagem || '', capaEmoji: m.capaEmoji || '', iconeWhatsapp: m.iconeWhatsapp === true, link: l.url, preco: l.preco ? e(l.preco) : '',
+      id: m.chave, nome: '', icone: m.icone, cta: m.cta, classe: m.classe, kick: '', titulo: e(t.titulo),
+      textos: (t.paragrafos || []).map(e), importante: '', botao: e(t.botao || ''),
+      imagem: m.imagem || '', capaEmoji: m.capaEmoji || '', iconeWhatsapp: m.iconeWhatsapp === true, link: l.url, preco: '',
     };
   }
   function resolver(lista, selecoes, opcoes) {
