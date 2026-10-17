@@ -137,7 +137,7 @@ D.itens.forEach((g, i) => {
   const box = el('article', 'item');
   const h = el('button', 'item-h'); h.type = 'button'; h.setAttribute('aria-expanded', 'false'); h.setAttribute('aria-controls', 'item-' + i);
   const sinal = el('span', 'sinal', '＋'); sinal.setAttribute('aria-hidden', 'true');
-  h.append(el('span', 'nome', g.itens.map((x) => x.n).join(' + ')), sinal);
+  h.append(el('span', 'nome', g.itens.map((x) => x.n).join(' e ')), sinal);
   const c = el('div', 'item-c'); c.id = 'item-' + i; c.hidden = true;
   g.itens.forEach((x, k) => {
     const bloco = el('div'); if (k > 0) bloco.style.marginTop = '14px';
