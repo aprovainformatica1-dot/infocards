@@ -12,7 +12,7 @@
   <header class="hero">
     <div class="brand">DEVMAPAS</div>
     <h1>Central de Ofertas</h1>
-    <p>Materiais, textos de oferta e links num só lugar.</p>
+    <p>Cadastre cada oferta uma vez; o Painel de Dicas busca daqui.</p>
   </header>
 
   <!-- Conexão: a chave fica só na memória desta página (recarregar exige digitar de novo) -->
@@ -24,52 +24,88 @@
     <div id="erroConexao" class="msg erro" role="alert" hidden></div>
   </section>
 
-  <!-- Lista de materiais -->
+  <!-- Lista -->
   <section id="vLista" hidden>
     <div class="topo-lista">
-      <input id="busca" type="search" placeholder="Buscar material" aria-label="Buscar material">
-      <button type="button" class="btn" id="btnNovo">+ NOVO MATERIAL</button>
-    </div>
-    <div id="bannerImportar" class="aviso-importar" hidden>
-      <strong>Ofertas do config/ofertas.js ainda não importadas</strong>
-      <p id="textoImportar"></p>
-      <button type="button" class="btn ghost" id="btnImportar">IMPORTAR AGORA</button>
+      <input id="busca" type="search" placeholder="Buscar oferta" aria-label="Buscar oferta">
+      <button type="button" class="btn" id="btnNova">+ NOVA OFERTA</button>
     </div>
     <div id="lista" class="grade" aria-live="polite"></div>
   </section>
 
-  <!-- Detalhe de um material (abas) -->
-  <section id="vDetalhe" hidden>
+  <!-- Cadastro / edição -->
+  <section id="vForm" hidden>
     <button type="button" class="btn ghost voltar" id="btnVoltar">← VOLTAR PARA A LISTA</button>
-    <div class="cab-detalhe"><span id="detIcone" class="ico" aria-hidden="true"></span><div><h2 id="detNome"></h2><div id="detPills"></div></div></div>
-    <div class="abas" role="tablist" aria-label="Seções do material">
-      <button type="button" role="tab" id="tab-dados" aria-controls="aba-dados" aria-selected="true" data-aba="dados">Dados</button>
-      <button type="button" role="tab" id="tab-textos" aria-controls="aba-textos" aria-selected="false" data-aba="textos" tabindex="-1">Textos de oferta</button>
-      <button type="button" role="tab" id="tab-links" aria-controls="aba-links" aria-selected="false" data-aba="links" tabindex="-1">Links</button>
+    <div class="duas">
+      <div class="coluna">
+        <div class="card">
+          <h2 id="formTitulo">Nova oferta</h2>
+          <label for="fNome">Nome interno</label>
+          <input id="fNome" type="text" maxlength="100" placeholder="Só para você identificar na administração">
+
+          <label>Capa</label>
+          <div id="capaBox" class="capa-box">
+            <div id="capaMiniatura" class="capa-mini" aria-hidden="true"></div>
+            <div class="capa-acoes">
+              <button type="button" class="btn ghost mini-btn" id="btnCapa">ESCOLHER ARQUIVO</button>
+              <button type="button" class="btn ghost mini-btn rem" id="btnCapaRemover" hidden>REMOVER CAPA</button>
+              <input id="arquivoCapa" type="file" accept="image/*" hidden>
+              <small id="capaInfo">Ou cole uma imagem (Ctrl+V) ou arraste para cá.</small>
+            </div>
+          </div>
+
+          <label for="fTitulo">Título de destaque</label>
+          <input id="fTitulo" type="text" maxlength="200">
+          <label for="fTexto">Texto</label>
+          <textarea id="fTexto" maxlength="1500" placeholder="Descrição curta da oferta"></textarea>
+          <label for="fBotao">Texto do botão</label>
+          <input id="fBotao" type="text" maxlength="60">
+
+          <label>Estilo do card</label>
+          <div id="estilos" class="estilos" role="radiogroup" aria-label="Estilo do card"></div>
+        </div>
+
+        <div class="card">
+          <h2>Links</h2>
+          <small>Só para a sua organização: a identificação e o preço nunca aparecem no card. O primeiro link é o sugerido no Painel de Dicas.</small>
+          <div id="links"></div>
+          <button type="button" class="btn ghost" id="btnAddLink">+ ADICIONAR LINK</button>
+        </div>
+
+        <div class="card">
+          <details id="alts">
+            <summary>Versões alternativas de texto <span class="mini">(opcional)</span></summary>
+            <small>Outra chamada para a mesma oferta. A capa, o estilo e os links são os mesmos; no Painel de Dicas você escolhe qual versão usar.</small>
+            <div id="altLista"></div>
+            <button type="button" class="btn ghost" id="btnAddAlt">+ ADICIONAR VERSÃO</button>
+          </details>
+        </div>
+      </div>
+
+      <div class="coluna previa-col">
+        <div class="card">
+          <h2>Prévia</h2>
+          <small>Feita com o código real do card da dica. Atualiza sozinha enquanto você digita.</small>
+          <div id="previaEstado" class="mini" role="status"></div>
+          <iframe id="iframePrevia" title="Prévia do card" sandbox="allow-scripts"></iframe>
+        </div>
+      </div>
     </div>
-    <div class="card painel" id="aba-dados" role="tabpanel" aria-labelledby="tab-dados"></div>
-    <div class="card painel" id="aba-textos" role="tabpanel" aria-labelledby="tab-textos" hidden></div>
-    <div class="card painel" id="aba-links" role="tabpanel" aria-labelledby="tab-links" hidden></div>
+
+    <div class="barra">
+      <button type="button" class="btn" id="btnSalvar">SALVAR OFERTA</button>
+      <button type="button" class="btn ghost" id="btnPausar" hidden>PAUSAR OFERTA</button>
+    </div>
   </section>
 </main>
 
 <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
-
 <dialog id="dlgConfirma">
   <h2 id="confTitulo"></h2>
   <p id="confTexto"></p>
   <div class="dlg-acoes"><button type="button" class="btn ghost" id="confNao">CANCELAR</button><button type="button" class="btn" id="confSim">CONFIRMAR</button></div>
 </dialog>
 
-<dialog id="dlgNovo">
-  <h2>Novo material</h2>
-  <p class="mini">Cria o material no Analytics (para os links rastreados) e a vitrine dele aqui. Textos de oferta você adiciona depois.</p>
-  <div id="formNovo"></div>
-  <div class="dlg-acoes"><button type="button" class="btn ghost" id="novoNao">CANCELAR</button><button type="button" class="btn" id="novoSim">CRIAR</button></div>
-</dialog>
-
-<script src="/config/ofertas.js"></script>
 <script src="script.js"></script>
 </body>
 </html>
-

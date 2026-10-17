@@ -1,25 +1,28 @@
-/* CENTRAL DE OFERTAS DEVMAPAS — HTML/CSS/JS puro. Fala só com /api/ofertas-admin (no próprio site).
-   Nenhuma chave do Supabase existe aqui. A chave administrativa fica SÓ em memória (recarregar exige digitar de novo). */
+/* CENTRAL DE OFERTAS DEVMAPAS — HTML/CSS/JS puro. Fala só com as APIs do próprio site
+   (/api/ofertas-admin e /api/dicas-imagens). Nenhuma chave do Supabase existe aqui.
+   A chave administrativa fica SÓ em memória (recarregar a página exige digitar de novo).
+   Não usa o arquivo config/ofertas.js. */
 'use strict';
 const $ = (id) => document.getElementById(id);
 const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt !== undefined) e.textContent = txt; return e; };
-const estado = { chave: '', materiais: [], tipos: [], classes: [], atual: null, aba: 'dados' };
+const ESTILOS = [['go a', 'Claro'], ['go b', 'Arroxeado'], ['go wa', 'Verde (WhatsApp)'], ['go gr', 'Verde escuro (WhatsApp)']];
+const nomeEstilo = (c) => (ESTILOS.find((e) => e[0] === c) || [0, c])[1];
+const estado = { chave: '', ofertas: [], f: null, sujo: false };
 
-const TIPOS_ROTULO = { simulado: 'Simulado', mapa: 'Mapa', personalizado: 'Simulado personalizado', grupo: 'Grupo gratuito', cartilha: 'Cartilha' };
-const CLASSES_ROTULO = { 'go a': 'Faixa superior (estilo do Simulado)', 'go b': 'Roxo claro (estilo dos Mapas)', 'go wa': 'Verde claro (estilo WhatsApp)', 'go gr': 'Verde escuro (estilo do Grupo)' };
 const MENSAGENS = {
-  chave_invalida: 'Chave administrativa incorreta.', campo_obrigatorio: 'Preencha o campo obrigatório', campo_longo: 'Texto longo demais no campo', url_invalida: 'Endereço inválido no campo (use http:// ou https://; a imagem precisa ser https://)',
-  tipo_invalido: 'Tipo inválido.', classe_invalida: 'Estilo de card inválido.', numero_invalido: 'Número inválido no campo', muitos_paragrafos: 'No máximo 8 parágrafos.', chave_em_uso: 'Já existe um material com essa chave.',
-  nao_encontrado: 'Não encontrei (talvez já tenha sido excluído).', confirmacao_necessaria: 'É preciso confirmar.', configuracao: 'O servidor não está configurado (faltam variáveis de ambiente na Vercel).',
-  falha_consulta: 'Não consegui ler o banco. Confira se as tabelas da Central de Ofertas foram criadas (arquivo supabase-ofertas.sql).', falha_gravacao: 'Não consegui gravar no banco.', falha_criar_material: 'Não consegui criar o material no Analytics.', falha_rede: 'Sem conexão com o servidor. Tente de novo.',
+  chave_invalida: 'Chave administrativa incorreta.', campo_obrigatorio: 'Preencha o campo obrigatório', campo_longo: 'Texto longo demais em', url_invalida: 'Endereço inválido (use http:// ou https://) em',
+  estilo_invalido: 'Escolha um dos estilos.', falta_link: 'Cadastre pelo menos um link.', muitos_links: 'No máximo 10 links.', muitas_versoes: 'No máximo 5 versões alternativas.', id_invalido: 'Identificador inválido em',
+  imagem_nao_encontrada: 'A imagem da capa não foi encontrada. Envie de novo.', nao_encontrada: 'Oferta não encontrada (talvez já tenha sido removida).', imagem_grande: 'Imagem grande demais.', tipo_nao_aceito: 'Formato de imagem não aceito (use JPG, PNG ou WebP).',
+  configuracao: 'O servidor não está configurado (faltam variáveis de ambiente na Vercel).', falha_consulta: 'Não consegui ler o banco. Confira se a migração do banco (supabase-ofertas-v2.sql) foi executada.',
+  falha_gravacao: 'Não consegui gravar no banco.', previa_indisponivel: 'A prévia precisa da página da dica com suporte às ofertas da Central.', falha_rede: 'Sem conexão com o servidor. Tente de novo.', falha_storage: 'Não consegui gravar a imagem no Storage.',
 };
-const msgErro = (e) => { const base = (e && MENSAGENS[e.message]) || 'Algo deu errado (' + ((e && e.message) || 'erro') + ').'; return e && e.campo ? base + ' “' + e.campo + '”.' : base; };
+const msgErro = (e) => { const b = (e && MENSAGENS[e.message]) || 'Algo deu errado (' + ((e && e.message) || 'erro') + ').'; return e && e.campo ? b + ' “' + e.campo + '”.' : b; };
 
 let toastTimer;
 function aviso(t, erro) { const x = $('toast'); x.textContent = t; x.className = 'toast' + (erro ? ' erro' : ''); x.hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => { x.hidden = true; }, erro ? 7000 : 3500); }
-async function api(metodo, corpo) {
+async function api(url, metodo, corpo) {
   let resp;
-  try { resp = await fetch('/api/ofertas-admin', { method: metodo, headers: { 'x-admin-key': estado.chave, ...(corpo ? { 'Content-Type': 'application/json' } : {}) }, body: corpo ? JSON.stringify(corpo) : undefined }); }
+  try { resp = await fetch(url, { method: metodo || 'GET', headers: { 'x-admin-key': estado.chave, ...(corpo ? { 'Content-Type': 'application/json' } : {}) }, body: corpo ? JSON.stringify(corpo) : undefined }); }
   catch (e) { throw Object.assign(new Error('falha_rede'), { status: 0 }); }
   let dados = null; try { dados = await resp.json(); } catch (e) { /* sem corpo */ }
   if (resp.status === 401) { estado.chave = ''; mostrar('vConectar'); throw Object.assign(new Error('chave_invalida'), { status: 401 }); }
@@ -33,23 +36,9 @@ function confirmar(titulo, texto, rotulo) {
     $('confSim').onclick = () => fim(true); $('confNao').onclick = () => fim(false); d.onclose = () => resolver(false); d.showModal();
   });
 }
-function mostrar(v) { ['vConectar', 'vLista', 'vDetalhe'].forEach((id) => { $(id).hidden = id !== v; }); window.scrollTo(0, 0); }
-function campo(rotulo, valor, { area, tipo, readonly, max, dica } = {}) {
-  const l = el('label', '', rotulo), c = el(area ? 'textarea' : 'input'); if (!area) c.type = tipo || 'text';
-  c.value = valor == null ? '' : valor; if (readonly) c.readOnly = true; if (max) c.maxLength = max; l.append(c);
-  if (dica) l.append(el('small', '', dica)); return { l, c };
-}
-function seletor(rotulo, opcoes, valor) {
-  const l = el('label', '', rotulo), s = el('select'); Object.entries(opcoes).forEach(([v, t]) => { const o = el('option', '', t); o.value = v; s.append(o); }); s.value = valor; l.append(s); return { l, s };
-}
-function marcador(rotulo, marcado) { const l = el('label', 'chk'), c = el('input'); c.type = 'checkbox'; c.checked = !!marcado; l.append(c, el('span', '', rotulo)); return { l, c }; }
-const botao = (rot, fn, cls) => { const b = el('button', 'btn ' + (cls || ''), rot); b.type = 'button'; b.addEventListener('click', fn); return b; };
-const mat = () => estado.materiais.find((m) => m.id === estado.atual);
-function trocar(novo) { const i = estado.materiais.findIndex((m) => m.id === novo.id); if (i >= 0) estado.materiais[i] = novo; else estado.materiais.push(novo); }
-async function enviar(corpo, sucesso) {
-  try { const r = await api('POST', corpo); if (r.material) trocar(r.material); renderLista(); if (estado.atual) { renderCabecalho(); renderAba(); } if (sucesso) aviso(sucesso); return r; }
-  catch (e) { aviso(msgErro(e), true); return null; }
-}
+function mostrar(v) { ['vConectar', 'vLista', 'vForm'].forEach((id) => { $(id).hidden = id !== v; }); window.scrollTo(0, 0); }
+const sujar = () => { estado.sujo = true; agendarPrevia(); };
+window.addEventListener('beforeunload', (e) => { if (estado.sujo && !$('vForm').hidden) { e.preventDefault(); e.returnValue = ''; } });
 
 // ---------------------------------------------------------------- conexão e lista
 $('btnConectar').addEventListener('click', conectar);
@@ -61,154 +50,161 @@ async function conectar() {
   try { await carregar(); $('chave').value = ''; mostrar('vLista'); }
   catch (e) { estado.chave = ''; $('erroConexao').textContent = msgErro(e); $('erroConexao').hidden = false; mostrar('vConectar'); }
 }
-async function carregar() { const r = await api('GET'); estado.materiais = r.materiais; estado.tipos = r.tipos; estado.classes = r.classes; renderLista(); }
+async function carregar() { estado.ofertas = (await api('/api/ofertas-admin')).ofertas; renderLista(); }
 $('busca').addEventListener('input', renderLista);
+$('btnNova').addEventListener('click', () => abrirForm(null));
 
-function pills(m) {
-  const box = el('span'), o = m.oferta;
-  if (!o) box.append(el('span', 'pill aviso', 'Sem vitrine ainda'));
-  else box.append(el('span', 'pill ' + (o.pausado ? 'off' : 'ok'), o.pausado ? 'Pausado' : 'No ar'));
-  if (!m.ativo_analytics) box.append(el('span', 'pill aviso', 'Desativado no Analytics'));
-  return box;
-}
 function renderLista() {
   const box = $('lista'); box.textContent = '';
   const q = $('busca').value.trim().toLowerCase();
-  const itens = estado.materiais.filter((m) => !q || m.nome.toLowerCase().includes(q) || (m.oferta && m.oferta.chave.includes(q)));
-  if (!itens.length) box.append(el('p', 'vazio', estado.materiais.length ? 'Nenhum material encontrado.' : 'Nenhum material ainda.'));
-  itens.forEach((m) => {
-    const b = el('button', 'item' + (m.oferta && m.oferta.pausado ? ' pausado' : '')); b.type = 'button'; b.setAttribute('aria-label', 'Abrir ' + m.nome);
-    const ic = el('span', 'ico', (m.oferta && m.oferta.icone) || '🎁'); ic.setAttribute('aria-hidden', 'true');
-    const t = el('span', 'txt'); const ativos = (l) => l.filter((x) => x.ativo).length;
-    t.append(el('span', 'nome', m.nome), pills(m), el('span', 'meta', (TIPOS_ROTULO[m.tipo] || m.tipo) + ' · ' + ativos(m.textos) + (ativos(m.textos) === 1 ? ' texto' : ' textos') + ' · ' + ativos(m.links) + (ativos(m.links) === 1 ? ' link' : ' links')));
-    b.append(ic, t); b.addEventListener('click', () => abrirDetalhe(m.id)); box.append(b);
+  const itens = estado.ofertas.filter((o) => !q || o.nome.toLowerCase().includes(q) || (o.principal.titulo || '').toLowerCase().includes(q))
+    .sort((a, b) => String(b.atualizado_em).localeCompare(String(a.atualizado_em)));
+  if (!itens.length) { box.append(el('p', 'vazio', estado.ofertas.length ? 'Nenhuma oferta encontrada.' : 'Nenhuma oferta ainda. Toque em "+ NOVA OFERTA".')); return; }
+  itens.forEach((o) => {
+    const b = el('button', 'item' + (o.pausado ? ' pausada' : '')); b.type = 'button'; b.setAttribute('aria-label', 'Editar ' + o.nome);
+    const capa = el('span', 'mini-capa'); if (o.capa) capa.style.backgroundImage = 'url("' + o.capa.url.replace(/"/g, '%22') + '")'; else capa.textContent = '🎁'; capa.setAttribute('aria-hidden', 'true');
+    const t = el('span', 'txt'); t.append(el('span', 'nome', o.nome), el('span', 'sub', o.principal.titulo || '(sem título)'));
+    const p = el('span'); p.append(el('span', 'pill', nomeEstilo(o.estilo)), el('span', 'pill', o.links.length + (o.links.length === 1 ? ' link' : ' links')));
+    if (o.pausado) p.append(el('span', 'pill off', 'Pausada')); t.append(p);
+    b.append(capa, t); b.addEventListener('click', () => abrirForm(o)); box.append(b);
   });
-  atualizarBannerImportar();
 }
 
-// ---------------------------------------------------------------- importar do config/ofertas.js (uma vez, a pedido)
-function itensLegado() {
-  if (typeof OFERTAS === 'undefined') return [];
-  const todos = { ...(typeof MAPAS_INDIVIDUAIS === 'undefined' ? {} : MAPAS_INDIVIDUAIS), ...OFERTAS };
-  return Object.values(todos).map((o) => ({ chave: o.id, nome: o.nome, icone: o.icone, cta: o.cta, classe: o.classe, kick: o.kick, titulo: o.titulo, textos: o.textos, importante: o.importante, botao: o.botao, imagem: o.imagem, capaEmoji: o.capaEmoji, iconeWhatsapp: o.iconeWhatsapp === true, link: o.link }));
+// ---------------------------------------------------------------- formulário
+function novoForm(o) {
+  return o ? JSON.parse(JSON.stringify({ id: o.id, nome: o.nome, estilo: o.estilo, capa: o.capa, capaOriginal: o.capa, principal: { id: o.principal.id, titulo: o.principal.titulo, texto: o.principal.texto, botao: o.principal.botao },
+    alternativas: o.alternativas.map((a) => ({ id: a.id, nome: a.nome, titulo: a.titulo, texto: a.texto, botao: a.botao })), links: o.links.map((l) => ({ id: l.id, nome: l.nome, url: l.url, preco: l.preco })), pausado: o.pausado }))
+    : { id: null, nome: '', estilo: 'go a', capa: null, capaOriginal: null, principal: { id: null, titulo: '', texto: '', botao: '' }, alternativas: [], links: [{ id: null, nome: '', url: '', preco: '' }], pausado: false };
 }
-function pendentesImportar() { const usadas = new Set(estado.materiais.filter((m) => m.oferta).map((m) => m.oferta.chave)); return itensLegado().filter((i) => !usadas.has(i.chave)); }
-function atualizarBannerImportar() {
-  const p = pendentesImportar(); $('bannerImportar').hidden = !p.length;
-  $('textoImportar').textContent = p.length ? 'Encontrei ' + p.length + ' oferta(s) no arquivo antigo: ' + p.map((i) => i.nome).join(', ') + '. Importar copia os textos e links para cá, ligando cada uma ao material do Analytics que tem o mesmo link. O arquivo config/ofertas.js não é alterado.' : '';
+function abrirForm(o) {
+  estado.f = novoForm(o); estado.sujo = false; const f = estado.f;
+  $('formTitulo').textContent = o ? 'Editar oferta' : 'Nova oferta';
+  $('fNome').value = f.nome; $('fTitulo').value = f.principal.titulo; $('fTexto').value = f.principal.texto; $('fBotao').value = f.principal.botao;
+  renderEstilos(); renderCapa(); renderLinks(); renderAlts(); $('alts').open = f.alternativas.length > 0; atualizarPausar();
+  mostrar('vForm'); previa();
 }
-$('btnImportar').addEventListener('click', async () => {
-  const p = pendentesImportar(); if (!p.length) return;
-  if (!(await confirmar('Importar do config/ofertas.js?', 'Serão importadas ' + p.length + ' oferta(s). Nenhum material existente do Analytics é alterado; só ganham textos e links aqui.', 'IMPORTAR'))) return;
-  try {
-    let r = await api('POST', { acao: 'importar_legado', itens: p }); estado.materiais = r.materiais; const rel = r.relatorio;
-    let msg = rel.importados.length + ' importada(s).';
-    if (rel.sem_correspondencia.length) {
-      const nomes = rel.sem_correspondencia.map((x) => x.chave + ' (' + x.motivo + ')').join('\n• ');
-      if (await confirmar('Criar materiais novos?', 'Não achei material no Analytics com o mesmo link para:\n• ' + nomes + '\n\nPosso CRIAR estes materiais no Analytics (nome, tipo, destino) para você. Se preferir, cancele e ligue manualmente depois.', 'CRIAR MATERIAIS')) {
-        const chaves = new Set(rel.sem_correspondencia.map((x) => x.chave)); r = await api('POST', { acao: 'importar_legado', itens: p.filter((i) => chaves.has(i.chave)), criar_novos: true }); estado.materiais = r.materiais; msg += ' ' + r.relatorio.criados.length + ' criada(s) como material novo.';
-        if (r.relatorio.erros.length) msg += '\nErros: ' + r.relatorio.erros.map((x) => x.chave + ': ' + x.erro).join('; ');
-      } else msg += ' ' + rel.sem_correspondencia.length + ' ficou(aram) de fora.';
-    }
-    if (rel.erros.length) msg += '\nErros: ' + rel.erros.map((x) => x.chave + ': ' + x.erro).join('; ');
-    renderLista(); aviso(msg, rel.erros.length > 0);
-  } catch (e) { aviso(msgErro(e), true); }
+$('btnVoltar').addEventListener('click', async () => {
+  if (estado.sujo && !(await confirmar('Sair sem salvar?', 'Há alterações que ainda não foram salvas.', 'SAIR'))) return;
+  estado.sujo = false; estado.f = null; renderLista(); mostrar('vLista');
 });
+[['fNome', (f, v) => { f.nome = v; }], ['fTitulo', (f, v) => { f.principal.titulo = v; }], ['fTexto', (f, v) => { f.principal.texto = v; }], ['fBotao', (f, v) => { f.principal.botao = v; }]]
+  .forEach(([id, set]) => $(id).addEventListener('input', () => { set(estado.f, $(id).value); sujar(); }));
 
-// ---------------------------------------------------------------- novo material
-$('btnNovo').addEventListener('click', () => {
-  const f = $('formNovo'); f.textContent = '';
-  const nome = campo('Nome do material', '', { max: 100 }), tipo = seletor('Tipo', TIPOS_ROTULO, 'mapa'), url = campo('Link principal (URL de compra)', '', { tipo: 'url', dica: 'Vira o destino padrão dos links rastreados.' }),
-    bt = campo('Texto do botão', '', { max: 60 }), ic = campo('Ícone (emoji)', '🎁', { max: 8 }), est = seletor('Estilo do card', CLASSES_ROTULO, 'go b');
-  f.append(nome.l, tipo.l, url.l, bt.l, ic.l, est.l);
-  $('novoSim').onclick = async () => {
-    const r = await enviarNovo({ acao: 'criar_material', nome: nome.c.value, tipo: tipo.s.value, url: url.c.value, botao: bt.c.value, icone: ic.c.value, classe: est.s.value });
-    if (r) { $('dlgNovo').close(); abrirDetalhe(r.material.id); aviso('Material criado. Agora adicione os textos de oferta.'); }
-  };
-  $('novoNao').onclick = () => $('dlgNovo').close(); $('dlgNovo').showModal();
-});
-async function enviarNovo(corpo) { try { const r = await api('POST', corpo); trocar(r.material); renderLista(); return r; } catch (e) { aviso(msgErro(e), true); return null; } }
-
-// ---------------------------------------------------------------- detalhe
-function abrirDetalhe(id) { estado.atual = id; estado.aba = 'dados'; renderCabecalho(); trocarAba('dados'); mostrar('vDetalhe'); }
-$('btnVoltar').addEventListener('click', () => { estado.atual = null; renderLista(); mostrar('vLista'); });
-function renderCabecalho() { const m = mat(); $('detIcone').textContent = (m.oferta && m.oferta.icone) || '🎁'; $('detNome').textContent = m.nome; const p = $('detPills'); p.textContent = ''; p.append(pills(m)); }
-function trocarAba(a) {
-  estado.aba = a;
-  document.querySelectorAll('.abas button').forEach((b) => { const sel = b.dataset.aba === a; b.setAttribute('aria-selected', String(sel)); b.tabIndex = sel ? 0 : -1; $('aba-' + b.dataset.aba).hidden = !sel; });
-  renderAba();
-}
-document.querySelectorAll('.abas button').forEach((b, i, todos) => {
-  b.addEventListener('click', () => trocarAba(b.dataset.aba));
-  b.addEventListener('keydown', (e) => { if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return; const n = todos[(i + (e.key === 'ArrowRight' ? 1 : todos.length - 1)) % todos.length]; n.focus(); trocarAba(n.dataset.aba); });
-});
-function renderAba() { ({ dados: renderDados, textos: renderTextos, links: renderLinks })[estado.aba](); }
-
-// --- aba Dados
-function renderDados() {
-  const box = $('aba-dados'), m = mat(), o = m.oferta; box.textContent = '';
-  if (!o) box.append(el('div', 'msg erro', 'Este material existe no Analytics, mas ainda não tem dados de vitrine. Confira os campos e salve para liberá-lo nos seletores.'));
-  const nome = campo('Nome do material', m.nome, { max: 100, dica: 'Este nome também aparece no Analytics.' }), tipo = seletor('Tipo', TIPOS_ROTULO, m.tipo), ic = campo('Ícone (emoji)', o ? o.icone : '🎁', { max: 8 });
-  const est = seletor('Estilo do card', CLASSES_ROTULO, o ? o.classe : 'go b'), img = campo('Imagem da capa (URL https://)', o ? o.imagem_url : '', { tipo: 'url', dica: 'Opcional. Ex.: https://devmapas.vercel.app/img/capa-mapas.png' });
-  const emo = campo('Emoji da capa (aparece enquanto a imagem não carrega)', o ? o.capa_emoji : '', { max: 8 }), wa = marcador('Botão com ícone do WhatsApp', o && o.icone_whatsapp);
-  const cta = campo('Nome do botão rastreado (cta)', o ? o.cta : '', { max: 40, dica: 'Mesmo campo "cta" do ofertas.js. Deixe como está se não souber.' }), ord = campo('Ordem na lista (menor aparece primeiro)', o ? o.ordem : 0, { tipo: 'number' });
-  const chave = campo('Chave interna', o ? o.chave : '(gerada ao salvar)', { readonly: true, dica: 'Identifica o material nas ofertas antigas. Não muda.' }), dest = campo('Destino padrão dos links rastreados (/r/)', m.destino_url, { readonly: true, dica: 'Segue o link marcado como principal na aba Links.' });
-  box.append(nome.l, tipo.l, ic.l, est.l, img.l, emo.l, wa.l, cta.l, ord.l, chave.l, dest.l);
-  const ac = el('div', 'acoes');
-  ac.append(botao('SALVAR DADOS', () => enviar({ acao: 'salvar_material', material_id: m.id, nome: nome.c.value, tipo: tipo.s.value, icone: ic.c.value, classe: est.s.value, imagem_url: img.c.value, capa_emoji: emo.c.value, icone_whatsapp: wa.c.checked, cta: cta.c.value, ordem: ord.c.value }, 'Dados salvos ✅')));
-  const pausado = !!(o && o.pausado);
-  ac.append(botao(pausado ? 'REATIVAR MATERIAL' : 'PAUSAR MATERIAL', async () => {
-    if (!pausado && !(await confirmar('Pausar "' + m.nome + '"?', 'Ele some dos seletores e das dicas publicadas que o usam. Desafios já gerados não mudam e os links rastreados (/r/) continuam funcionando. Você pode reativar quando quiser.', 'PAUSAR'))) return;
-    enviar({ acao: 'pausar_material', material_id: m.id, pausado: !pausado }, pausado ? 'Material reativado ✅' : 'Material pausado.');
-  }, 'ghost'));
-  box.append(ac);
+function renderEstilos() {
+  const box = $('estilos'); box.textContent = '';
+  ESTILOS.forEach(([valor, rotulo]) => {
+    const l = el('label', 'estilo'), r = el('input'); r.type = 'radio'; r.name = 'estilo'; r.value = valor; r.checked = estado.f.estilo === valor;
+    r.addEventListener('change', () => { estado.f.estilo = valor; sujar(); }); l.append(r, el('span', '', rotulo)); box.append(l);
+  });
 }
 
-// --- aba Textos
-function renderTextos() {
-  const box = $('aba-textos'), m = mat(); box.textContent = '';
-  box.append(el('h2', '', 'Textos de oferta'), el('p', 'mini', 'Cada texto é uma versão do anúncio (título, parágrafos e destaque). Dicas e desafios escolhem um deles.'));
-  if (!m.textos.length) box.append(el('p', 'vazio', 'Nenhum texto ainda. Sem ao menos um texto e um link ativos, o material não aparece nos seletores.'));
-  m.textos.forEach((t) => box.append(blocoTexto(m, t, false)));
-  const novo = blocoTexto(m, null, true); box.append(novo);
-  box.append(botao('+ NOVO TEXTO', () => { novo.open = true; novo.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 'ghost'));
+// --- links (identificação interna, URL e preço: só para a administração)
+function campo(rotulo, valor, aoMudar, opcoes) {
+  const l = el('label', '', rotulo), c = el(opcoes && opcoes.area ? 'textarea' : 'input'); if (!(opcoes && opcoes.area)) c.type = (opcoes && opcoes.tipo) || 'text';
+  c.value = valor || ''; if (opcoes && opcoes.max) c.maxLength = opcoes.max; if (opcoes && opcoes.ph) c.placeholder = opcoes.ph;
+  c.addEventListener('input', () => { aoMudar(c.value); sujar(); }); l.append(c); return l;
 }
-function blocoTexto(m, t, ehNovo) {
-  const d = el('details', 'bloco'), s = el('summary', '', ehNovo ? '＋ Novo texto' : t.nome); if (t && !t.ativo) s.append(el('span', 'pill off', 'Pausado')); d.append(s);
-  const c = el('div', 'corpo'); d.append(c);
-  const nome = campo('Nome interno (só aparece nos seletores)', t ? t.nome : '', { max: 80 }), kick = campo('Rótulo acima do título (opcional)', t ? t.kick : '', { max: 120 }), tit = campo('Título', t ? t.titulo : '', { max: 200 });
-  const par = campo('Parágrafos (separe com uma linha em branco)', t ? t.paragrafos.join('\n\n') : '', { area: true, dica: 'Texto simples. Até 8 parágrafos.' }), imp = campo('Caixa "IMPORTANTE" (opcional)', t ? t.importante : '', { area: true, max: 500 });
-  c.append(nome.l, kick.l, tit.l, par.l, imp.l);
-  const corpo = () => ({ nome: nome.c.value, kick: kick.c.value, titulo: tit.c.value, paragrafos: par.c.value.split(/\n\s*\n/).map((x) => x.trim()).filter(Boolean), importante: imp.c.value });
-  const ac = el('div', 'acoes'); c.append(ac);
-  ac.append(botao('SALVAR TEXTO', () => enviar({ acao: 'salvar_texto', ...(t ? { id: t.id } : { material_id: m.id }), ...corpo() }, 'Texto salvo ✅')));
-  if (t) {
-    ac.append(botao(t.ativo ? 'PAUSAR' : 'REATIVAR', () => enviar({ acao: 'pausar_texto', id: t.id, ativo: !t.ativo }, t.ativo ? 'Texto pausado.' : 'Texto reativado ✅'), 'ghost'));
-    ac.append(botao('EXCLUIR', async () => { if (await confirmar('Excluir este texto?', 'Dicas que usam este texto deixam de mostrar a oferta até você escolher outro. Não dá para desfazer.', 'EXCLUIR')) enviar({ acao: 'excluir_texto', id: t.id, confirmar: true }, 'Texto excluído.'); }, 'rem'));
-  }
-  return d;
-}
-
-// --- aba Links
+const botao = (rot, fn, cls) => { const b = el('button', 'btn mini-btn ' + (cls || 'ghost'), rot); b.type = 'button'; b.style.marginTop = '10px'; b.addEventListener('click', fn); return b; };
 function renderLinks() {
-  const box = $('aba-links'), m = mat(); box.textContent = '';
-  box.append(el('h2', '', 'Links'), el('p', 'mini', 'Cada link tem URL, preço e texto de botão próprios. O link PRINCIPAL é o destino padrão do material nos links rastreados (/r/).'));
-  if (!m.links.length) box.append(el('p', 'vazio', 'Nenhum link ainda.'));
-  m.links.forEach((l) => box.append(blocoLink(m, l, false)));
-  const novo = blocoLink(m, null, true); box.append(novo);
-  box.append(botao('+ NOVO LINK', () => { novo.open = true; novo.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 'ghost'));
+  const box = $('links'); box.textContent = ''; const ls = estado.f.links;
+  ls.forEach((l, i) => {
+    const b = el('div', 'bloco'); b.append(el('h3', '', 'Link ' + (i + 1) + (i === 0 ? ' (sugerido)' : '')));
+    b.append(campo('Identificação interna', l.nome, (v) => { l.nome = v; }, { max: 80, ph: 'Ex.: Checkout à vista' }), campo('URL de destino', l.url, (v) => { l.url = v; }, { tipo: 'url', ph: 'https://' }), campo('Preço (opcional)', l.preco, (v) => { l.preco = v; }, { max: 40, ph: 'Ex.: R$ 47,00' }));
+    if (ls.length > 1) b.append(botao('REMOVER LINK', () => { ls.splice(i, 1); renderLinks(); sujar(); }, 'rem'));
+    box.append(b);
+  });
+  $('btnAddLink').disabled = ls.length >= 10;
 }
-function blocoLink(m, l, ehNovo) {
-  const d = el('details', 'bloco'), s = el('summary', '', ehNovo ? '＋ Novo link' : l.nome + (l.preco ? ' — ' + l.preco : ''));
-  if (l && l.principal) s.append(el('span', 'pill ok', 'Principal')); if (l && !l.ativo) s.append(el('span', 'pill off', 'Pausado')); d.append(s);
-  const c = el('div', 'corpo'); d.append(c);
-  const nome = campo('Nome interno (ex.: Checkout à vista)', l ? l.nome : '', { max: 80 }), url = campo('URL', l ? l.url : '', { tipo: 'url' }), preco = campo('Preço (texto exibido, opcional)', l ? l.preco : '', { max: 40 }), bt = campo('Texto do botão', l ? l.botao : '', { max: 60 });
-  const pr = marcador('Link principal deste material', l && l.principal); c.append(nome.l, url.l, preco.l, bt.l, pr.l);
-  const ac = el('div', 'acoes'); c.append(ac);
-  ac.append(botao('SALVAR LINK', () => enviar({ acao: 'salvar_link', ...(l ? { id: l.id } : { material_id: m.id }), nome: nome.c.value, url: url.c.value, preco: preco.c.value, botao: bt.c.value, principal: pr.c.checked }, 'Link salvo ✅')));
-  if (l) {
-    ac.append(botao(l.ativo ? 'PAUSAR' : 'REATIVAR', () => enviar({ acao: 'pausar_link', id: l.id, ativo: !l.ativo }, l.ativo ? 'Link pausado.' : 'Link reativado ✅'), 'ghost'));
-    ac.append(botao('EXCLUIR', async () => { if (await confirmar('Excluir este link?', 'Dicas que usam este link deixam de mostrar a oferta até você escolher outro. Não dá para desfazer.', 'EXCLUIR')) enviar({ acao: 'excluir_link', id: l.id, confirmar: true }, 'Link excluído.'); }, 'rem'));
-  }
-  return d;
+$('btnAddLink').addEventListener('click', () => { estado.f.links.push({ id: null, nome: '', url: '', preco: '' }); renderLinks(); sujar(); });
+
+// --- versões alternativas de texto
+function renderAlts() {
+  const box = $('altLista'); box.textContent = ''; const as = estado.f.alternativas;
+  as.forEach((a, i) => {
+    const b = el('div', 'bloco'); b.append(el('h3', '', 'Versão ' + (i + 1)));
+    b.append(campo('Nome da versão', a.nome, (v) => { a.nome = v; }, { max: 80, ph: 'Ex.: Mais curto' }), campo('Título de destaque', a.titulo, (v) => { a.titulo = v; }, { max: 200 }),
+      campo('Texto', a.texto, (v) => { a.texto = v; }, { area: true, max: 1500 }), campo('Texto do botão', a.botao, (v) => { a.botao = v; }, { max: 60 }));
+    b.append(botao('REMOVER VERSÃO', () => { as.splice(i, 1); renderAlts(); sujar(); }, 'rem')); box.append(b);
+  });
+  $('btnAddAlt').disabled = as.length >= 5;
 }
+$('btnAddAlt').addEventListener('click', () => { const p = estado.f.principal; estado.f.alternativas.push({ id: null, nome: '', titulo: '', texto: '', botao: p.botao }); renderAlts(); sujar(); });
+
+// ---------------------------------------------------------------- capa (colar, arrastar ou escolher arquivo; guardada no Supabase Storage)
+function renderCapa() {
+  const c = estado.f.capa, m = $('capaMiniatura');
+  m.style.backgroundImage = c ? 'url("' + c.url.replace(/"/g, '%22') + '")' : ''; m.textContent = c ? '' : 'Sem capa';
+  $('btnCapaRemover').hidden = !c; $('btnCapa').textContent = c ? 'TROCAR IMAGEM' : 'ESCOLHER ARQUIVO';
+}
+const infoCapa = (t) => { $('capaInfo').textContent = t; };
+const hex = (buf) => [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
+const paraBase64 = (blob) => new Promise((ok, no) => { const f = new FileReader(); f.onload = () => ok(String(f.result).split(',')[1]); f.onerror = () => no(new Error('leitura')); f.readAsDataURL(blob); });
+async function bitmap(file) {
+  if (window.createImageBitmap) { try { return await createImageBitmap(file); } catch (e) { /* tenta o método antigo */ } }
+  return new Promise((ok, no) => { const u = URL.createObjectURL(file), im = new Image(); im.onload = () => { URL.revokeObjectURL(u); ok(im); }; im.onerror = () => no(new Error('imagem_ilegivel')); im.src = u; });
+}
+async function reduzir(file) {                                // até 600 px de largura, JPEG: leve e suficiente para a capa do card
+  const bmp = await bitmap(file), esc = Math.min(1, 600 / bmp.width), w = Math.max(1, Math.round(bmp.width * esc)), h = Math.max(1, Math.round(bmp.height * esc));
+  const cv = el('canvas'); cv.width = w; cv.height = h; const cx = cv.getContext('2d'); cx.fillStyle = '#fff'; cx.fillRect(0, 0, w, h); cx.drawImage(bmp, 0, 0, w, h);
+  for (const q of [0.88, 0.72, 0.55]) { const blob = await new Promise((ok) => cv.toBlob(ok, 'image/jpeg', q)); if (blob && blob.size <= 2.4 * 1024 * 1024) return { blob, w, h }; }
+  throw new Error('imagem_grande');
+}
+async function enviarCapa(file) {
+  if (!file || !file.type.startsWith('image/')) { infoCapa('Esse arquivo não é uma imagem.'); return; }
+  if (file.size > 25 * 1024 * 1024) { infoCapa('Imagem grande demais (máx. 25 MB).'); return; }
+  try {
+    infoCapa('Processando…');
+    const hashOrigem = hex(await crypto.subtle.digest('SHA-256', await file.arrayBuffer()));
+    let img = (await api('/api/dicas-imagens', 'POST', { acao: 'buscar_hash', hash_origem: hashOrigem })).imagem;          // mesma imagem já guardada? reaproveita
+    if (!img) {
+      const { blob, w, h } = await reduzir(file); infoCapa('Enviando…');
+      const generico = /^image\.(png|jpe?g|gif|webp)$/i.test(file.name);                                                 // imagem colada vem como "image.png"
+      const nome = generico ? 'capa ' + new Date().toLocaleString('pt-BR').replace(/[/:,]/g, '-') : file.name.replace(/\.[^.]+$/, '');
+      img = (await api('/api/dicas-imagens', 'POST', { acao: 'enviar', nome, hash_origem: hashOrigem, dados: await paraBase64(blob), largura: w, altura: h })).imagem;
+    }
+    estado.f.capa = { id: img.id, url: img.url }; renderCapa(); infoCapa('Capa pronta. Ou cole/arraste outra imagem para trocar.'); sujar();
+  } catch (e) { infoCapa('Não consegui usar essa imagem: ' + (e.message === 'imagem_ilegivel' ? 'arquivo ilegível.' : msgErro(e))); }
+}
+$('btnCapa').addEventListener('click', () => $('arquivoCapa').click());
+$('arquivoCapa').addEventListener('change', (e) => { enviarCapa(e.target.files[0]); e.target.value = ''; });
+$('btnCapaRemover').addEventListener('click', () => { estado.f.capa = null; renderCapa(); infoCapa('Capa removida. Salve para confirmar.'); sujar(); });
+const zona = $('capaBox');
+['dragenter', 'dragover'].forEach((ev) => zona.addEventListener(ev, (e) => { e.preventDefault(); zona.classList.add('sobre'); }));
+['dragleave', 'drop'].forEach((ev) => zona.addEventListener(ev, (e) => { e.preventDefault(); zona.classList.remove('sobre'); }));
+zona.addEventListener('drop', (e) => enviarCapa(e.dataTransfer.files[0]));
+document.addEventListener('paste', (e) => {
+  if ($('vForm').hidden || !e.clipboardData || !e.clipboardData.files.length) return;
+  e.preventDefault(); enviarCapa(e.clipboardData.files[0]);
+});
+
+// ---------------------------------------------------------------- prévia (a página real da dica, feita pelo servidor)
+let previaSeq = 0, previaTimer = null;
+function agendarPrevia() { clearTimeout(previaTimer); previaTimer = setTimeout(previa, 700); }
+function iframeNovo() { const v = $('iframePrevia'), n = el('iframe'); n.id = 'iframePrevia'; n.title = v.title; n.setAttribute('sandbox', v.getAttribute('sandbox')); v.replaceWith(n); return n; }
+async function previa() {
+  const f = estado.f; if (!f) return; const minha = ++previaSeq; $('previaEstado').textContent = 'Atualizando…';
+  try {
+    const r = await api('/api/ofertas-admin', 'POST', { acao: 'previa', oferta: { estilo: f.estilo, titulo: f.principal.titulo, texto: f.principal.texto, botao: f.principal.botao, capa_url: f.capa ? f.capa.url : '', link: (f.links[0] || {}).url } });
+    if (minha !== previaSeq) return;                         // chegou uma resposta mais nova: descarta esta
+    iframeNovo().srcdoc = r.html; $('previaEstado').textContent = '';
+  } catch (e) { if (minha === previaSeq) $('previaEstado').textContent = 'Prévia indisponível: ' + msgErro(e); }
+}
+
+// ---------------------------------------------------------------- salvar e pausar
+function atualizarPausar() { const b = $('btnPausar'), f = estado.f; b.hidden = !f.id; b.textContent = f.pausado ? 'REATIVAR OFERTA' : 'PAUSAR OFERTA'; }
+function aplicar(oferta) {
+  const i = estado.ofertas.findIndex((o) => o.id === oferta.id); if (i >= 0) estado.ofertas[i] = oferta; else estado.ofertas.push(oferta);
+}
+$('btnSalvar').addEventListener('click', async () => {
+  const f = estado.f; if (!f) return; const b = $('btnSalvar'); b.disabled = true;
+  try {
+    const r = await api('/api/ofertas-admin', 'POST', { acao: 'salvar', oferta: { id: f.id, nome: f.nome, estilo: f.estilo, capa_imagem_id: f.capa ? f.capa.id : null, manter_capa_atual: !!f.id && JSON.stringify(f.capa) === JSON.stringify(f.capaOriginal), principal: f.principal, alternativas: f.alternativas, links: f.links } });
+    aplicar(r.oferta); estado.f = novoForm(r.oferta); estado.sujo = false; renderLinks(); renderAlts(); renderCapa(); atualizarPausar(); $('formTitulo').textContent = 'Editar oferta'; aviso('Oferta salva ✅');
+  } catch (e) { aviso(msgErro(e), true); } finally { b.disabled = false; }
+});
+$('btnPausar').addEventListener('click', async () => {
+  const f = estado.f; if (!f || !f.id) return;
+  if (!f.pausado && !(await confirmar('Pausar "' + f.nome + '"?', 'Ela some da lista do Painel de Dicas e das dicas publicadas que a usam. Você pode reativar quando quiser.', 'PAUSAR'))) return;
+  try { const r = await api('/api/ofertas-admin', 'POST', { acao: 'pausar', id: f.id, pausado: !f.pausado }); aplicar(r.oferta); f.pausado = r.oferta.pausado; atualizarPausar(); aviso(f.pausado ? 'Oferta pausada.' : 'Oferta reativada ✅'); }
+  catch (e) { aviso(msgErro(e), true); }
+});
