@@ -1,1 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Painel de Desafios — DevMapas</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="app">
+  <header class="hero">
+    <div class="brand">DEVMAPAS</div>
+    <h1>Painel de Desafios</h1>
+    <p>Cole as questões, confira, escolha os materiais e publique.</p>
+  </header>
+
+  <!-- Conexão: a chave fica só na memória desta página (recarregar exige digitar de novo) -->
+  <section class="card" id="vConectar">
+    <h2>Conectar</h2>
+    <label for="chave">Chave administrativa</label>
+    <input id="chave" type="password" autocomplete="off" placeholder="Digite a chave">
+    <button type="button" class="btn" id="btnConectar">CONECTAR</button>
+    <div id="erroConexao" class="msg erro" role="alert" hidden></div>
+  </section>
+
+  <!-- Lista -->
+  <section id="vLista" hidden>
+    <div class="topo-lista">
+      <input id="busca" type="search" placeholder="Buscar por título ou endereço" aria-label="Buscar desafios">
+      <button type="button" class="btn" id="btnNovo">+ NOVO DESAFIO</button>
+    </div>
+    <div id="lista" aria-live="polite"></div>
+  </section>
+
+  <!-- Editor -->
+  <section id="vEditor" hidden>
+    <button type="button" class="btn ghost voltar" id="btnVoltar">← VOLTAR PARA A LISTA</button>
+    <div id="situacao" class="situacao" role="status"></div>
+
+    <div class="card">
+      <h2>1. Conteúdo</h2>
+      <label for="titulo">Título do desafio</label>
+      <input id="titulo" type="text" maxlength="120" placeholder="Desafio de Excel">
+      <label for="subtitulo">Subtítulo <small>(opcional)</small></label>
+      <input id="subtitulo" type="text" maxlength="200" placeholder="5 questões para testar seus conhecimentos">
+      <label for="slug">Nome do arquivo (endereço)</label>
+      <input id="slug" type="text" maxlength="80" autocapitalize="off" spellcheck="false" placeholder="excel">
+      <small id="slugInfo"></small>
+      <label for="texto">Questões</label>
+      <small>Cole as questões (múltipla escolha ou Certo/Errado). Reconhece ENUNCIADO, alternativas A) a E), GABARITO, COMENTÁRIO e PARA MEMORIZAR, ou questões numeradas.</small>
+      <textarea id="texto" class="grande" placeholder="ENUNCIADO:&#10;No Excel, qual função soma valores?&#10;&#10;A) MÉDIA&#10;B) SOMA&#10;&#10;GABARITO: B&#10;&#10;COMENTÁRIO:&#10;A função SOMA adiciona os valores.&#10;&#10;PARA MEMORIZAR:&#10;SOMA = somar."></textarea>
+      <button type="button" class="btn" id="btnInterpretar">INTERPRETAR QUESTÕES</button>
+    </div>
+
+    <div class="card" id="cardRevisao" hidden>
+      <h2>2. Revisão das questões</h2>
+      <small>O sistema só organiza o que está no seu texto: nada é inventado. Corrija aqui antes de publicar.</small>
+      <div id="avisos"></div>
+      <div id="pendencias" class="msg" role="status"></div>
+      <div id="questoes"></div>
+      <div id="nao"></div>
+    </div>
+
+    <div class="card">
+      <h2>3. Materiais</h2>
+      <small>Cards que aparecem na tela final. Escolha o material da Central de Ofertas e depois o link.</small>
+      <div id="materiais"></div>
+      <button type="button" class="btn ghost" id="btnAddMaterial">+ ADICIONAR MATERIAL</button>
+      <small class="dica-central">Para editar textos e links dos materiais, use a <a href="/central-ofertas/" target="_blank" rel="noopener">Central de Ofertas</a>.</small>
+    </div>
+
+    <div class="barra" role="group" aria-label="Ações do desafio">
+      <button type="button" class="btn ghost" id="btnSalvar">SALVAR RASCUNHO</button>
+      <button type="button" class="btn ghost" id="btnTestar">TESTAR DESAFIO</button>
+      <button type="button" class="btn" id="btnPublicar">PUBLICAR</button>
+      <button type="button" class="btn ghost" id="btnDespublicar" hidden>DESPUBLICAR</button>
+      <button type="button" class="btn ghost" id="btnCopiar">COPIAR LINK</button>
+    </div>
+  </section>
+</main>
+
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+<dialog id="dlgConfirma">
+  <h2 id="confTitulo"></h2>
+  <p id="confTexto"></p>
+  <div class="dlg-acoes"><button type="button" class="btn ghost" id="confNao">CANCELAR</button><button type="button" class="btn" id="confSim">CONFIRMAR</button></div>
+</dialog>
+
+<dialog id="dlgPrevia" class="grande">
+  <div class="dlg-topo"><strong>Teste do desafio (como o leitor verá)</strong><button type="button" class="btn ghost fechar" id="fecharPrevia">FECHAR</button></div>
+  <iframe id="iframePrevia" title="Prévia do desafio" sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox"></iframe>
+</dialog>
+
+<script src="regras.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
 
