@@ -40,7 +40,12 @@ h1,h2,h3 { font-family: var(--fonte-titulo); line-height: 1.22; }
 .logo { display: inline-flex; align-items: center; gap: 9px; color: var(--roxo-escuro); font: 800 1.18rem var(--fonte-titulo); }
 .logo__icon { color: var(--roxo); }
 .header__whatsapp { display: inline-flex; color: var(--whatsapp); }
-.hero { position: relative; background: linear-gradient(135deg,#F8F5FF 0%,#FFFFFF 60%,#FFF8E8 100%); padding: 64px 0 74px; overflow: hidden; }
+.hero {
+  position: relative;
+  background: linear-gradient(135deg, #101820 0%, #17232D 100%);
+  padding: 64px 0 74px;
+  overflow: hidden;
+}
 .hero__inner { display: grid; grid-template-columns: 1.1fr .9fr; gap: 52px; align-items: center; }
 .hero__content { min-width: 0; }
 .hero__eyebrow { color: var(--roxo); font: 800 .78rem var(--fonte-titulo); letter-spacing: .09em; margin: 0 0 12px; }
