@@ -49,8 +49,7 @@ h1,h2,h3 { font-family: var(--fonte-titulo); line-height: 1.22; }
 .hero__inner { display: grid; grid-template-columns: 1.1fr .9fr; gap: 52px; align-items: center; }
 .hero__content { min-width: 0; }
 .hero__eyebrow { color: var(--roxo); font: 800 .78rem var(--fonte-titulo); letter-spacing: .09em; margin: 0 0 12px; }
-.hero__title { color: var(--roxo-escuro); font-size: clamp(2rem, 4.4vw, 3.35rem); font-weight: 800; letter-spacing: -.035em; margin-bottom: 20px; }
-.highlight { color: var(--roxo); }
+.hero__title { color: var(--roxo-escuro);
 .hero__subtitle { color: var(--texto-suave); font-size: 1.08rem; max-width: 620px; }
 .hero__notice { display: flex; gap: 12px; align-items: flex-start; padding: 15px 17px; margin-top: 22px; border: 1px solid #E7D5A7; border-radius: 12px; background: #FFF8E8; color: #5C4212; }
 .hero__notice > span { display: grid; place-items: center; flex: 0 0 24px; width: 24px; height: 24px; border-radius: 50%; background: var(--amarelo); color: var(--roxo-escuro); font-weight: 800; }
