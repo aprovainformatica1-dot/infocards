@@ -1,22 +1,22 @@
 /* PMPE — Página de vendas DevMapas
    Estilo independente: não altera a página original. */
 :root {
-  --roxo-escuro: #4C1D95;
-  --roxo: #7E22CE;
-  --roxo-claro: #A855F7;
-  --fundo-alt: #F8F5FF;
-  --amarelo: #F4A81D;
-  --amarelo-escuro: #D98E0B;
+  --roxo-escuro: #101820;
+  --roxo: #263746;
+  --roxo-claro: #40566A;
+  --fundo-alt: #F2F4F5;
+  --amarelo: #D5B66A;
+  --amarelo-escuro: #B99A4D;
   --whatsapp: #25D366;
   --branco: #FFFFFF;
   --texto: #1F2937;
   --texto-suave: #4B5563;
   --texto-claro: rgba(255,255,255,.88);
-  --borda: #E4D9FB;
+  --borda: #D8DEE3;
   --fonte-titulo: 'Sora', sans-serif;
   --fonte-texto: 'Inter', sans-serif;
   --raio: 18px;
-  --sombra: 0 12px 30px rgba(76,29,149,.13);
+  --sombra: 0 12px 30px rgba(16,24,32,.20);
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; scroll-padding-top: 88px; }
