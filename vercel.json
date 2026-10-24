@@ -2,6 +2,7 @@
   "rewrites": [
     { "source": "/r/:codigo", "destination": "/api/r?codigo=:codigo" },
     { "source": "/dica/:slug", "destination": "/api/dica?slug=:slug" },
-    { "source": "/desafio/:slug", "destination": "/api/desafio?slug=:slug" }
+    { "source": "/desafio/:slug", "destination": "/api/desafio?slug=:slug" },
+    { "source": "/venda/:slug", "destination": "/api/venda?slug=:slug" }
   ]
 }
