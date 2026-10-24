@@ -15,7 +15,7 @@
 // =====================================================================
 
 const crypto = require('crypto');
-const regras = require('../gerenciar-paginas-venda/regras.js');
+const regras = require('../simulados/regras.js');
 const { renderizarVenda } = require('./_venda-render.js');
 
 const CAMPOS_LISTA = 'id,slug,nome,concurso,cargo,publicada,publicada_em,atualizado_em';

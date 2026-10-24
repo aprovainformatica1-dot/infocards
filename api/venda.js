@@ -4,7 +4,7 @@
 // Rascunhos e páginas despublicadas respondem 404. Somente leitura; a chave do Supabase fica só no servidor.
 // =====================================================================
 
-const regras = require('../gerenciar-paginas-venda/regras.js');
+const regras = require('../simulados/regras.js');
 const { renderizarVenda } = require('./_venda-render.js');
 
 function paginaErro(res, status, titulo, mensagem) {
