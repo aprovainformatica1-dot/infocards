@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Páginas de Venda — DevMapas</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="app">
+  <header class="hero">
+    <div class="brand">DEVMAPAS</div>
+    <h1>Páginas de Venda</h1>
+    <p>Cole o conteúdo, confira os campos, adicione imagens e links, e publique.</p>
+  </header>
+
+  <!-- Conexão: a chave fica só na memória desta página (recarregar exige digitar de novo) -->
+  <section class="card" id="vConectar">
+    <h2>Conectar</h2>
+    <label for="chave">Chave administrativa</label>
+    <input id="chave" type="password" autocomplete="off" placeholder="Digite a chave">
+    <button type="button" class="btn" id="btnConectar">CONECTAR</button>
+    <div id="erroConexao" class="msg erro" role="alert" hidden></div>
+  </section>
+
+  <section id="vLista" hidden>
+    <div class="topo-lista">
+      <input id="busca" type="search" placeholder="Buscar por concurso ou endereço" aria-label="Buscar páginas">
+      <button type="button" class="btn" id="btnNova">+ NOVA PÁGINA</button>
+    </div>
+    <div id="lista" aria-live="polite"></div>
+  </section>
+
+  <section id="vEditor" hidden>
+    <button type="button" class="btn ghost voltar" id="btnVoltar">← VOLTAR PARA A LISTA</button>
+    <div id="situacao" class="situacao" role="status"></div>
+    <nav class="passos" id="passos" aria-label="Etapas do cadastro"></nav>
+    <div class="card" id="conteudo"></div>
+    <div class="nav-passo"><button type="button" class="btn ghost" id="btnAnt">‹ ANTERIOR</button><button type="button" class="btn ghost" id="btnProx">PRÓXIMA ›</button></div>
+    <div class="barra" role="group" aria-label="Ações da página">
+      <button type="button" class="btn ghost" id="btnSalvar">SALVAR RASCUNHO</button>
+      <button type="button" class="btn ghost" id="btnPrevia">VISUALIZAR</button>
+      <button type="button" class="btn" id="btnPublicar">PUBLICAR</button>
+      <button type="button" class="btn ghost" id="btnCopiar">COPIAR LINK</button>
+    </div>
+  </section>
+</main>
+
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+<dialog id="dlgConfirma"><h2 id="confTitulo"></h2><p id="confTexto"></p><div class="dlg-acoes"><button type="button" class="btn ghost" id="confNao">CANCELAR</button><button type="button" class="btn" id="confSim">CONFIRMAR</button></div></dialog>
+<dialog id="dlgPrevia" class="grande">
+  <div class="dlg-topo"><strong>Prévia da página (como o visitante verá)</strong><button type="button" class="btn ghost fechar" id="fecharPrevia">FECHAR</button></div>
+  <iframe id="iframePrevia" title="Prévia da página de venda" sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox"></iframe>
+</dialog>
+<script src="regras.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
