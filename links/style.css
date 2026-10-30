@@ -5,6 +5,12 @@
    não depende de nenhum arquivo da página principal.
    ============================================================ */
 
+.perfil,
+.redes,
+.descricao {
+    display: none !important;
+}
+
 :root {
   /* Paleta — mesmas variáveis do site principal */
   --roxo-escuro: #4C1D95;
