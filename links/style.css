@@ -4,7 +4,7 @@
    fontes Sora/Inter, raio e sombra padrão). Página independente,
    não depende de nenhum arquivo da página principal.
    ============================================================ */
-
+/*AQUI É PARA OCULTAR O CABEÇALHO DA PAGINA LINKS E FICAR SO OS RETANGULOS */
 .perfil,
 .redes,
 .descricao {
