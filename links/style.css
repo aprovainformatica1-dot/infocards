@@ -4,13 +4,13 @@
    fontes Sora/Inter, raio e sombra padrão). Página independente,
    não depende de nenhum arquivo da página principal.
    ============================================================ */
-/*AQUI É PARA OCULTAR O CABEÇALHO DA PAGINA LINKS E FICAR SO OS RETANGULOS */
+/*AQUI É PARA OCULTAR O CABEÇALHO DA PAGINA LINKS E FICAR SO OS RETANGULOS 
 .perfil,
 .redes,
 .descricao{
     display: none !important;
 }
-
+*/
 :root {
   /* Paleta — mesmas variáveis do site principal */
   --roxo-escuro: #4C1D95;
